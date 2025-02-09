@@ -92,16 +92,16 @@ Para concluir, se definió el alcance de la solución según las diferencias enc
 
 Para realizar este trabajo se seleccionó el dominio del cine, ya que existen
 conjuntos de datos bien definidos y actualizados. Estos conjuntos de datos en
-general están pensados para probar modelos de recomendación. Por otro lado, es
+general están diseñados para probar modelos de recomendación. Por otro lado, es
 el dominio clásico en \textit{papers} y literatura de sistemas de recomendación
 en general.
 
-Dada la propuesta de este trabajo,  fue necesario contar con datos de
-interacciones de usuarios con ítems (películas en este caso). A diferencia del trabajo de especialización \cite{src} no es necesario tener información de los usuarios ya que los perfiles de los usuarios son cargados por cada usuario y no es necesario realizar un entrenamiento previo para el uso de los modelos de lenguaje como modelo de recomendación basado en contenido.  Aun así, se reutilizó la base de  usuario, ítem e interacciones seleccionada en el trabajo de especialización \cite{src}.
+Dada la propuesta de este trabajo, fue necesario contar con datos de
+interacciones de usuarios con ítems (películas en este caso). Por otro lado, no es necesario tener información de los usuarios, ya que los perfiles de los usuarios son cargados por cada usuario y no es necesario realizar un entrenamiento previo para el uso de los modelos de lenguaje como modelo de recomendación basado en contenido.  Aun así, se reutilizó la base de  usuario, ítem e interacciones seleccionada en el trabajo de especialización \cite{src}.
 
 \section{El conjunto de datos \textit{MovieLens 25M}}
 
-El conjunto de datos \textit{MovieLens 25M}~\cite{movielens} prácticamente no tiene \textit{features}
+El conjunto de datos \textit{MovieLens 25M}~\cite{movielens} prácticamente no tiene características
 para los ítems (películas), pero sí tiene las calificaciones realizadas por los
 usuarios. También cuenta con un conjunto de \textit{tags} o palabras clave
 cargadas por los usuarios para cada ítem (película). Otro punto importante, es
@@ -140,7 +140,7 @@ especifican las columnas del conjunto de datos:
 
 \section{El conjunto de datos \textit{TMDB}}
 
-El conjunto de datos \textit{TMDB}~\cite{tmdb} no tiene calificaciones personalizadas para los ítems como sucede con el conjunto de datos anterior (\textit{MovieLens}) , pero si tiene varias características referentes a películas, Este conjunto de datos es utilizado para filtra los items del conjunto de datos \textit{MovieLens} ~\cite{movielens} y así tener una base de ítems mas rica en características(\textit{features}). Estas características son utilizados en el proceso de búsqueda de ítems por el \textit{chatbot} utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} que se explicara mas adelante. El conjunto contiene datos de $5.000$ películas y sus columnas se especifican en la tabla~\ref{table:tmdbColumns} a
+El conjunto de datos \textit{TMDB}~\cite{tmdb} no tiene calificaciones personalizadas para los ítems como sucede con el conjunto de datos anterior (\textit{MovieLens}) , pero si tiene varias características referentes a películas, Este conjunto de datos es utilizado para filtra los items del conjunto de datos \textit{MovieLens} ~\cite{movielens} y así tener una base de ítems mas rica en características. Estas características son utilizados en el proceso de búsqueda de ítems por el \textit{chatbot} utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} que se explicara mas adelante. El conjunto contiene datos de $5.000$ películas y sus columnas se especifican en la tabla~\ref{table:tmdbColumns} a
 continuación:
 
 \begin{table}[!htb]
@@ -184,8 +184,8 @@ continuación:
 
 
 
-Como parte inicial de la etapa de pre-procesamiento de datos, se utilizo una base de datos \textit{MongoDB}. Se uso \textit{MongoDB} y no \textit{Pandas}, dado que \textit{Pandas} requiere cargar todo el \textit{dataset} en memoria \textit{RAM}. Si bien se podría lidiar con este problema, aumentado el tamaño de la memoria \textit{Swap} (Linux) o la memoria
-virtual (\textit{Windows}), podría ocasionar caídas de procesos y lentitudes innecesarias. En este caso, se selecciono una base de datos de tipo documento, la cual no necesita cargar todos los datos en memoria y por otro lado, existe la posibilidad de escalar la base de datos a mas nodos en caso de ser necesario. Ambos \textit{datasets} contienen varios archivos \textit{csv}, los cuales vamos a llamar \textit{tablas}. En la tabla~\ref{table:tableRatings} se
+Como parte inicial de la etapa de pre-procesamiento de datos, se utilizo una base de datos \textit{MongoDB}. Se uso \textit{MongoDB} y no \textit{Pandas}, dado que \textit{Pandas} requiere cargar todo el conjunto de datos en memoria \textit{RAM}. Si bien se podría lidiar con este problema, aumentado el tamaño de la memoria \textit{Swap} (Linux) o la memoria
+virtual (\textit{Windows}), podría ocasionar caídas de procesos y lentitudes innecesarias. En este caso, se selecciono una base de datos de tipo documento, la cual no necesita cargar todos los datos en memoria y por otro lado, existe la posibilidad de escalar la base de datos a mas nodos en caso de ser necesario. Ambos conjuntos de datos contienen varios archivos \textit{csv}, los cuales vamos a llamar \textit{tablas}. En la tabla~\ref{table:tableRatings} se
 especifican las columnas utilizadas:
 
 \begin{table}[!htb]
@@ -195,13 +195,14 @@ especifican las columnas utilizadas:
 		\hline
 		File                     & Descripción                                                                                                                                              \\
 		\hline
-		\textit{movie\_metadata} & Pertenece al \textit{dataset} \textit{TMDB}. Es la fuente de verdad de la cual se toman columnas referentes a \textit{features} de una película.         \\
-		\textit{tags}            & Pertenece al \textit{dataset} \textit{Movie Lens}. De esta tabla se tomaron los tags o palabras clave dadas de alta por los usuarios por cada película.  \\
-		\textit{ratings}         & Pertenece al \textit{dataset} \textit{Movie Lens}. De esta tabla se tomaron las calificaciones de los usuario para las películas que fueron calificadas. \\
+
+		\textit{movie\_metadata} & Pertenece al conjunto de datos \textit{TMDB}. Es la fuente de verdad de la cual se toman columnas referentes a características de una película.         \\
+		\textit{tags}            & Pertenece al conjunto de datos \textit{Movie Lens}. De esta tabla se tomaron los tags o palabras clave dadas de alta por los usuarios por cada película.  \\
+		\textit{ratings}         & Pertenece al conjunto de datos \textit{Movie Lens}. De esta tabla se tomaron las calificaciones de los usuario para las películas que fueron calificadas. \\
 		\hline
 	\end{tabular}
 	\caption{
-		\textit{files} o tablas utilizadas en este trabajo, para construir un \textit{dataset} unificado, el cual sirve como base para entrenamiento y evaluación de modelos.
+		\textit{files} o tablas utilizadas en este trabajo, para construir un conjunto de datos unificado, el cual sirve como base para entrenamiento y evaluación de modelos.
 	}
 	\label{table:tableRatings}
 \end{table}
@@ -235,7 +236,7 @@ Finalmente, se obtienen dos tablas/\textit{files} como resultado:
 		\hline
 	\end{tabular}
 	\caption{
-		\textit{files} resultado del pre-procesamiento. Estos forman parte del \textit{dataset} de entrenamiento y evaluación en este trabajo practico.
+		\textit{files} resultado del pre-procesamiento. Estos forman parte del conjunto de datos de entrenamiento y evaluación en este trabajo practico.
 	}
 	\label{table:tableFiles}
 \end{table}
@@ -289,7 +290,7 @@ de cada película seleccionada en ambos conjuntos de datos.
 
 		\textit{title}            & Título de la película.                                                                   \\
 		\textit{native\_languaje} & Lenguaje original en el cual fue filmada la película.                                    \\
-		\textit{genres}           & Ambos \textit{dataset} cuentan con una lista de géneros a los que adiare la película.    \\
+		\textit{genres}           & Ambos conjuntos de datos cuentan con una lista de géneros a los que adiare la película.    \\
 		\textit{overview}         & Sinopsis de la película.                                                                 \\
 		\textit{poster}           & Enlaces al detalle de la película en \textit{imdb} y \textit{TMDB}. Estos enlaces
 		permiten hace join con mas datos que se encuentren en la descripción de estos
@@ -501,7 +502,7 @@ bajas.
 Si bien, en esta primera entrega no se están utilizando otras variables
 distintas a \textit{user\_id} (Identificador del usuario), \textit{movie\_id} y
 \textit{rating}, es de interés analizar las variables correspondiente a
-features de películas, ya que en el siguiente entrega (tesis) se planea
+características de películas, ya que en el siguiente entrega (tesis) se planea
 implementar modelos de recomendación híbridos, los cuales son ensambles de
 sistemas de recomendación basados en contenido y filtros colaborativos.
 
@@ -609,8 +610,8 @@ y \textit{interactions}.
 	\item[Varianza Explicada]
 \end{description}
 
-Las componentes principales son las variables resultado al aplicar el algoritmo
-\textit{PCA}~\cite{pca}. Estas nuevas variables tienen la particularidad de ser
+Las componentes principales son las variables resultado al aplicar el 
+algoritmo \textit{PCA}~\cite{pca}. Estas nuevas variables tienen la particularidad de ser
 ortogonales entre sí, lo que implica que no poseen ninguna correlación. Además,
 a lo largo de todas las variables, la acumulación de varianza disminuye. Esto
 indica que la primera componente tiene la mayor varianza y la última la menor
@@ -820,7 +821,7 @@ En cuando al modelo de datos se cuenta separados en dos base de datos:
 \end{itemize}
 
 
-Por último, se utilizo una instancia de \textit{Apache Airflow}. \textit{Apache Airflow} permite la orquestación de flujos de trabajo para programar, ejecutar y monitorear secuencias complejas de tareas. Estos procesos se representan como grafos dirigidos acíclicos, lo que facilita dividir un proceso en tareas más simples y re-utilizables. Esto es fundamental para re-entrenar el ensamblaje de modelos del \textit{API Rec Chatbot} y generar las predicciones y embeddings necesarios para su funcionamiento. Además, debido a la significativa cantidad de usuarios, ítems e interacciones en el dataset, esta arquitectura es esencial para garantizar el correcto funcionamiento del \textit{API Rec Chatbot} y evitar problemas de escalabilidad. En resumen, se trata de una forma de desarrollar aplicaciones que es comúnmente utilizada por empresas de servicios en Internet.
+Por último, se utilizo una instancia de \textit{Apache Airflow}. \textit{Apache Airflow} permite la orquestación de flujos de trabajo para programar, ejecutar y monitorear secuencias complejas de tareas. Estos procesos se representan como grafos dirigidos acíclicos, lo que facilita dividir un proceso en tareas más simples y re-utilizables. Esto es fundamental para re-entrenar el ensamblaje de modelos del \textit{API Rec Chatbot} y generar las predicciones y embeddings necesarios para su funcionamiento. Además, debido a la significativa cantidad de usuarios, ítems e interacciones en el conjunto de datos, esta arquitectura es esencial para garantizar el correcto funcionamiento del \textit{API Rec Chatbot} y evitar problemas de escalabilidad. En resumen, se trata de una forma de desarrollar aplicaciones que es comúnmente utilizada por empresas de servicios en Internet.
 
 \chapter{Flujo de inferencia de \textit{Rec Chatbot API}}
 
@@ -1253,12 +1254,12 @@ utiliza un kernel polinomial.
 A continuación, se define el modelo formalmente:
 
 \begin{itemize}
-	\item $x\in\mathbb{R}^{d}$ es un vector de \textit{features} donde cada una de sus
-	      componentes representa a una variable del \textit{dataset}, siendo $d$
+	\item $x\in\mathbb{R}^{d}$ es un vector de características donde cada una de sus
+	      componentes representa a una variable del conjunto de datos, siendo $d$
 	      la cantidad de variables. En nuestro caso,
 	      $x\in\mathbb{R}^{2}$ ya que tenemos dos variables, usuarios e ítems.
 	\item $y\in\mathbb{R}$ es la variable \textit{target} o resultado a predecir.
-	      Dado el dominio del \textit{dataset} seleccionado, seria la
+	      Dado el dominio del conjunto de datos seleccionado, seria la
 	      calificación del usuario.
 \end{itemize}
 
@@ -1273,7 +1274,7 @@ de la siguiente forma:
 	\item[Donde:]
 \end{description}
 \begin{itemize}
-	\item $d$ es la cantidad de \textit{features} o variables a utilizar.
+	\item $d$ es la cantidad de características o variables a utilizar.
 	      Para el caso de estudio en este trabajo $d=2$ (usuarios e ítems).
 	\item $\mathbf{w}_0 \in \mathbb{R}$ es el \text{bias} o intercepto del modelo.
 	\item $\sum_{i=1}^d \mathbf{w}_i x_i$: Esta es la parte lineal del modelo. Aquí,
@@ -1351,7 +1352,7 @@ comportamiento de las interacciones o correlación usuario-ítems, ya sean
 implícitas o explicitas. A pesar de este gran progreso, los métodos expuestos
 anteriormente (exceptuando las máquinas de factorización) parecen tener un
 fuerte sesgo al predecir las interacciones o correlaciones de bajo y alto
-orden, requiriendo en algunos casos realizar ingeniería de \textit{features}
+orden, requiriendo en algunos casos realizar ingeniería de características
 para disminuir estos sesgos.
 
 El modelo de máquinas de factorización profundas
@@ -1414,7 +1415,7 @@ En este apartado se describirá detalladamente el tipo de pruebas realizadas y c
     \item El pico más alto está en el rango de \textit{20-29} interacciones, con aproximadamente \textit{450} usuarios.
     \item Hay una tendencia general descendente desde ese pico hasta el rango \textit{90-99}.
     \item Existe un segundo pico menor en el rango \textit{100-199}, seguido de una disminución en \textit{200+}.
-    \item El rango \textit{0-19} fue filtrado del \textit{dataset}, ya que estas interacciones no son buenas para entrenar al modelo.
+    \item El rango \textit{0-19} fue filtrado del conjunto de datos, ya que estas interacciones no son buenas para entrenar al modelo.
     \item La mayoría de los usuarios tienen entre \textit{20-29} interacciones.
     \item Es relativamente poco común tener usuarios con más de \textit{100} interacciones.
     \item Hay un grupo interesante de usuarios muy activos en el rango \textit{100-199}.
@@ -1424,8 +1425,8 @@ Para construir el conjunto de evaluación se seleccionaron \textit{15} usuarios 
 \textit{20-29}, \textit{30-39}, \textit{40-49}, \textit{50-59}, \textit{60-69}, \textit{70-79}, \textit{80-89}, \textit{90-99} y \textit{100-199}. Excluyendo los grupos \textit{0-19} y \textit{200+} para tratar de representar el comportamiento del usuario promedio, excluyendo comportamientos atípicos o aquellos que no van a permitir realizar una prueba completa del modelo (\textit{0-19}). De esta forma se construye un conjunto de evaluación que represente el comportamiento del usuario promedio, quedando dos conjuntos de entrenamiento y evaluación con la siguiente cantidad de interacciones:
 
 \begin{itemize}
-    \item \textbf{Entrenamiento}: \textit{185.096} interacciones (\textit{95\%} el \textit{dataset}). 
-    \item \textbf{Evaluación}: \textit{9.177} (\textit{0.04\%} el \textit{dataset}). Este número de interacciones resulta suficiente para realizar la prueba de evaluación y permite utilizar el mayor número posible de interacciones para el entrenamiento del modelo. Ademas debe tenerse en cuenta el tiempo de ejecución de cada inferencia del modelo. Este ronda entre los \textit{8} y \textit{20} segundos. Debido a esto último, tampoco seria posible realizar un particionamiento tradicional \textit{70-30} ya que tendríamos un numero muy grande de interacciones a evaluar.
+    \item \textbf{Entrenamiento}: \textit{185.096} interacciones (\textit{95\%} el conjunto de datos). 
+    \item \textbf{Evaluación}: \textit{9.177} (\textit{0.04\%} el conjunto de datos). Este número de interacciones resulta suficiente para realizar la prueba de evaluación y permite utilizar el mayor número posible de interacciones para el entrenamiento del modelo. Ademas debe tenerse en cuenta el tiempo de ejecución de cada inferencia del modelo. Este ronda entre los \textit{8} y \textit{20} segundos. Debido a esto último, tampoco seria posible realizar un particionamiento tradicional \textit{70-30} ya que tendríamos un numero muy grande de interacciones a evaluar.
 \end{itemize}
 
 Por otro lado, se agregaron interacciones de usuarios falsos, conocidos como usuarios \textit{fun}. Estos usuarios son entusiastas de ciertos géneros, sagas de películas, etc. Esto usuarios se crean de manera artificial para mejorar las recomendaciones de los modelos de recomendación de filtrado colaborativo, especialmente en casos donde hay grupos de usuarios aislados que no se relacionan entre sí. Para llevar a cabo este proceso, se buscaron ítems a partir de una frase y luego se creo un nuevo usuario al que se asocia una interacción por cada ítem encontrado. A continuación, se muestra el mapeo de frases y la cantidad de ítems obtenidos en cada búsqueda. Cada frase corresponde a un usuario \textit{fun}.
