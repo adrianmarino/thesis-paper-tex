@@ -32,6 +32,13 @@
                 "-file-line-error",
                 "%DOC%"
             ]
+        },
+        {
+            "name": "biber",
+            "command": "biber",
+            "args": [
+                "%DOCFILE%"
+            ]
         }
     ],
     "latex-workshop.latex.recipes": [
@@ -52,6 +59,31 @@
             "tools": [
                 "lualatex"
             ]
+        },
+        {
+            "name": "pdflatex + biber + pdflatex",
+            "tools": [
+                "pdflatex",
+                "biber",
+                "pdflatex"
+            ]
+        },
+        {
+            "name": "xelatex + biber + xelatex",
+            "tools": [
+                "xelatex",
+                "biber",
+                "xelatex"
+            ]
+        },
+        {
+            "name": "lualatex + biber + lualatex",
+            "tools": [
+                "lualatex",
+                "biber",
+                "lualatex"
+            ]
         }
-    ]
+    ],
+    "latex-workshop.latex.recipe.default": "pdflatex + biber + pdflatex"
 }
