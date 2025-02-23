@@ -347,11 +347,16 @@ ninguna de sus columnas.
 Por otro lado, encontraron valores faltantes en los campos \textit{genres} y \textit{overview}. Aunque no eran nulos, tenían marcadores de ausencia de información, como \textit{"(no genres listed)"} en el campo \textit{genres} y \textit{"No overview found"} en el campo \textit{overview}. Se identificaron \textit{127} ítems sin \textit{overview}, de los cuales se completaron \textit{96}, dejando \textit{31} sin este dato. En el campo \textit{genres}, había \textit{286} ítems con valores faltantes; se llenaron \textit{245}, resultando en \textit{41} sin género asignado. Existían \textit{6581} ítems con un solo género, de los cuales \textit{2531} se actualizaron a dos o más géneros, dejando \textit{4050} con un único género. Para completar los valores faltantes en \textit{overview} y \textit{genres}, se creó un script que extrae datos de un servicio REST proporcionado por la \textit{API} de \textit{TDMB}. Los campos \textit{title}, \textit{overview} y \textit{genres} son fundamentales para el proceso de búsqueda por cercanía(utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} en la base de embeddings de la \textit{API Rec Chatbot}.
 
 
-\subsection{Base de interacciones para \textit{API Rec Chatbot}}
+\subsection{Base datos de interacciones}
 
 Hasta este momento, se contaba con las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv}. Con base en estas tablas, se generó una base de datos inicial para \textit{API Rec Chatbot}. Se extrajeron los datos necesarios para poblar dos colecciones en la instancia de base de datos \textit{MongoDB} de \textit{API Rec Chatbot}: \textit{interactions} e \textit{items}. Es importante mencionar que se realizó un \textit{merge join} entre las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv} generando la tabla \textit{rec\_chat\_bot\_data.csv} para asegurar que las interacciones incluyeran items con datos completos, como \textit{title, overview, genres, etc}. 
 
-La tabla \textit{rec\_chat\_bot\_data.csv} contiene interacciones virtuales que se utilizarán para entrenar los modelos del \textit{API Rec Chatbot}, sin estar asociadas a ningún usuario real. Es fundamental para el modelo de filtros colaborativos. Aunque se podría optar por utilizar un modelo pre-entrenado y aplicar \textit{transfer learning} con datos reales, se eligió un enfoque más sencillo para facilitar el desarrollo. Así, la base de datos \textit{MongoDB} incluirá interacciones tanto virtuales como reales.
+La tabla \textit{rec\_chat\_bot\_data.csv} contiene interacciones virtuales que se utilizarán para entrenar 
+los modelos del \textit{API Rec Chatbot}, sin estar asociadas a ningún usuario real. Esta base datos es fundamental 
+para el modelo de filtros colaborativos ya que contiene metadatos de los usuarios y sus interacciones con cada item. 
+Aunque se podría optar por utilizar un modelo pre-entrenado y aplicar \textit{transfer learning} con datos reales, 
+se eligió un enfoque más sencillo para facilitar el desarrollo. Así, la base de datos \textit{MongoDB} incluirá interacciones 
+tanto virtuales como reales.
 
 \clearpage
 
