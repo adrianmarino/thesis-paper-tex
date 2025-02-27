@@ -6,7 +6,7 @@
     "[tex]": {
         "editor.defaultFormatter": "James-Yu.latex-workshop" // Usa LaTeX Workshop como formateador
     },
-    "latex-workshop.latex.autoBuild.run": "never", // Opcional: Compila automáticamente al guardar
+    "latex-workshop.latex.autoBuild.run": "onSave", // Opcional: Compila automáticamente al guardar
     "latex-workshop.latex.autoClean.run": "onFailed", // Opcional: Limpia archivos auxiliares si la compilación falla
     "latex-workshop.view.pdf.viewer": "tab", // Opcional: Abre el PDF en una pestaña interna
     "window.zoomLevel": 1.3,
