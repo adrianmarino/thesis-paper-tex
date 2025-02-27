@@ -75,17 +75,17 @@ A lo largo de este documento, se detallará la arquitectura del sistema, los flu
 
 En trabajos previos, se abordaron distintas líneas de investigación con las que se busca mejorar la experiencia de usuario con los sistemas de recomendación mediante el uso de los denominados grandes modelos de lenguaje. El trabajo \textit{ChatREC} \cite{chatrec} aborda el uso de un \textit{LLM}, con el cual el usuario puede entablar una conversación para realizar la búsqueda de contenido personalizado. Basándose en el perfil del usuario y su historial de conversaciones, el modelo realiza recomendaciones de acuerdo a lo que solicite el usuario mediante lenguaje natural. El trabajo mencionado \cite{chatrec} utiliza \textit{LLM}'s a los cuales se puede acceder como un servicio por medio de una \textit{API} de pago, como aquellas ofrecidas por \textit{OpenAI}, \textit{Anthropic} o \textit{DeepSeek} entre otras.
 
-Este trabajo de investigación busca aplicar esta misma técnica utilizando uno o más sistemas de recomendación. Entonces, se busca aplicar la misma técnica utilizando modelos \textit{LLM} \textit{Open Source} de dominio público, que puedan correr tanto en una máquina virtual o real, de especificaciones medias, y luego tratar de llegar a resultados aceptables bajo condiciones similares. En definitiva, esta investigación explora el uso de grandes modelos de lenguaje para mejorar los resultados de los modelos de recomendación previamente abordados en trabajos anteriores \cite{src}, así como también, encontrar nuevas formas de realizar recomendaciones personalizadas, que sean mas cercanas al usuario final. 
+Este trabajo de investigación busca aplicar esta misma técnica utilizando uno o más sistemas de recomendación. Entonces, se busca aplicar la misma técnica utilizando modelos \textit{LLM} \textit{Open Source} de dominio público, que puedan correr tanto en una máquina virtual o real, de especificaciones medias, y luego tratar de llegar a resultados aceptables bajo condiciones similares. En definitiva, esta investigación explora el uso de grandes modelos de lenguaje para mejorar los resultados de los modelos de recomendación previamente abordados en trabajos anteriores \cite{src}, así como también, encontrar nuevas formas de realizar recomendaciones personalizadas, que sean mas cercanas al usuario final.
 
 Para concluir, se definió el alcance de la solución según las diferencias encontradas entre los grandes modelos de lenguaje utilizados previamente y los modelos locales que se aplicarán en este trabajo:
 
 \begin{itemize}
-  \setlength{\itemsep}{3pt}
+	\setlength{\itemsep}{3pt}
 
-    \item Desarrollar un \textit{API} \textit{Rest} para interactuar y configurar el \textit{chatbot} de manera sencilla, permitiendo su integración con sistemas existentes.
-    \item El \textit{chatbot} permite crear un perfil de usuario que contiene información inicial. Esta información ayuda al \textit{chatbot} a hacer recomendaciones basadas en preferencias en género de películas y datos del usuario, abordando el problema del arranque en frío en sistemas de recomendación colaborativa, donde el sistema no tiene información sobre el comportamiento del usuario.
-    \item El \textit{chatbot} permite a los usuarios hacer preguntas en lenguaje natural sobre contenido que desean ver (películas en este caso) y devuelve una lista de películas ordenadas según sus preferencias iniciales o su comportamiento en la plataforma.
-    \item Los usuarios pueden calificar las películas que han visto, y estas calificaciones son utilizadas por el \textit{chatbot} para ajustar las recomendaciones futuras a las nuevas preferencias del usuario. Esto significa que la personalización de las recomendaciones depende de la cantidad de calificaciones que el usuario proporciona, afectando tanto el orden de las recomendaciones como el tipo de contenido presentado. 
+	\item Desarrollar un \textit{API} \textit{Rest} para interactuar y configurar el \textit{chatbot} de manera sencilla, permitiendo su integración con sistemas existentes.
+	\item El \textit{chatbot} permite crear un perfil de usuario que contiene información inicial. Esta información ayuda al \textit{chatbot} a hacer recomendaciones basadas en preferencias en género de películas y datos del usuario, abordando el problema del arranque en frío en sistemas de recomendación colaborativa, donde el sistema no tiene información sobre el comportamiento del usuario.
+	\item El \textit{chatbot} permite a los usuarios hacer preguntas en lenguaje natural sobre contenido que desean ver (películas en este caso) y devuelve una lista de películas ordenadas según sus preferencias iniciales o su comportamiento en la plataforma.
+	\item Los usuarios pueden calificar las películas que han visto, y estas calificaciones son utilizadas por el \textit{chatbot} para ajustar las recomendaciones futuras a las nuevas preferencias del usuario. Esto significa que la personalización de las recomendaciones depende de la cantidad de calificaciones que el usuario proporciona, afectando tanto el orden de las recomendaciones como el tipo de contenido presentado.
 \end{itemize}
 
 \chapter{Modelo de datos y análisis exploratorio}
@@ -108,7 +108,7 @@ cargadas por los usuarios para cada ítem (película). Otro punto importante, es
 que todos los usuarios tienen al menos $20$ interacciones, lo cual asegura no
 tener problemas de bajo rendimiento por falta de estas. De esta forma,
 este conjunto de datos sera muy útil para entrenar modelos de recomendación
-basados en filtros colaborativos. 
+basados en filtros colaborativos.
 
 Por último, este conjunto de datos contiene $25$ millones calificaciones, $1$
 millón de \textit{tags} y $62.423$ películas. Estos datos fueron registrados
@@ -127,7 +127,7 @@ especifican las columnas del conjunto de datos:
 		\textit{movieId}   & Identificador univoco de una película.                                                                                                                                                      \\
 		\textit{timestamp} & Fecha en la cual el usuario calificó el ítem(\textit{movieId}). Es un string con formato año-mes. Existen valores entre 1997-09 y 2019-11 inclusive.                                        \\
 		\textit{rating}    & Calificación del usuario. Es un valor discreto numérico: \textit{0.5}, \textit{1}, \textit{1.5}, \textit{2}, \textit{2.5}, \textit{3}, \textit{3.5}, \textit{4}, \textit{4.5} y \textit{5}. \\
-		\textit{tags}      & Lista de palabras definidas por cada usuario, para una película. Dicho de otra forma existen N \textit{tags} por cada par usuario-película.                                                \\
+		\textit{tags}      & Lista de palabras definidas por cada usuario, para una película. Dicho de otra forma existen N \textit{tags} por cada par usuario-película.                                                 \\
 		\hline
 	\end{tabular}
 	\caption{
@@ -193,10 +193,10 @@ especifican las columnas utilizadas:
 	\footnotesize
 	\begin{tabular}{l | p{0.75\linewidth}}
 		\hline
-		File                     & Descripción                                                                                                                                              \\
+		File                     & Descripción                                                                                                                                               \\
 		\hline
 
-		\textit{movie\_metadata} & Pertenece al conjunto de datos \textit{TMDB}. Es la fuente de verdad de la cual se toman columnas referentes a características de una película.         \\
+		\textit{movie\_metadata} & Pertenece al conjunto de datos \textit{TMDB}. Es la fuente de verdad de la cual se toman columnas referentes a características de una película.           \\
 		\textit{tags}            & Pertenece al conjunto de datos \textit{Movie Lens}. De esta tabla se tomaron los tags o palabras clave dadas de alta por los usuarios por cada película.  \\
 		\textit{ratings}         & Pertenece al conjunto de datos \textit{Movie Lens}. De esta tabla se tomaron las calificaciones de los usuario para las películas que fueron calificadas. \\
 		\hline
@@ -290,7 +290,7 @@ de cada película seleccionada en ambos conjuntos de datos.
 
 		\textit{title}            & Título de la película.                                                                   \\
 		\textit{native\_languaje} & Lenguaje original en el cual fue filmada la película.                                    \\
-		\textit{genres}           & Ambos conjuntos de datos cuentan con una lista de géneros a los que adiare la película.    \\
+		\textit{genres}           & Ambos conjuntos de datos cuentan con una lista de géneros a los que adiare la película.  \\
 		\textit{overview}         & Sinopsis de la película.                                                                 \\
 		\textit{poster}           & Enlaces al detalle de la película en \textit{imdb} y \textit{TMDB}. Estos enlaces
 		permiten hace join con mas datos que se encuentren en la descripción de estos
@@ -342,20 +342,20 @@ anterior que tuvieran hasta \textit{6 \%} de valores faltantes. A continuación
 se removió la columna \textit{budget} por tener un porcentaje muy alto de
 valores faltantes, lo que la volvió inutilizable. Por otro lado, la tabla
 \textit{ratings\_tags\_v1} no se modifico, ya que no tenia valores faltantes en
-ninguna de sus columnas. 
+ninguna de sus columnas.
 
 Por otro lado, encontraron valores faltantes en los campos \textit{genres} y \textit{overview}. Aunque no eran nulos, tenían marcadores de ausencia de información, como \textit{"(no genres listed)"} en el campo \textit{genres} y \textit{"No overview found"} en el campo \textit{overview}. Se identificaron \textit{127} ítems sin \textit{overview}, de los cuales se completaron \textit{96}, dejando \textit{31} sin este dato. En el campo \textit{genres}, había \textit{286} ítems con valores faltantes; se llenaron \textit{245}, resultando en \textit{41} sin género asignado. Existían \textit{6581} ítems con un solo género, de los cuales \textit{2531} se actualizaron a dos o más géneros, dejando \textit{4050} con un único género. Para completar los valores faltantes en \textit{overview} y \textit{genres}, se creó un script que extrae datos de un servicio REST proporcionado por la \textit{API} de \textit{TDMB}. Los campos \textit{title}, \textit{overview} y \textit{genres} son fundamentales para el proceso de búsqueda por cercanía(utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} en la base de embeddings de la \textit{API Rec Chatbot}.
 
 
 \subsection{Base datos de interacciones}
 
-Hasta este momento, se contaba con las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv}. Con base en estas tablas, se generó una base de datos inicial para \textit{API Rec Chatbot}. Se extrajeron los datos necesarios para poblar dos colecciones en la instancia de base de datos \textit{MongoDB} de \textit{API Rec Chatbot}: \textit{interactions} e \textit{items}. Es importante mencionar que se realizó un \textit{merge join} entre las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv} generando la tabla \textit{rec\_chat\_bot\_data.csv} para asegurar que las interacciones incluyeran items con datos completos, como \textit{title, overview, genres, etc}. 
+Hasta este momento, se contaba con las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv}. Con base en estas tablas, se generó una base de datos inicial para \textit{API Rec Chatbot}. Se extrajeron los datos necesarios para poblar dos colecciones en la instancia de base de datos \textit{MongoDB} de \textit{API Rec Chatbot}: \textit{interactions} e \textit{items}. Es importante mencionar que se realizó un \textit{merge join} entre las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv} generando la tabla \textit{rec\_chat\_bot\_data.csv} para asegurar que las interacciones incluyeran items con datos completos, como \textit{title, overview, genres, etc}.
 
-La tabla \textit{rec\_chat\_bot\_data.csv} contiene interacciones virtuales que se utilizarán para entrenar 
-los modelos del \textit{API Rec Chatbot}, sin estar asociadas a ningún usuario real. Esta base datos es fundamental 
-para el modelo de filtros colaborativos ya que contiene metadatos de los usuarios y sus interacciones con cada item. 
-Aunque se podría optar por utilizar un modelo pre-entrenado y aplicar \textit{transfer learning} con datos reales, 
-se eligió un enfoque más sencillo para facilitar el desarrollo. Así, la base de datos \textit{MongoDB} incluirá interacciones 
+La tabla \textit{rec\_chat\_bot\_data.csv} contiene interacciones virtuales que se utilizarán para entrenar
+los modelos del \textit{API Rec Chatbot}, sin estar asociadas a ningún usuario real. Esta base datos es fundamental
+para el modelo de filtros colaborativos ya que contiene metadatos de los usuarios y sus interacciones con cada item.
+Aunque se podría optar por utilizar un modelo pre-entrenado y aplicar \textit{transfer learning} con datos reales,
+se eligió un enfoque más sencillo para facilitar el desarrollo. Así, la base de datos \textit{MongoDB} incluirá interacciones
 tanto virtuales como reales.
 
 \clearpage
@@ -430,11 +430,11 @@ A continuación segmentemos el anterior histograma por año:
 	\includegraphics[width=15cm]{./images/rating-by-year.png}
 	\caption{
 		Histograma de calificaciones segmentado por año.
-		En esta gráfica se muestran histogramas como funciones de densidad, 
+		En esta gráfica se muestran histogramas como funciones de densidad,
 		a pesar de que la variable \textit{rating}
-		es categóricas. Las funciones de densidad se graficaron utilizando el 
+		es categóricas. Las funciones de densidad se graficaron utilizando el
 		método de estimación \textit{KDE} o \textit{Kernel Density Estimation}.
-		Si bien este método se utiliza para estimar la función de densidad 
+		Si bien este método se utiliza para estimar la función de densidad
 		de una variable aleatoria continua, en este caso permite apreciar con mayor claridad
 		la diferencia en la cantidad de observaciones y el grado de dispersión de cada
 		niveles de la variable \textit{rating} por año.
@@ -549,7 +549,7 @@ cargan por los usuarios en cada película. Otras palabras de menor frecuencia:
 \clearpage
 
 \begin{description}
-	\item[Overview ] 
+	\item[Overview ]
 \end{description}
 
 La variable \textit{overview} es la sinopsis de la película. Esta describe
@@ -614,7 +614,7 @@ y \textit{interactions}.
 	\item[Varianza Explicada]
 \end{description}
 
-Las componentes principales son las variables resultado al aplicar el 
+Las componentes principales son las variables resultado al aplicar el
 algoritmo \textit{PCA}~\cite{pca}. Estas nuevas variables tienen la particularidad de ser
 ortogonales entre sí, lo que implica que no poseen ninguna correlación. Además,
 a lo largo de todas las variables, la acumulación de varianza disminuye. Esto
@@ -778,32 +778,32 @@ Para llevar a cabo este trabajo de investigación, se tomó la decisión de modi
 
 
 \begin{itemize}
-    \setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
+	\setlength{\itemsep}{0pt}
+	\setlength{\parskip}{0pt}
 
-    \item \textbf{Independencia del lenguaje}: Una \textit{API REST} puede ser consumida por cualquier lenguaje de programación que soporte \textit{HTTP}, no solo \textit{Python} o el lenguaje con el que este escrito el paquete.
-    
-    \item \textbf{Escalabilidad}: Las \textit{APIs REST} son más fáciles de escalar horizontalmente, distribuyendo la carga entre múltiples servidores.
-    
-    \item \textbf{Separación cliente-servidor}: Permite una clara separación entre el \textit{frontend} y el \textit{backend}, facilitando el desarrollo y mantenimiento de forma independiente.
-    
-    \item \textbf{Integración con sistemas distribuidos}: Facilita la integración con otros servicios y sistemas distribuidos.
-    
-    \item \textbf{Caching}: Se puede implementar caches fácilmente a nivel \textit{HTTP} para mejorar el rendimiento.
-    
-    \item \textbf{Seguridad}: Permite implementar mecanismos de autenticación y autorización estándar como \textit{OAuth} entre otros.
-    
-    \item \textbf{Documentación}: Existen herramientas para generar documentación automática de \textit{APIs REST} (como \textit{Swagger}, \textit{Redoc}, \textit{OpenAPI}, etc..).
+	\item \textbf{Independencia del lenguaje}: Una \textit{API REST} puede ser consumida por cualquier lenguaje de programación que soporte \textit{HTTP}, no solo \textit{Python} o el lenguaje con el que este escrito el paquete.
+
+	\item \textbf{Escalabilidad}: Las \textit{APIs REST} son más fáciles de escalar horizontalmente, distribuyendo la carga entre múltiples servidores.
+
+	\item \textbf{Separación cliente-servidor}: Permite una clara separación entre el \textit{frontend} y el \textit{backend}, facilitando el desarrollo y mantenimiento de forma independiente.
+
+	\item \textbf{Integración con sistemas distribuidos}: Facilita la integración con otros servicios y sistemas distribuidos.
+
+	\item \textbf{Caching}: Se puede implementar caches fácilmente a nivel \textit{HTTP} para mejorar el rendimiento.
+
+	\item \textbf{Seguridad}: Permite implementar mecanismos de autenticación y autorización estándar como \textit{OAuth} entre otros.
+
+	\item \textbf{Documentación}: Existen herramientas para generar documentación automática de \textit{APIs REST} (como \textit{Swagger}, \textit{Redoc}, \textit{OpenAPI}, etc..).
 \end{itemize}
 
 Luego, en la figura \ref{fig:deployment} se pueden apreciar las piezas que componente la arquitectura general de la \textit{API REST} (desde ahora \textit{API Rec Chatbot}).
 \vfill
 
 \begin{figure}[H]
-\centering
-\label{fig:deployment}
-\includegraphics[width=10.5cm]{./images/deployment.png}
-\caption{Arquitectura general: Se puede preciar un diagrama de despliegue donde se especifica cada componente de la arquitectura general y la interacción entre los mismos.}
+	\centering
+	\label{fig:deployment}
+	\includegraphics[width=10.5cm]{./images/deployment.png}
+	\caption{Arquitectura general: Se puede preciar un diagrama de despliegue donde se especifica cada componente de la arquitectura general y la interacción entre los mismos.}
 \end{figure}
 
 En este contexto, puede apreciarse un diagrama de despliegue que ilustra de manera detallada cada uno de los componentes que conforman la arquitectura general y la interacción que existe entre ellos. A grandes rasgos, al inicio del proceso, el usuario realiza una solicitud de recomendaciones utilizando lenguaje natural, lo que inicia una serie de operaciones en el sistema. En este punto, el componente conocido como \textit{API Rec Chatbot} se encarga de buscar ítems que sean relevantes y cercanos a la petición del usuario en una instancia de \textit{ChromaDB}. Una vez que se han encontrado los ítems pertinentes, el sistema procede a realizar un ordenamiento de estos elementos. Este paso es clave, ya que se utilizan tanto los modelos de lenguaje que son proporcionados por \textit{API Ollama} como también los embeddings y las predicciones que son generadas por los modelos de filtros colaborativos, los cuales han sido específicamente entrenados a través de un proceso que se ejecuta en la instancia de \textit{Apache Airflow} \cite{apache-airflow}. Este último proceso asegura que los resultados sean eficaces y relevantes para el usuario. Además, es importante destacar que todos los datos que están relacionados con los perfiles de los usuarios, así como las calificaciones que estos otorgan, las predicciones que se generan, entre otros aspectos importantes, se persisten en una instancia de base de datos \textit{MongoDb}. Esta persistencia de datos es crucial para el funcionamiento continuo y la mejora del sistema, ya que permite realizar un seguimiento de las interacciones y preferencias de los usuarios a lo largo del tiempo.
@@ -819,9 +819,9 @@ Para la gestión y operación de \textit{LLM} locales, se eligió la plataforma 
 
 En cuando al modelo de datos se cuenta separados en dos base de datos:
 \begin{itemize}
-    \item La primera de estas es una base de datos \textit{MongoDB}. Esta base de datos se encarga de almacenar información relacionada a los perfiles de los clientes que interactúan con la \textit{API Rec Chatbot}. A su vez, también guarda ítems, que en este contexto se refieren a las películas disponibles en el sistema, así como las calificaciones proporcionadas por los usuarios sobre las mismas. Estas calificaciones pueden abarcar tanto datos reales, aquellos introducidos por los propios usuarios, como predicciones generadas por el sistema. De esta forma, se busca ofrecer un servicio personalizado y adaptado a las preferencias de cada usuario.
+	\item La primera de estas es una base de datos \textit{MongoDB}. Esta base de datos se encarga de almacenar información relacionada a los perfiles de los clientes que interactúan con la \textit{API Rec Chatbot}. A su vez, también guarda ítems, que en este contexto se refieren a las películas disponibles en el sistema, así como las calificaciones proporcionadas por los usuarios sobre las mismas. Estas calificaciones pueden abarcar tanto datos reales, aquellos introducidos por los propios usuarios, como predicciones generadas por el sistema. De esta forma, se busca ofrecer un servicio personalizado y adaptado a las preferencias de cada usuario.
 
-    \item La segunda es un base de datos \textit{ChromaDB}. Esta base de datos tiene una función específica en el almacenamiento de \textit{embeddings}, que son representaciones vectoriales tanto de los usuarios como de los ítems, ambas generadas por un modelo de filtros colaborativos. Además se almacenan \textit{embeddings} que reflejan el contenido de cada ítem, en este caso, las películas, lo que a su vez habilita la utilización de la técnica conocida como \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}. Esta técnica permite realizar búsquedas de ítems que son similares a las consultas realizadas por los usuarios.
+	\item La segunda es un base de datos \textit{ChromaDB}. Esta base de datos tiene una función específica en el almacenamiento de \textit{embeddings}, que son representaciones vectoriales tanto de los usuarios como de los ítems, ambas generadas por un modelo de filtros colaborativos. Además se almacenan \textit{embeddings} que reflejan el contenido de cada ítem, en este caso, las películas, lo que a su vez habilita la utilización de la técnica conocida como \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}. Esta técnica permite realizar búsquedas de ítems que son similares a las consultas realizadas por los usuarios.
 \end{itemize}
 
 
@@ -832,21 +832,21 @@ Por último, se utilizo una instancia de \textit{Apache Airflow}. \textit{Apache
 En la sección anterior se presentó la arquitectura general de la solución, detallando cada componente mediante un diagrama de despliegue, lo que ayuda a entender de forma mas simple la solución. En esta sección, se profundizara en cada uno de estos componentes y explicaremos el funcionamiento de la solución. Para ello, dividiremos la funcionalidad de \textit{API Rec Chatbot} en dos flujos:
 
 \begin{itemize}
-    \setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    
-    \item Flujo de entrenamiento de modelos y generación de datos: Necesarios para la inferencia de \textit{API Rec Chatbot}.
-    \item Flujo de inferencia sobre las consultas del usuario: En este flujo se explica el paso a paso, desde que el usuario realiza una consulta, hasta que obtiene una recomendación como respuesta.
+	\setlength{\itemsep}{0pt}
+	\setlength{\parskip}{0pt}
+
+	\item Flujo de entrenamiento de modelos y generación de datos: Necesarios para la inferencia de \textit{API Rec Chatbot}.
+	\item Flujo de inferencia sobre las consultas del usuario: En este flujo se explica el paso a paso, desde que el usuario realiza una consulta, hasta que obtiene una recomendación como respuesta.
 \end{itemize}
 
 Comencemos con el flujo de inferencia. En la siguiente figura \ref{fig:inference-flow}, se puede apreciar un diagrama donde se expone el flujo de inferencia. Es decir, cada vez que un usuario realizar una consulta a \textit{API Rec Chatbot} se realizan todas las acciones especificada en este flujo.
 \vfill
 
 \begin{figure}[H]
-\centering
-\label{fig:inference-flow}
-\includegraphics[width=12.5cm]{./images/inference.flow.png}
-\caption{Flujo de inferencia: Este flujo especifica detalladamente todos los pasos secuenciales que lleva a cabo la \textit{API Rec Chatbot} para resolver una recomendación planteada por un usuario utilizando lenguaje natural. Cada etapa en este proceso es crucial para garantizar que la respuesta proporcionada sea adecuada y esté alineada con las necesidades del usuario.}
+	\centering
+	\label{fig:inference-flow}
+	\includegraphics[width=12.5cm]{./images/inference.flow.png}
+	\caption{Flujo de inferencia: Este flujo especifica detalladamente todos los pasos secuenciales que lleva a cabo la \textit{API Rec Chatbot} para resolver una recomendación planteada por un usuario utilizando lenguaje natural. Cada etapa en este proceso es crucial para garantizar que la respuesta proporcionada sea adecuada y esté alineada con las necesidades del usuario.}
 \end{figure}
 
 
@@ -860,7 +860,7 @@ Aclarado esto, e comenzara a explicar el flujo de inferencia.
 Al comienzo del proceso (Paso \textit{1} de la figura \ref{fig:inference-flow}), el usuario tiene la opción de utilizar una aplicación móvil, una aplicación de escritorio o incluso acceder directamente a través de un cliente http. Mediante cualquiera de estos métodos, el usuario puede formular una pregunta en lenguaje natural relacionada con algún contenido que desea visualizar. En este caso específico, se trata de una película, pero también puede referirse a contenido sobre un género particular, una saga específica, o una historia que cuente con cierto tipo de trama, ya sea de acción, drama, comedia, terror, entre otros. Así, el usuario busca obtener información detallada que le ayude a decidir qué ver o comprender mejor el material que le interesa.
 
 \section{Consulta de interacciones del usuario}
-    
+
 En el paso \textit{2} de la figura \ref{fig:inference-flow}, se llevan a cabo la consulta de las interacciones del usuario que formuló la pregunta, accediendo a la base de datos \textit{MongoDB}. Para identificar de manera única al usuario en cuestión, se utiliza su\textit{email} como identificador exclusivo, lo que permite obtener información detallada sobre sus interacciones previas.
 
 
@@ -950,10 +950,10 @@ curl --location 'http://nonosoft.ddns.net:8080/api/v1/profiles' \
 Mediante el comando \textit{curl} se realiza una solicito POST para dar de alta el usuario en \textit{API Rec Chatbot}, donde el \textit{request body} contiene los siguientes datos:
 
 \begin{itemize}
-    \item Nombre del usuario.
-    \item \textit{Email} del usuario: Este es utilizado como identificador único del mismo en el sistema.
-    \item Edad, género, nacionalidad y una breve descripción laboral del mismo.
-    \item En la sección \textit{content\_preferences} se puede establecer el año mínimo de lanzamiento de una película (\textit{release\_from}), determinando así la antigüedad a partir de la cual se prefieren recomendaciones. Además se puede definir una lista de géneros preferidos en la propiedad \textit{genres}).
+	\item Nombre del usuario.
+	\item \textit{Email} del usuario: Este es utilizado como identificador único del mismo en el sistema.
+	\item Edad, género, nacionalidad y una breve descripción laboral del mismo.
+	\item En la sección \textit{content\_preferences} se puede establecer el año mínimo de lanzamiento de una película (\textit{release\_from}), determinando así la antigüedad a partir de la cual se prefieren recomendaciones. Además se puede definir una lista de géneros preferidos en la propiedad \textit{genres}).
 \end{itemize}
 
 Con esta información se puede generar el texto que luego se reemplazara en la variable \textit{user\_profile} en el \textit{prompt} principal.
@@ -964,11 +964,11 @@ La variable \textit{user\_history} presenta una lista detallada de los ítems qu
 
 \subsection{Solicitud del usuario}
 
-La variable \textit{request} contiene la solicitud del usuario en lenguaje natural. Ejemplo de esas podrían ser: 
+La variable \textit{request} contiene la solicitud del usuario en lenguaje natural. Ejemplo de esas podrían ser:
 
 \begin{itemize}
-    \item Quisiera ver una película de Pixar. Cuales me recomendarías?
-    \item Quiero ver una película de suspenso ambientada en un futuro disto-pico.
+	\item Quisiera ver una película de Pixar. Cuales me recomendarías?
+	\item Quiero ver una película de suspenso ambientada en un futuro disto-pico.
 \end{itemize}
 \subsection{Items candidatos}
 
@@ -980,10 +980,10 @@ La variable \textit{candidates} contiene la lista de items candidatos resuelta e
 Finalmente se especifica las instrucciones que debe seguir el modelo de lenguaje:
 
 \begin{itemize}
-    \item Debe seleccionar película a recomendar de la lista de items candidatos.
-    \item Para realizar la recomendación, el \textit{LLM} debe basarse en la solicitud del usuario, los datos referentes a su perfil y las películas que ya ha calificado. Con este paso se intenta que el modelo de lenguaje realiza una selecciones los títulos candidatos que mejor correlaciones con esta información.
-    \item Se define explícitamente el formato de la respuesta, que consiste en una lista ordenada por un índice numérico que indica relevancia con el título, año de estreno y una breve sinopsis. Debido a la limitada capacidad de comprensión de las instrucciones, se optó por este formato óptimo. Aunque el formato más adecuado habría sido una lista de identificadores, el modelo a menudo no seguía estas indicaciones y devolvía una lista en el formato establecido, lo que aumentó la probabilidad de que el modelo lo respetara.
-    \item Finalmente, se enfatiza al modelo de lenguaje la importancia de respetar el ítem de la lista de candidatos, ya que estos modelos tienden a incluir títulos que no son candidatos, nuevamente debido a su baja capacidad para seguir instrucciones.
+	\item Debe seleccionar película a recomendar de la lista de items candidatos.
+	\item Para realizar la recomendación, el \textit{LLM} debe basarse en la solicitud del usuario, los datos referentes a su perfil y las películas que ya ha calificado. Con este paso se intenta que el modelo de lenguaje realiza una selecciones los títulos candidatos que mejor correlaciones con esta información.
+	\item Se define explícitamente el formato de la respuesta, que consiste en una lista ordenada por un índice numérico que indica relevancia con el título, año de estreno y una breve sinopsis. Debido a la limitada capacidad de comprensión de las instrucciones, se optó por este formato óptimo. Aunque el formato más adecuado habría sido una lista de identificadores, el modelo a menudo no seguía estas indicaciones y devolvía una lista en el formato establecido, lo que aumentó la probabilidad de que el modelo lo respetara.
+	\item Finalmente, se enfatiza al modelo de lenguaje la importancia de respetar el ítem de la lista de candidatos, ya que estos modelos tienden a incluir títulos que no son candidatos, nuevamente debido a su baja capacidad para seguir instrucciones.
 \end{itemize}
 
 \section{Consulta a modelo de lenguaje}
@@ -997,7 +997,7 @@ En el paso 7 y 8 de la figura \ref{fig:inference-flow}, se toma la respuesta del
 En resumen, este paso transforma la respuesta del \textit{LLM} en una lista de ítems de las bases de datos de la \textit{API Rec Chatbot}. Esta transformación es no determinista, ya que no siempre se obtienen el mismo número de ítems ni los mismos ítems, aunque sucede así la mayoría de las veces. Todo esto sucede dado que los modelos de lenguaje no puede cumplir al pie de la letra con las instrucciones que le son dadas.
 
 Finalmente, se consulta en la base de datos \textit{MongoDB} los documentos correspondientes a cada ítem de la lista resultante. Se agrega el título, la \textit{URL} de su póster (imagen) y se mantiene la descripción generada por el \textit{LLM}, que es más resumida que la sinopsis original. También se toman los géneros del documento y se genera una lista de \textit{URL\'s} que permite al usuario votar por los ítems recomendados. La lista de ítems se devuelve ordenada al usuario, quien puede votar por cada uno de ellos si lo desea. Estas votaciones representan la interacción del usuario con el sistema. Las votaciones se almacenan en la base de datos \textit{MongoDB} en la colección \textit{interactions}, donde cada documento contiene el identificador del usuario, el identificador del ítem, la votación en sí, y la fecha y hora de la votación. Posteriormente, estas interacciones serán consultadas por un proceso que entrena un modelo de recomendación basado en filtrado colaborativo, el cual se utilizará cuando el usuario alcance un número mínimo de interacciones. Esto se desarrollará mejor en los siguientes apartados, donde se detallará el perfil para usuarios con interacciones.
-\vfill                                                                                                                                          
+\vfill
 
 \section{Usuarios de cumplen con el mínimo de interacciones}
 
@@ -1008,8 +1008,8 @@ por otro lado, es importante entender que se seleccionaron modelos de filtros co
 Para los pasas \textit{4.a.1} y \textit{4.a.2} de la figura \ref{fig:inference-flow} es necesario consultar dos colecciones extra de \textit{embeddings}:
 
 \begin{itemize}
-    \item \textbf{\textit{items\_cf}}: Contiene los \textit{embeddings} de todos los items del sistema. Estos \textit{embeddings} son generados a partir de entrenamiento del modelo \textit{DeepFM}~\cite{dfmpaper, didldfm}. Este modelo aprende dos \textit{embeddings} de usuarios e items en su entrenamiento.
-    \item \textbf{\textit{users\_cf}}: Contiene los \textit{embeddings} de todos los usuarios del sistema aprendidos en el entrenamiento del modelo \textit{DeepFM}~\cite{dfmpaper, didldfm}.
+	\item \textbf{\textit{items\_cf}}: Contiene los \textit{embeddings} de todos los items del sistema. Estos \textit{embeddings} son generados a partir de entrenamiento del modelo \textit{DeepFM}~\cite{dfmpaper, didldfm}. Este modelo aprende dos \textit{embeddings} de usuarios e items en su entrenamiento.
+	\item \textbf{\textit{users\_cf}}: Contiene los \textit{embeddings} de todos los usuarios del sistema aprendidos en el entrenamiento del modelo \textit{DeepFM}~\cite{dfmpaper, didldfm}.
 \end{itemize}
 
 Cada colección de \textit{embeddings} contiene metadatos que incluye el identificador único de cada entidad, ya sean usuarios o ítems, lo que facilita la búsqueda de entidades que sean similares o cercanas. A partir del identificador del usuario actual, se procede a buscar otros usuarios que sean similares, lo cual es definido por el hiperparámetro \textit{k\_sim\_users}. Este proceso es crucial para encontrar recomendaciones personalizadas. Una vez obtenidos los usuarios similares, se lleva a cabo la selección de hasta \textit{max\_items\_by\_user} ítems que hayan sido vistos por cada uno de esos usuarios similares.
@@ -1017,8 +1017,8 @@ Cada colección de \textit{embeddings} contiene metadatos que incluye el identif
 Durante esta selección, también se aplica dos filtro adicionales:
 
 \begin{itemize}
-    \item \textbf{Items con puntuación mínima}: Es la puntuación mínima que debe cumplir cada ítem, la cual es establecida por el hiperparámetro \textit{min\_rating\_by\_user}. Por defecto, esta puntuación mínima se encuentra en \textit{3.5} puntos, asegurando que solo aquellos ítems que han recibido una valoración aceptable sean considerados en la recomendación, lo que ayuda a mejorar la calidad de las sugerencias para el usuario actual.
-    \item \textbf{Item no vistos}: Además se filtran los items no vistos por el usuario actual, definido por el hiperparámetro \textit{not\_seen}.
+	\item \textbf{Items con puntuación mínima}: Es la puntuación mínima que debe cumplir cada ítem, la cual es establecida por el hiperparámetro \textit{min\_rating\_by\_user}. Por defecto, esta puntuación mínima se encuentra en \textit{3.5} puntos, asegurando que solo aquellos ítems que han recibido una valoración aceptable sean considerados en la recomendación, lo que ayuda a mejorar la calidad de las sugerencias para el usuario actual.
+	\item \textbf{Item no vistos}: Además se filtran los items no vistos por el usuario actual, definido por el hiperparámetro \textit{not\_seen}.
 \end{itemize}
 
 Cabe aclarar que la selección de items se realiza al azar y esta definida por el hiperparámetro \textit{random\_selection\_items\_by\_user}, cuyo valor predeterminado es \textit{0.5}. Es decir, el \textit{50\%} de las veces se selecciona un ítem al iterar la lista de items de cada usuario que cumple con la restricción anteriormente definidas.
@@ -1034,13 +1034,13 @@ Para ordenar los candidatos se probaron distintos enfoques.
 \textbf{\textit{user\_sim\_weighted\_rating\_score}}: Se asigna un \textit{score} a cada ítem según la similitud entre el usuario que solicita la recomendación y el que lo calificó, ponderado por la calificación media de los usuarios más cercanos. Esta estrategia soluciona el problema de tener bloques de ítems por usuario cercano, pero pierde personalización al utilizar la calificación media en lugar de la que otorgaría el usuario que realizó la consulta. Esto se aborda en la siguiente estrategia.
 
 \begin{equation}
-    User Sim Weighted By Rating = User Sim * \frac{Item User Preducted Rating}{Max Items User Predicted Rating}
+	User Sim Weighted By Rating = User Sim * \frac{Item User Preducted Rating}{Max Items User Predicted Rating}
 \end{equation}
 
 \textbf{\textit{user\_sim\_weighted\_pred\_rating\_score}}: Es similar al \textit{score} anterior, pero más personalizado, ya que se ajusta según la calificación que se estima que el usuario otorgaría al ítem. La métrica anterior utiliza el promedio o mediana del \textit{rating} general del ítem para usuarios cercanos, proporcionando cierto grado de personalización, pero aquí se pondera por la calificación específica predicha para el usuario que solicitó la recomendación, lo que la hace más personalizada.
 
 \begin{align}
-    User Sim Weighted By Pred Rating = User Sim * \frac{Item User Pred Rating}{Max Items User Pred Rating}
+	User Sim Weighted By Pred Rating = User Sim * \frac{Item User Pred Rating}{Max Items User Pred Rating}
 \end{align}
 
 Para continuar con nuestro flujo, solo queda aplicar alguno de los métodos de \textit{scoring} a los ítems candidatos definido mas arriba. A diferencia del flujo para usuarios sin interacciones, donde la similitud de los ítems con la consulta del usuario define el orden de los ítems candidatos, aquí se utiliza un \textit{score} basado en el aprendizaje de un modelo de filtrado colaborativo. Esta es la sutil diferencia. Posteriormente, el modelo de lenguaje ajustará el ordenamiento en un segundo filtro. Así, obtenemos un \textit{score} personalizado que considera las correlaciones en el comportamiento del usuario con otros usuarios, así como la relación de su historia y perfil con los ítems candidatos.
@@ -1051,8 +1051,8 @@ Para continuar con nuestro flujo, solo queda aplicar alguno de los métodos de \
 En la sección anterior se presentó el flujo de inferencia del modelo de recomendación \textit{Rec Chatbot API}. En ese flujo, contábamos con \textit{embeddings} disponibles en una base de datos lista para utilizar. También disponíamos de modelos pre-entrenados. Sin embargo, ¿cómo se generan estas herramientas a partir de los datos que ingresan \textit{Rec Chatbot API}? En este apartado, explicaremos el proceso de entrenamiento, que se encargará de generar y mantener actualizados estos modelos y \textit{embeddings}, basándose en las actualizaciones de información en la base de datos de \textit{Rec Chatbot API}, incluyendo altas y bajas de perfiles de usuarios y sus calificaciones. Para comenzar, se desarrollaron dos procesos o flujos que permiten esto:
 
 \begin{itemize}
-    \item El primer flujo realiza el entrenamiento de un modelo de recomendación basado en filtros colaborativos, que puede ser sustituido por cualquier modelo que prediga calificaciones entre 0 y 5 y que ajuste vectores de \textit{embedding} para aprender características entre usuarios e ítems. En este trabajo, se eligió un modelo con arquitectura \textit{DeepFM}~\cite{dfmpaper, didldfm}, aunque también se podrían emplear otros como \textit{GMF}, \textit{Biased-GMF} o \textit{NN-FM}. Para más detalles, consulte \cite{src}, donde se explican estos modelos en detalle y se comparan sus resultados.
-    \item El segundo flujo se encarga de actualizar los \textit{embeddings} necesarios para la búsqueda de ítems similares o mas cercanos a la consulta del usuario (Técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}).
+	\item El primer flujo realiza el entrenamiento de un modelo de recomendación basado en filtros colaborativos, que puede ser sustituido por cualquier modelo que prediga calificaciones entre 0 y 5 y que ajuste vectores de \textit{embedding} para aprender características entre usuarios e ítems. En este trabajo, se eligió un modelo con arquitectura \textit{DeepFM}~\cite{dfmpaper, didldfm}, aunque también se podrían emplear otros como \textit{GMF}, \textit{Biased-GMF} o \textit{NN-FM}. Para más detalles, consulte \cite{src}, donde se explican estos modelos en detalle y se comparan sus resultados.
+	\item El segundo flujo se encarga de actualizar los \textit{embeddings} necesarios para la búsqueda de ítems similares o mas cercanos a la consulta del usuario (Técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}).
 \end{itemize}
 
 
@@ -1063,10 +1063,10 @@ Para gestionar de manera efectiva y ejecutar este flujo de trabajo, se eligió l
 En el marco de este proyecto, la utilización de \textit{Apache Airflow} se torna fundamental, ya que garantiza la automatización y orquestación de múltiples procesos importantes que están relacionados directamente con el re entrenamiento de modelos, así como con la gestión de datos necesarios para asegurar un funcionamiento efectivo de \textit{Rec Chatbot API}. Esta herramienta no solo permite llevar a cabo los procesos de manera eficiente, sino que también ofrece una forma clara de visualizar el flujo de trabajo en su totalidad. A continuación, en la figura \ref{fig:training-flow}, se puede apreciar un diagrama de flujo ilustrativo que describe en detalle cada uno de los pasos que componen el proceso de entrenamiento \textit{(DAG)}.
 
 \begin{figure}[H]
-\centering
-\label{fig:training-flow}
-\includegraphics[width=12cm]{./images/training.flow.png}
-\caption{Flujo de entrenamiento: Es un proceso que correr en segundo plano, encargado de entrenar el modelo de filtros colaborativos y actualizar los \textit{embeddings} de usuarios e items.}
+	\centering
+	\label{fig:training-flow}
+	\includegraphics[width=12cm]{./images/training.flow.png}
+	\caption{Flujo de entrenamiento: Es un proceso que correr en segundo plano, encargado de entrenar el modelo de filtros colaborativos y actualizar los \textit{embeddings} de usuarios e items.}
 \end{figure}
 
 
@@ -1076,8 +1076,8 @@ En el paso \textit{1} del flujo de la figura \ref{fig:training-flow}, se solicit
 Al llegar al paso \textit{3}, el proceso identifica interacciones nuevas y potencialmente nuevos perfiles de usuario. Dado que la \textit{API Rec Chatbot} es escalable y puede tener millones de usuarios, no es óptimo re-entrenar  el modelo de forma constante ya que se deben economizar recursos. Las instancias de \textit{Apache Airflow} suelen ser ejecutadas en contenedores de \textit{Docker} en en una nube, como \textit{Google Cloud Services}, lo que genera costos dependiendo del \textit{hardware} seleccionado, uso de \textit{CPU}, \textit{GPU}, almacenamiento, etc. Por ello, se debe re-entrenar el modelo lo menos posible, solo lo justo y necesario. Para lograrlo, se implementó una abstracción llamada \textit{ModelLoader} en \textit{Python}, que permite cargar modelos desde un archivo de pesos y prepararlos para la inferencia. \textit{ModelLoader} permite establecer los criterios bajo los cuales se debe re-entrenar el modelo:
 
 \begin{itemize}
-    \item El modelo se re-entrena periódicamente, lo que significa que hay un período durante el cual solo se utiliza para inferencia.
-    \item Si las nuevas interacciones son de usuarios e items existentes, no se requiere re-entrenamiento, y se espera hasta el siguiente ciclo de re-entrenamiento. Sin embargo, si hay interacciones de nuevos usuarios o items, es necesario forzar el re-entrenar  del modelo, ya que de lo contrario no se podrían realizar inferencias sobre los mismos, dado que el modelo necesita generar \textit{embeddings} para estos usuarios o items necesarios para la inferencia.
+	\item El modelo se re-entrena periódicamente, lo que significa que hay un período durante el cual solo se utiliza para inferencia.
+	\item Si las nuevas interacciones son de usuarios e items existentes, no se requiere re-entrenamiento, y se espera hasta el siguiente ciclo de re-entrenamiento. Sin embargo, si hay interacciones de nuevos usuarios o items, es necesario forzar el re-entrenar  del modelo, ya que de lo contrario no se podrían realizar inferencias sobre los mismos, dado que el modelo necesita generar \textit{embeddings} para estos usuarios o items necesarios para la inferencia.
 \end{itemize}
 
 El \textit{ModelLoader} determina cuándo re-entrenar el modelo. Si decide no re-entrenar, carga el modelo con los pesos del último entrenamiento; de lo contrario, se re-entrena, guarda los mejores pesos y luego carga el modelo para su inferencia. Durante el entrenamiento, \textit{ModelLoader} genera gráficas para monitorear el proceso y verificar el ajuste del modelo, permitiendo ajustes en los hiperparámetros si es necesario. Cada ejecución produce un nuevo conjunto de gráficas para rastrear el historial de entrenamiento (Paso \textit{5}).
@@ -1092,10 +1092,10 @@ Para llevar a cabo los pasos \text{7} y \text{8}, es necesario extraer del model
 Este flujo se ejecuta manualmente y genera \textit{embeddings} para cada ítem, utilizando el título, la sinopsis y los géneros de cada película. Para ello, emplea un modelo conocido como \textit{Sentence Transformers}, que permite crear \textit{embeddings} a partir de oraciones o párrafos. Estos \textit{embeddings} son utilizados posteriormente para identificar los ítems más cercanos a una consulta de usuario.
 
 \begin{figure}[H]
-\centering
-\label{fig:rag-update-flow}
-\includegraphics[width=10cm]{./images/rag-embedding-update.png}
-\caption{Flujo de generación y actualización \textit{embeddings} utilizados para la búsqueda de items cercanos a una consulta del usuario (Técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}).}
+	\centering
+	\label{fig:rag-update-flow}
+	\includegraphics[width=10cm]{./images/rag-embedding-update.png}
+	\caption{Flujo de generación y actualización \textit{embeddings} utilizados para la búsqueda de items cercanos a una consulta del usuario (Técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}).}
 \end{figure}
 
 \chapter{Modelo interno basado en filtros colaborativos}
@@ -1329,11 +1329,11 @@ complejidad del método:
 
 \begin{equation}
 	\begin{split}
-		&=\sum_{i=1}^d \sum_{j=i+1}^d \langle\mathbf{v}_i, \mathbf{v}_j\rangle x_i x_j \\
-		&= \frac{1}{2} \sum_{i=1}^d \sum_{j=1}^d\langle\mathbf{v}_i, \mathbf{v}_j\rangle x_i x_j - \frac{1}{2}\sum_{i=1}^d \langle\mathbf{v}_i, \mathbf{v}_i\rangle x_i x_i \\
-		&= \frac{1}{2} \big (\sum_{i=1}^d \sum_{j=1}^d \sum_{l=1}^k\mathbf{v}_{i, l} \mathbf{v}_{j, l} x_i x_j - \sum_{i=1}^d \sum_{l=1}^k \mathbf{v}_{i, l} \mathbf{v}_{i, l} x_i x_i \big)\\
-		&=  \frac{1}{2} \sum_{l=1}^k \big ((\sum_{i=1}^d \mathbf{v}_{i, l} x_i) (\sum_{j=1}^d \mathbf{v}_{j, l}x_j) - \sum_{i=1}^d \mathbf{v}_{i, l}^2 x_i^2 \big ) \\
-		&= \frac{1}{2} \sum_{l=1}^k \big ((\sum_{i=1}^d \mathbf{v}_{i, l} x_i)^2 - \sum_{i=1}^d \mathbf{v}_{i, l}^2 x_i^2)
+		 & =\sum_{i=1}^d \sum_{j=i+1}^d \langle\mathbf{v}_i, \mathbf{v}_j\rangle x_i x_j                                                                                                       \\
+		 & = \frac{1}{2} \sum_{i=1}^d \sum_{j=1}^d\langle\mathbf{v}_i, \mathbf{v}_j\rangle x_i x_j - \frac{1}{2}\sum_{i=1}^d \langle\mathbf{v}_i, \mathbf{v}_i\rangle x_i x_i                  \\
+		 & = \frac{1}{2} \big (\sum_{i=1}^d \sum_{j=1}^d \sum_{l=1}^k\mathbf{v}_{i, l} \mathbf{v}_{j, l} x_i x_j - \sum_{i=1}^d \sum_{l=1}^k \mathbf{v}_{i, l} \mathbf{v}_{i, l} x_i x_i \big) \\
+		 & =  \frac{1}{2} \sum_{l=1}^k \big ((\sum_{i=1}^d \mathbf{v}_{i, l} x_i) (\sum_{j=1}^d \mathbf{v}_{j, l}x_j) - \sum_{i=1}^d \mathbf{v}_{i, l}^2 x_i^2 \big )                          \\
+		 & = \frac{1}{2} \sum_{l=1}^k \big ((\sum_{i=1}^d \mathbf{v}_{i, l} x_i)^2 - \sum_{i=1}^d \mathbf{v}_{i, l}^2 x_i^2)
 	\end{split}
 \end{equation}
 
@@ -1403,53 +1403,53 @@ En este apartado se describirá detalladamente el tipo de pruebas realizadas y c
 
 \section{Preparación del ambiente de evaluación}
 
- Se dispone de dos conjuntos de datos: uno para entrenamiento y otro para prueba. Tras realizar el flujo de preprocesamiento descrito en la sección \ref{sec:pre-pro}, se excluyen los usuarios que tienen menos de \textit{20} interacciones. Después de este proceso, obtenemos un conjunto de datos con la siguiente distribución de interacciones máximas por usuario (figura \ref{fig:user-interactions}):
+Se dispone de dos conjuntos de datos: uno para entrenamiento y otro para prueba. Tras realizar el flujo de preprocesamiento descrito en la sección \ref{sec:pre-pro}, se excluyen los usuarios que tienen menos de \textit{20} interacciones. Después de este proceso, obtenemos un conjunto de datos con la siguiente distribución de interacciones máximas por usuario (figura \ref{fig:user-interactions}):
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=15cm]{./images/user_interactions.png}
 	\caption{
-            Este gráfico es un histograma que muestra la distribución de interacciones máximas de usuarios. Cada rango representa un rango de interacciones, excluyendo el primer rango de \textit{0} a \textit{19} interacciones. El eje \textit{X} (horizontal) muestra diferentes rangos de interacciones de usuarios, desde \textit{0-19} hasta \textit{200+}. El eje \textit{Y} (vertical) muestra el conteo de usuarios, llegando aproximadamente hasta \textit{450} como máximo por rango.
+		Este gráfico es un histograma que muestra la distribución de interacciones máximas de usuarios. Cada rango representa un rango de interacciones, excluyendo el primer rango de \textit{0} a \textit{19} interacciones. El eje \textit{X} (horizontal) muestra diferentes rangos de interacciones de usuarios, desde \textit{0-19} hasta \textit{200+}. El eje \textit{Y} (vertical) muestra el conteo de usuarios, llegando aproximadamente hasta \textit{450} como máximo por rango.
 	}
 	\label{fig:user-interactions}
 \end{figure}
 
 \textbf{Observaciones}
 \begin{itemize}
-    \item El pico más alto está en el rango de \textit{20-29} interacciones, con aproximadamente \textit{450} usuarios.
-    \item Hay una tendencia general descendente desde ese pico hasta el rango \textit{90-99}.
-    \item Existe un segundo pico menor en el rango \textit{100-199}, seguido de una disminución en \textit{200+}.
-    \item El rango \textit{0-19} fue filtrado del conjunto de datos, ya que estas interacciones no son buenas para entrenar al modelo.
-    \item La mayoría de los usuarios tienen entre \textit{20-29} interacciones.
-    \item Es relativamente poco común tener usuarios con más de \textit{100} interacciones.
-    \item Hay un grupo interesante de usuarios muy activos en el rango \textit{100-199}.
+	\item El pico más alto está en el rango de \textit{20-29} interacciones, con aproximadamente \textit{450} usuarios.
+	\item Hay una tendencia general descendente desde ese pico hasta el rango \textit{90-99}.
+	\item Existe un segundo pico menor en el rango \textit{100-199}, seguido de una disminución en \textit{200+}.
+	\item El rango \textit{0-19} fue filtrado del conjunto de datos, ya que estas interacciones no son buenas para entrenar al modelo.
+	\item La mayoría de los usuarios tienen entre \textit{20-29} interacciones.
+	\item Es relativamente poco común tener usuarios con más de \textit{100} interacciones.
+	\item Hay un grupo interesante de usuarios muy activos en el rango \textit{100-199}.
 \end{itemize}
 
 Para construir el conjunto de evaluación se seleccionaron \textit{15} usuarios de cada uno de los siguientes grupos
 \textit{20-29}, \textit{30-39}, \textit{40-49}, \textit{50-59}, \textit{60-69}, \textit{70-79}, \textit{80-89}, \textit{90-99} y \textit{100-199}. Excluyendo los grupos \textit{0-19} y \textit{200+} para tratar de representar el comportamiento del usuario promedio, excluyendo comportamientos atípicos o aquellos que no van a permitir realizar una prueba completa del modelo (\textit{0-19}). De esta forma se construye un conjunto de evaluación que represente el comportamiento del usuario promedio, quedando dos conjuntos de entrenamiento y evaluación con la siguiente cantidad de interacciones:
 
 \begin{itemize}
-    \item \textbf{Entrenamiento}: \textit{185.096} interacciones (\textit{95\%} el conjunto de datos). 
-    \item \textbf{Evaluación}: \textit{9.177} (\textit{0.04\%} el conjunto de datos). Este número de interacciones resulta suficiente para realizar la prueba de evaluación y permite utilizar el mayor número posible de interacciones para el entrenamiento del modelo. Ademas debe tenerse en cuenta el tiempo de ejecución de cada inferencia del modelo. Este ronda entre los \textit{8} y \textit{20} segundos. Debido a esto último, tampoco seria posible realizar un particionamiento tradicional \textit{70-30} ya que tendríamos un numero muy grande de interacciones a evaluar.
+	\item \textbf{Entrenamiento}: \textit{185.096} interacciones (\textit{95\%} el conjunto de datos).
+	\item \textbf{Evaluación}: \textit{9.177} (\textit{0.04\%} el conjunto de datos). Este número de interacciones resulta suficiente para realizar la prueba de evaluación y permite utilizar el mayor número posible de interacciones para el entrenamiento del modelo. Ademas debe tenerse en cuenta el tiempo de ejecución de cada inferencia del modelo. Este ronda entre los \textit{8} y \textit{20} segundos. Debido a esto último, tampoco seria posible realizar un particionamiento tradicional \textit{70-30} ya que tendríamos un numero muy grande de interacciones a evaluar.
 \end{itemize}
 
 Por otro lado, se agregaron interacciones de usuarios falsos, conocidos como usuarios \textit{fun}. Estos usuarios son entusiastas de ciertos géneros, sagas de películas, etc. Esto usuarios se crean de manera artificial para mejorar las recomendaciones de los modelos de recomendación de filtrado colaborativo, especialmente en casos donde hay grupos de usuarios aislados que no se relacionan entre sí. Para llevar a cabo este proceso, se buscaron ítems a partir de una frase y luego se creo un nuevo usuario al que se asocia una interacción por cada ítem encontrado. A continuación, se muestra el mapeo de frases y la cantidad de ítems obtenidos en cada búsqueda. Cada frase corresponde a un usuario \textit{fun}.
 
 \begin{itemize}
-    \item "pixar animated movie for children" (Máximo de 200 items).
-    \item "science fiction, action" (Máximo de 100 items).
-    \item "war weapons" (Máximo de 70 items).
-    \item "iron man, x-men, spider man, bat man, flash, avengers, ant-man, hulk, guardians of the galaxy, marvel, green lantern, superman, watchmen, thor, deadpool, wonder woman, strange, justice League, captain america, logans, kick ass, John Wick" (Máximo de 150 items).
-    \item "sci-fi, action, future" (Máximo de 130 items).
-    \item "Mission Impossible, spies, bourne identity, 007" (Máximo de 70 items).
-    \item "comedy movies" (Máximo de 200 items).
-    \item "horror" (Máximo de 100 items).
-    \item "thiller, suspense" (Máximo de 150 items).
-    \item "love, romance" (Máximo de 150 items).
-    \item "time travel" (Máximo de 100 items).
-    \item "dead, zombies, post apocalyptic" (Máximo de 100 items).
-    \item "software" (Máximo de 100 items).
-    \item "hackers" (Máximo de 100 items).
+	\item "pixar animated movie for children" (Máximo de 200 items).
+	\item "science fiction, action" (Máximo de 100 items).
+	\item "war weapons" (Máximo de 70 items).
+	\item "iron man, x-men, spider man, bat man, flash, avengers, ant-man, hulk, guardians of the galaxy, marvel, green lantern, superman, watchmen, thor, deadpool, wonder woman, strange, justice League, captain america, logans, kick ass, John Wick" (Máximo de 150 items).
+	\item "sci-fi, action, future" (Máximo de 130 items).
+	\item "Mission Impossible, spies, bourne identity, 007" (Máximo de 70 items).
+	\item "comedy movies" (Máximo de 200 items).
+	\item "horror" (Máximo de 100 items).
+	\item "thiller, suspense" (Máximo de 150 items).
+	\item "love, romance" (Máximo de 150 items).
+	\item "time travel" (Máximo de 100 items).
+	\item "dead, zombies, post apocalyptic" (Máximo de 100 items).
+	\item "software" (Máximo de 100 items).
+	\item "hackers" (Máximo de 100 items).
 \end{itemize}
 
 De esta forma, se agregan \textit{14} nuevos usuarios artificiales o usuarios \textit{fun}, junto con sus interacciones, al conjunto de datos de entrenamiento.
@@ -1459,8 +1459,8 @@ Para realizar el proceso de evaluación, en primer lugar se deben crear los perf
 
 
 \begin{itemize}
-\item \textit{preferred\_from}: Este filtro establece la fecha mínima de lanzamiento de las películas recomendadas. Basándose en las iteraciones de evaluación de cada usuario, se selecciona la fecha de lanzamiento más temprana entre todas las películas que el usuario calificó.
-\item \textit{géneros}: Es una colección de los géneros preferidos por el usuario, al menos inicialmente, similar al campo anterior. Se utiliza un conjunto de todos los géneros.ros de las películas calificadas pro el usuario en el conjunto de evaluación.
+	\item \textit{preferred\_from}: Este filtro establece la fecha mínima de lanzamiento de las películas recomendadas. Basándose en las iteraciones de evaluación de cada usuario, se selecciona la fecha de lanzamiento más temprana entre todas las películas que el usuario calificó.
+	\item \textit{géneros}: Es una colección de los géneros preferidos por el usuario, al menos inicialmente, similar al campo anterior. Se utiliza un conjunto de todos los géneros.ros de las películas calificadas pro el usuario en el conjunto de evaluación.
 \end{itemize}
 
 
@@ -1470,13 +1470,13 @@ Cabe aclarar que estos usuarios no están en el conjunto de entrenamiento; son n
 
 \section{Proceso de evaluación}
 
-El proceso de evaluación simula las interacciones de los usuarios con el \textit{API Rec Chatbot}. Se selecciona aleatoriamente y sin reposición cada usuario del conjunto de evaluación, y se itera sobre sus interacciones en orden cronológico, creando consultas a el \textit{API Rec Chatbot} en grupos de \textit{5} interacciones una a la vez. Las consultas o \textit{prompts} tienen el siguiente patrón: 
+El proceso de evaluación simula las interacciones de los usuarios con el \textit{API Rec Chatbot}. Se selecciona aleatoriamente y sin reposición cada usuario del conjunto de evaluación, y se itera sobre sus interacciones en orden cronológico, creando consultas a el \textit{API Rec Chatbot} en grupos de \textit{5} interacciones una a la vez. Las consultas o \textit{prompts} tienen el siguiente patrón:
 
-\begin{center}I want to see: title1,..title5\end{center}    
+\begin{center}I want to see: title1,..title5\end{center}
 
 Aquí se aprecia que se concatena la cadena de caracteres "I want to see: " con los títulos de las \textit{5} películas correspondientes a las interacciones del usuario a evaluar. Luego, \textit{API Rec Chatbot} buscará y recomendará al menos \textit{5} películas, incluyendo la opción de calificar cada una con una puntuación de \textit{1} a \textit{5}. Las puntuaciones reales del conjunto de evaluación se utilizarán para calificar las recomendaciones. Este proceso se repetirá con las siguientes \textit{5} películas, en el orden cronológico de las interacciones, hasta que se agoten las interacciones del usuario o se alcance un límite de re-intentos en caso de errores con la \textit{API Rec Chatbot}.
 
-Mientras se realiza la prueba de evaluación durante el entrenamiento de la solución, se identifican nuevas interacciones y se decide si es necesario re-entrenar el modelo. El modelo se re-entrena cuando se detectan al menos \textit{25} nuevas interacciones, garantizando así que no haya un desfase significativo. En aplicaciones reales, re-entrenar el modelo cada vez que un usuario califica no es viable debido a los altos requerimientos computacionales, lo que resulta insostenible en términos de \textit{hardware} y costos. Por ello, se opta por un enfoque de entrenamiento en paralelo. El proceso de evaluación continuará hasta alcanzar un mínimo de \textit{50} interacciones por usuario. 
+Mientras se realiza la prueba de evaluación durante el entrenamiento de la solución, se identifican nuevas interacciones y se decide si es necesario re-entrenar el modelo. El modelo se re-entrena cuando se detectan al menos \textit{25} nuevas interacciones, garantizando así que no haya un desfase significativo. En aplicaciones reales, re-entrenar el modelo cada vez que un usuario califica no es viable debido a los altos requerimientos computacionales, lo que resulta insostenible en términos de \textit{hardware} y costos. Por ello, se opta por un enfoque de entrenamiento en paralelo. El proceso de evaluación continuará hasta alcanzar un mínimo de \textit{50} interacciones por usuario.
 
 El \textit{API Rec Chatbot} consiste en un ensamble de modelos que utiliza modelos de lenguaje para la inferencia. Por ello, se decidió evaluar el sistema dos veces, utilizando dos versiones diferentes del modelo \textit{Llama}: \textit{Llama2} y \textit{Llama3}. Esta selección se realizó tras una prueba temprana donde se compararon distintas implementaciones de modelos de lenguaje, eligiendo estos dos por su consistencia en las respuestas. No todos los modelos de lenguaje ofrecen respuestas consistentes, lo que puede provocar errores en el \textit{parsing} y hacer que el \textit{API Rec Chatbot} no retorne recomendaciones el \textit{100\%} de las veces.
 
@@ -1491,8 +1491,8 @@ El proceso de evaluación descrito anteriormente registrará los resultados de c
 El \textit{Normalized Discounted Cumulative Gain (NDCG)} es una métrica de evaluación común en el aprendizaje automático, especialmente en tareas de \textit{ranking} o sistemas de recomendación. Esta métrica mide la calidad de una lista ordenada de resultados, teniendo en cuenta no solo si los elementos relevantes están presentes en la lista, sino también su posición. Se basa en dos principios fundamentales:
 
 \begin{itemize}
-    \item Los ítems altamente relevantes son más útiles cuando aparecen primeros en la lista de recomendaciones.
-    \item Los ítems altamente relevantes son más útiles que los marginal-mente relevantes.
+	\item Los ítems altamente relevantes son más útiles cuando aparecen primeros en la lista de recomendaciones.
+	\item Los ítems altamente relevantes son más útiles que los marginal-mente relevantes.
 \end{itemize}
 
 \subsubsection{Funcionamiento}
@@ -1500,40 +1500,40 @@ El \textit{Normalized Discounted Cumulative Gain (NDCG)} es una métrica de eval
 A continuación definimos \textit{NDCG} como:
 
 \begin{equation}
-    \begin{split}
-        DCG &= \sum_{i=1}^{n} \frac{rating_i}{\log_2(i + 1)} \\
-        IDCG &= \sum_{i=1}^{n} \frac{rating_i^{ideal}}{\log_2(i + 1)} \\
-        NDCG &= \frac{DCG}{IDCG}
-    \end{split}
+	\begin{split}
+		DCG  & = \sum_{i=1}^{n} \frac{rating_i}{\log_2(i + 1)}         \\
+		IDCG & = \sum_{i=1}^{n} \frac{rating_i^{ideal}}{\log_2(i + 1)} \\
+		NDCG & = \frac{DCG}{IDCG}
+	\end{split}
 \end{equation}
 
 Donde:
 \begin{itemize}
-    \item $n$ es la cantidad de ítems en la lista de recomendaciones.  
-    \item $rating_i$ es la calificación del ítem en la posición $i$ de dicha lista.  
-    \item $rating_i^{ideal}$ también representa una calificación, pero se basa en una lista ordenada de mayor a menor calificación, lo que significa que el ítem en la posición $i$ podría ser diferente al ítem de la lista original.
+	\item $n$ es la cantidad de ítems en la lista de recomendaciones.
+	\item $rating_i$ es la calificación del ítem en la posición $i$ de dicha lista.
+	\item $rating_i^{ideal}$ también representa una calificación, pero se basa en una lista ordenada de mayor a menor calificación, lo que significa que el ítem en la posición $i$ podría ser diferente al ítem de la lista original.
 \end{itemize}
 
 Primero, se calcula el \textit{DCG (Discounted Cumulative Gain)}:
 
 \begin{itemize}
-    \item Para cada ítem \textit{i} de la lista de recomendada, se divide su \textit{rating} o calificación por el logaritmo de su posición en la lista de recomendaciones ($\log_2(i + 1)$). El logaritmo en base \textit{2} de la posición actúa se utiliza como un factor de descuento.
-    \item Los ítems en las primeras posiciones de la lista están menos penalizadas por el factor de descuento. Cuanto mayor es el valor de esta división, mas relevante es el ítem para la métrica.
-    \item Finalmente se suman todos los valores calculados para cada ítem en la lista, siento este valor final una medida del \textit{Discounted Cumulative Gain}.
+	\item Para cada ítem \textit{i} de la lista de recomendada, se divide su \textit{rating} o calificación por el logaritmo de su posición en la lista de recomendaciones ($\log_2(i + 1)$). El logaritmo en base \textit{2} de la posición actúa se utiliza como un factor de descuento.
+	\item Los ítems en las primeras posiciones de la lista están menos penalizadas por el factor de descuento. Cuanto mayor es el valor de esta división, mas relevante es el ítem para la métrica.
+	\item Finalmente se suman todos los valores calculados para cada ítem en la lista, siento este valor final una medida del \textit{Discounted Cumulative Gain}.
 \end{itemize}
 
 Luego, es necesario calcular el \textit{IDCG (\textit{Discounted Cumulative Gain} ideal)}:
 
 \begin{itemize}
-    \item Se ordenan los ítems de la lista por \textit{rating} o calificación de mayor a menor.
-    \item Se calcula el \textit{DCG (Discounted Cumulative Gain)} con este orden ideal.
+	\item Se ordenan los ítems de la lista por \textit{rating} o calificación de mayor a menor.
+	\item Se calcula el \textit{DCG (Discounted Cumulative Gain)} con este orden ideal.
 \end{itemize}
 
 Como paso final, se normaliza el \textit{DCG} dividiendo por el \textit{IDCG}. Esto escala \textit{DCG} a un valor entre \textit{0} y \textit{1}, donde:
 
 \begin{itemize}
-    \item \textit{1} indica que la posición de los ítems en la lista(\textit{ranking}) es igual al ideal. Es decir, los ítems están ordenados descendente-mente por la califican que el usuario le a dado.
-    \item \textit{0} indica el peor \textit{ranking} posible, es decir seria el orden inverso al \textit{ranking} ideal.
+	\item \textit{1} indica que la posición de los ítems en la lista(\textit{ranking}) es igual al ideal. Es decir, los ítems están ordenados descendente-mente por la califican que el usuario le a dado.
+	\item \textit{0} indica el peor \textit{ranking} posible, es decir seria el orden inverso al \textit{ranking} ideal.
 \end{itemize}
 
 \subsubsection{Ejemplo práctico}
@@ -1541,19 +1541,19 @@ Como paso final, se normaliza el \textit{DCG} dividiendo por el \textit{IDCG}. E
 Supongamos que contamos con dos sistemas de recomendación de películas, donde ambos miden la relevancia con una puntuación entre \textit{0} a \textit{3} puntos. Luego obtenemos las recomendaciones de ambos sistemas como sigue:
 
 \begin{itemize}
-    \item Sistema $A$ recomienda:
-        \begin{itemize}
-            \item Película muy relevante (3 puntos)
-            \item Película poco relevante (1 punto)
-            \item Película relevante (2 puntos)
-        \end{itemize}
-    
-    \item Sistema $B$ recomienda:
-        \begin{itemize}
-            \item Película poco relevante (1 punto)
-            \item Película relevante (2 puntos)
-            \item  Película muy relevante (3 puntos)
-        \end{itemize}
+	\item Sistema $A$ recomienda:
+	      \begin{itemize}
+		      \item Película muy relevante (3 puntos)
+		      \item Película poco relevante (1 punto)
+		      \item Película relevante (2 puntos)
+	      \end{itemize}
+
+	\item Sistema $B$ recomienda:
+	      \begin{itemize}
+		      \item Película poco relevante (1 punto)
+		      \item Película relevante (2 puntos)
+		      \item  Película muy relevante (3 puntos)
+	      \end{itemize}
 \end{itemize}
 
 Aunque ambos sistemas recomiendan las mismas películas, el Sistema $A$ tendrá un \textit{NDCG} mayor, porque ubicó la película más relevante o mayor puntuada al principio. Esto refleja una mejor experiencia de usuario, ya que encontrará contenido más relevante.
@@ -1567,38 +1567,38 @@ Mide la capacidad del sistema para encontrar todos los ítems relevantes para el
 A continuación definimos \textit{(Recall)} como:
 
 \begin{equation}
-\text{True Positive} = \text{Ítems Recomendados} \cap \text{Ítems Relevantes}
-\label{eq:tp}
+	\text{True Positive} = \text{Ítems Recomendados} \cap \text{Ítems Relevantes}
+	\label{eq:tp}
 \end{equation}
 
 \begin{equation}
-\text{True Positive} + \text{False Negative} = \text{Ítems Relevantes}
-\label{eq:tp_fn}
+	\text{True Positive} + \text{False Negative} = \text{Ítems Relevantes}
+	\label{eq:tp_fn}
 \end{equation}
 
 \begin{equation}
-\text{Recall} = \frac{\text{True Positive}}{\text{True Positive} + \text{False Negative}}
-\label{eq:recall}
+	\text{Recall} = \frac{\text{True Positive}}{\text{True Positive} + \text{False Negative}}
+	\label{eq:recall}
 \end{equation}
 
 Entonces, los pasos para calcular el \textit{(Recall)} son los siguientes:
 
 \begin{itemize}
-    \item Se identifica el conjunto de ítems relevantes para el usuario. En el caso de la prueba de evaluación, son todos los ítems utilizados para construir el \textit{prompt} de consulta.
-    \item Se cuenta cuántos de estos ítems relevantes aparecen en la lista de ítems recomendados resultado de la consulta \ref{eq:tp}.
-    \item Se divide por el número total de ítems relevantes \ref{eq:recall}.
-    \item El resultado es un valor entre $0$ y $1$ donde:
-    \begin{itemize}
-        \item El valor $1$ indica que todos los ítems recomendados eran relevantes para el usuario, lo que en la prueba de evaluación significa que todos los ítems coincidían con los utilizados para generar el \textit{prompt} de la consulta.
-        \item El valor $0$ significa que no se recomendó ningún ítem relevante. Lo que significa que ningún de los ítems recomendados se encontraban en el \textit{prompt} de la consulta.
-    \end{itemize}
+	\item Se identifica el conjunto de ítems relevantes para el usuario. En el caso de la prueba de evaluación, son todos los ítems utilizados para construir el \textit{prompt} de consulta.
+	\item Se cuenta cuántos de estos ítems relevantes aparecen en la lista de ítems recomendados resultado de la consulta \ref{eq:tp}.
+	\item Se divide por el número total de ítems relevantes \ref{eq:recall}.
+	\item El resultado es un valor entre $0$ y $1$ donde:
+	      \begin{itemize}
+		      \item El valor $1$ indica que todos los ítems recomendados eran relevantes para el usuario, lo que en la prueba de evaluación significa que todos los ítems coincidían con los utilizados para generar el \textit{prompt} de la consulta.
+		      \item El valor $0$ significa que no se recomendó ningún ítem relevante. Lo que significa que ningún de los ítems recomendados se encontraban en el \textit{prompt} de la consulta.
+	      \end{itemize}
 \end{itemize}
 
 \subsubsection{Ejemplo práctico}
-En una aplicación de venta de libros \textit{online}, un usuario está interesado en $5$ libros de ciencia ficción. El sistema le recomienda $5$ libros, de los cuales $3$ son de los que le interesan. 
+En una aplicación de venta de libros \textit{online}, un usuario está interesado en $5$ libros de ciencia ficción. El sistema le recomienda $5$ libros, de los cuales $3$ son de los que le interesan.
 
 \begin{equation}
-\text{Recall} = \frac{\text{True Positive}}{\text{True Positive} + \text{False Negative}} = \frac{3}{5} = 0.6 = 60\%
+	\text{Recall} = \frac{\text{True Positive}}{\text{True Positive} + \text{False Negative}} = \frac{3}{5} = 0.6 = 60\%
 \end{equation}
 
 Esto indica que el sistema encontró más de la mitad de los libros que le interesaban al usuario, pero se perdió dos títulos relevantes.
@@ -1612,33 +1612,33 @@ El \textit{MRR} se usa para evaluar la eficacia de un sistema de recomendación 
 La métrica se define como sigue:
 
 \begin{equation}
-    MRR= \frac{1}{|U|} \sum_{u=1}^{|U|} \frac{1}{rank_u}
+	MRR= \frac{1}{|U|} \sum_{u=1}^{|U|} \frac{1}{rank_u}
 \end{equation}
 
 Donde:
 
 \begin{itemize}
-    \item $|U|$ es el número total de usuarios registrados en el sistema de recomendación.
-    \item $rank_u$ es la posición del primer ítem relevante para el usuario $u$ dentro de una lista de ítems recomendada por el sistema de recomendación.
+	\item $|U|$ es el número total de usuarios registrados en el sistema de recomendación.
+	\item $rank_u$ es la posición del primer ítem relevante para el usuario $u$ dentro de una lista de ítems recomendada por el sistema de recomendación.
 \end{itemize}
 
 Entonces, para cada usuario:
 
 \begin{itemize}
-    \item Se encuentra la posición del primer ítem relevante ($rank_u$) en la lista recomendada.
-    \item Se calcula el recíproco de esta posición ($1/rank_u$).
+	\item Se encuentra la posición del primer ítem relevante ($rank_u$) en la lista recomendada.
+	\item Se calcula el recíproco de esta posición ($1/rank_u$).
 \end{itemize}
-    
+
 Luego, se promedian todos los valores calculados para cada usuario de la siguiente manera:
 \begin{itemize}
-    \item Se suman todos los recíprocos.
-    \item Se divide el total por el número de usuarios ($|U|$).
+	\item Se suman todos los recíprocos.
+	\item Se divide el total por el número de usuarios ($|U|$).
 \end{itemize}
 
 El resultado será un valor entre $0$ y $1$, donde:
 \begin{itemize}
-    \item $1$ significa que el primer ítem fue relevante para todos los usuarios.
-    \item Valores cercanos a $0$ indican que los ítems relevantes aparecen en las ultima posiciones en la lista de ítems recomendados a cada usuario.
+	\item $1$ significa que el primer ítem fue relevante para todos los usuarios.
+	\item Valores cercanos a $0$ indican que los ítems relevantes aparecen en las ultima posiciones en la lista de ítems recomendados a cada usuario.
 \end{itemize}
 
 
@@ -1646,13 +1646,13 @@ El resultado será un valor entre $0$ y $1$, donde:
 
 En un buscador de restaurantes:
 \begin{itemize}
-\item El usuario 1 encuentra el primer restaurante relevante en la $2da$ posición ($1/2$).
-\item El usuario 2 encuentra el primer restaurante relevante en la $1ra$ posición ($1/1$).
-\item El usuario 3 encuentra el primer restaurante relevante en la $4ta$ posición ($1/4$)
+	\item El usuario 1 encuentra el primer restaurante relevante en la $2da$ posición ($1/2$).
+	\item El usuario 2 encuentra el primer restaurante relevante en la $1ra$ posición ($1/1$).
+	\item El usuario 3 encuentra el primer restaurante relevante en la $4ta$ posición ($1/4$)
 \end{itemize}
 
 \begin{equation}
-    MRR = \frac{1/2 + 1/1 + 1/4}{3} = 0.58
+	MRR = \frac{1/2 + 1/1 + 1/4}{3} = 0.58
 \end{equation}
 
 Esto indica que, en promedio, los usuarios encuentran un restaurante relevante en la segunda posición, ya que $0.58 \approx 1/2$, donde 2 es la posición.
@@ -1665,35 +1665,35 @@ Es una métrica comúnmente utilizada para evaluar la precisión de un sistema d
 \subsubsection{Cálculo del \textit{MAP}}
 
 \begin{enumerate}
-    \item \textit{Average Precision (AP)} para una consulta individual: Para cada consulta o búsqueda, se calcula el \textit{Average Precision (AP)}, que es el promedio de la precisión en cada posición donde aparece un ítem relevante. La precisión en una posición \( k \) es la fracción de ítems relevantes entre los primeros \( k \) resultados.
+	\item \textit{Average Precision (AP)} para una consulta individual: Para cada consulta o búsqueda, se calcula el \textit{Average Precision (AP)}, que es el promedio de la precisión en cada posición donde aparece un ítem relevante. La precisión en una posición \( k \) es la fracción de ítems relevantes entre los primeros \( k \) resultados.
 
-    La fórmula para el \textit{AP} de una consulta es la siguiente:
+	      La fórmula para el \textit{AP} de una consulta es la siguiente:
 
-    \[
-    \text{Precisión@k} = \frac{\text{Cantidad de ítem relevantes encontrados hasta k}}{k}
-    \]
-    \[    
-    AP = \frac{1}{\text{Cantidad total de ítems relevantes}} \sum_{k=1}^{n} \text{Precisión@k} \times \text{Relevancia de ítem k}
-    \]
-    Donde:
-    \begin{itemize}
-        \item $n$: Es el número total de ítems en la lista recomendada al usuario.        
-        \item \text{Precisión@k}: Se define como el número de ítems relevantes encontrados en los primeros \( k \) ítems, dividido por el total de ítems analizados hasta el momento ($k$). Por ejemplo, si se analizan los primeros \( k=3 \) ítems y se encuentra un ítem relevante entre estos, la \text{precisión@k} es igual a \( 1/3 \).
-        \item \text{Relevancia en} k: Toma el valor 1 si el ítem en la posición \( k \) es relevante y $0$ si no lo es. Esto permite filtrar los ítems irrelevantes, enfocándonos únicamente en las precisiones de los ítems relevantes.
-        \item Finalmente, se suman las precisiones en las posiciones donde el ítem es relevante, y luego se divide por el número total de ítems relevantes para esa lista recomendada.
-    \end{itemize}
+	      \[
+		      \text{Precisión@k} = \frac{\text{Cantidad de ítem relevantes encontrados hasta k}}{k}
+	      \]
+	      \[
+		      AP = \frac{1}{\text{Cantidad total de ítems relevantes}} \sum_{k=1}^{n} \text{Precisión@k} \times \text{Relevancia de ítem k}
+	      \]
+	      Donde:
+	      \begin{itemize}
+		      \item $n$: Es el número total de ítems en la lista recomendada al usuario.
+		      \item \text{Precisión@k}: Se define como el número de ítems relevantes encontrados en los primeros \( k \) ítems, dividido por el total de ítems analizados hasta el momento ($k$). Por ejemplo, si se analizan los primeros \( k=3 \) ítems y se encuentra un ítem relevante entre estos, la \text{precisión@k} es igual a \( 1/3 \).
+		      \item \text{Relevancia en} k: Toma el valor 1 si el ítem en la posición \( k \) es relevante y $0$ si no lo es. Esto permite filtrar los ítems irrelevantes, enfocándonos únicamente en las precisiones de los ítems relevantes.
+		      \item Finalmente, se suman las precisiones en las posiciones donde el ítem es relevante, y luego se divide por el número total de ítems relevantes para esa lista recomendada.
+	      \end{itemize}
 
-    \item \textit{MAP} es el promedio de los \textit{AP's}: Tras calcular el \textit{AP} de cada lista recomendada, se promedian estos valores para obtener el \textit{MAP}. Esto refleja el promedio de los \textit{AP's} para todos los usuarios del sistema de recomendación, donde se consulta una recomendación para cada uno de ellos.
-    
-    La fórmula es la siguiente:
-    \[
-    MAP = \frac{1}{Q} \sum_{q=1}^{Q} AP_q
-    \]
-    Donde:
-    \begin{itemize}
-        \item \( Q \) es el número total de consultas de recomendaciones o usuarios. Si tenemos $n$ usuarios se debe consultar una recomendación de ítems por cada uno.
-        \item \( AP_q \) es el \textit{Average Precision} de la consulta \( q \).
-    \end{itemize}
+	\item \textit{MAP} es el promedio de los \textit{AP's}: Tras calcular el \textit{AP} de cada lista recomendada, se promedian estos valores para obtener el \textit{MAP}. Esto refleja el promedio de los \textit{AP's} para todos los usuarios del sistema de recomendación, donde se consulta una recomendación para cada uno de ellos.
+
+	      La fórmula es la siguiente:
+	      \[
+		      MAP = \frac{1}{Q} \sum_{q=1}^{Q} AP_q
+	      \]
+	      Donde:
+	      \begin{itemize}
+		      \item \( Q \) es el número total de consultas de recomendaciones o usuarios. Si tenemos $n$ usuarios se debe consultar una recomendación de ítems por cada uno.
+		      \item \( AP_q \) es el \textit{Average Precision} de la consulta \( q \).
+	      \end{itemize}
 \end{enumerate}
 
 \subsubsection{Ejemplo de Cálculo de \textit{MAP}}
@@ -1701,46 +1701,46 @@ Es una métrica comúnmente utilizada para evaluar la precisión de un sistema d
 Imaginemos que tenemos 3 usuarios que buscan restaurantes, y los resultados relevantes aparecen en las siguientes posiciones:
 
 \begin{itemize}
-    \item El usuario 1 encuentra ítems relevantes en las posiciones $1$ y $3$.
-    \item El usuario 2 encuentra ítems relevantes en las posiciones $2$ y $4$.
-    \item El usuario 3 encuentra un ítem relevante en la posición $1$.
+	\item El usuario 1 encuentra ítems relevantes en las posiciones $1$ y $3$.
+	\item El usuario 2 encuentra ítems relevantes en las posiciones $2$ y $4$.
+	\item El usuario 3 encuentra un ítem relevante en la posición $1$.
 \end{itemize}
 
 Cálculo de \textit{AP} para cada usuario:
 
 \begin{itemize}
-    \item Usuario 1:
-    \begin{align*}
-        \text{Precisión en posición 1} &= \frac{1}{1} = 1 \\
-        \text{Precisión en posición 3} &= \frac{2}{3} \approx 0.67 \\
-        AP_1 &= \frac{1 + 0.67}{2} = 0.835
-    \end{align*}
+	\item Usuario 1:
+	      \begin{align*}
+		      \text{Precisión en posición 1} & = \frac{1}{1} = 1            \\
+		      \text{Precisión en posición 3} & = \frac{2}{3} \approx 0.67   \\
+		      AP_1                           & = \frac{1 + 0.67}{2} = 0.835
+	      \end{align*}
 
-    \item Usuario 2:
-    \begin{align*}
-        \text{Precisión en posición 2} &= \frac{1}{2} = 0.5 \\
-        \text{Precisión en posición 4} &= \frac{2}{4} = 0.5 \\
-        AP_2 &= \frac{0.5 + 0.5}{2} = 0.5
-    \end{align*}
+	\item Usuario 2:
+	      \begin{align*}
+		      \text{Precisión en posición 2} & = \frac{1}{2} = 0.5         \\
+		      \text{Precisión en posición 4} & = \frac{2}{4} = 0.5         \\
+		      AP_2                           & = \frac{0.5 + 0.5}{2} = 0.5
+	      \end{align*}
 
-    \item Usuario 3:
-    \begin{align*}
-        \text{Precisión en posición 1} &= \frac{1}{1} = 1 \\
-        AP_3 &= 1
-    \end{align*}
+	\item Usuario 3:
+	      \begin{align*}
+		      \text{Precisión en posición 1} & = \frac{1}{1} = 1 \\
+		      AP_3                           & = 1
+	      \end{align*}
 \end{itemize}
 
 Cálculo del \textit{MAP}:
 
 \[
-MAP = \frac{AP_1 + AP_2 + AP_3}{3} = \frac{0.835 + 0.5 + 1}{3} \approx 0.778
+	MAP = \frac{AP_1 + AP_2 + AP_3}{3} = \frac{0.835 + 0.5 + 1}{3} \approx 0.778
 \]
 
 Interpretación del \textit{MAP}:
 
 \begin{itemize}
-    \item Un \textit{MAP} cercano a 1 significa que los ítems relevantes suelen aparecer en las primeras posiciones para todos los usuarios, indicando alta precisión del sistema.
-    \item Un \textit{MAP} cercano a 0 sugiere que los ítems relevantes están, en promedio, en posiciones bajas, indicando que el sistema podría mejorar en términos de precisión y relevancia en los primeros resultados.
+	\item Un \textit{MAP} cercano a 1 significa que los ítems relevantes suelen aparecer en las primeras posiciones para todos los usuarios, indicando alta precisión del sistema.
+	\item Un \textit{MAP} cercano a 0 sugiere que los ítems relevantes están, en promedio, en posiciones bajas, indicando que el sistema podría mejorar en términos de precisión y relevancia en los primeros resultados.
 \end{itemize}
 
 
@@ -1750,9 +1750,9 @@ La métrica \textit{Catalog Coverage} (Cobertura del Catálogo) mide qué tan am
 
 \subsubsection{¿Por qué es importante Catalog Coverage?}
 \begin{itemize}
-    \item Diversidad: Un alto \textit{Catalog Coverage} asegura que el sistema de recomendación promueva ítems diversos, en lugar de solo aquellos que ya son populares.
-    \item Satisfacción del usuario: Al ofrecer una variedad más amplia de ítems, es más probable que los usuarios encuentren productos específicos que se ajusten a sus intereses únicos.
-    \item Valor de negocio: Promover más ítems del catálogo puede llevar a aumentar las ventas de productos menos conocidos o de "larga cola", maximizando el uso de todo el inventario.
+	\item Diversidad: Un alto \textit{Catalog Coverage} asegura que el sistema de recomendación promueva ítems diversos, en lugar de solo aquellos que ya son populares.
+	\item Satisfacción del usuario: Al ofrecer una variedad más amplia de ítems, es más probable que los usuarios encuentren productos específicos que se ajusten a sus intereses únicos.
+	\item Valor de negocio: Promover más ítems del catálogo puede llevar a aumentar las ventas de productos menos conocidos o de "larga cola", maximizando el uso de todo el inventario.
 \end{itemize}
 
 
@@ -1762,13 +1762,13 @@ La métrica \textit{Catalog Coverage} (Cobertura del Catálogo) mide qué tan am
 \textit{Catalog Coverage} se expresa como el porcentaje de ítems únicos que se recomiendan al menos una vez en relación con el total de ítems disponibles en el catálogo. Su fórmula es la siguiente:
 
 \[
-\text{Catalog Coverage} = \frac{\text{Número de ítems únicos recomendados}}{\text{Número total de ítems en el catálogo}}
+	\text{Catalog Coverage} = \frac{\text{Número de ítems únicos recomendados}}{\text{Número total de ítems en el catálogo}}
 \]
 
 Donde:
 \begin{itemize}
-    \item \textit{Número de ítems únicos recomendados} es el conteo de los ítems que fueron recomendados al menos una vez en todas las interacciones con los usuarios.
-    \item \textit{Número total de ítems en el catálogo} es el total de ítems que el sistema podría recomendar.
+	\item \textit{Número de ítems únicos recomendados} es el conteo de los ítems que fueron recomendados al menos una vez en todas las interacciones con los usuarios.
+	\item \textit{Número total de ítems en el catálogo} es el total de ítems que el sistema podría recomendar.
 \end{itemize}
 
 \subsubsection{Ejemplo de Cálculo}
@@ -1776,7 +1776,7 @@ Donde:
 Imaginemos que tenemos un catálogo de 1000 ítems (productos, películas, etc.), y un sistema de recomendación que ha recomendado 200 de estos ítems en total a los usuarios.
 
 \[
-\text{Catalog Coverage} = \frac{200}{1000} = 0.2 \quad \text{o bien, } 20\%
+	\text{Catalog Coverage} = \frac{200}{1000} = 0.2 \quad \text{o bien, } 20\%
 \]
 
 Esto indica que el sistema de recomendación utiliza solo el 20\% del catálogo en sus recomendaciones. Un Catalog Coverage más alto (por ejemplo, 80\%) reflejaría que el sistema está recomendando una mayor variedad de ítems, mientras que un valor bajo puede indicar que el sistema se enfoca en un subconjunto limitado.
@@ -1784,8 +1784,8 @@ Esto indica que el sistema de recomendación utiliza solo el 20\% del catálogo 
 \subsubsection{Interpretación de Catalog Coverage}
 
 \begin{itemize}
-    \item Un alto \textit{Catalog Coverage} (por ejemplo, 70\%-100\%): El sistema cubre una amplia gama del catálogo, lo cual puede ser positivo en términos de diversidad y satisfacción del usuario.
-    \item Un bajo \textbf{Catalog Coverage} (por ejemplo, 0\%-30\%): El sistema utiliza solo una pequeña parte del catálogo, lo que puede llevar a una experiencia limitada y potencialmente menos interesante para los usuarios.
+	\item Un alto \textit{Catalog Coverage} (por ejemplo, 70\%-100\%): El sistema cubre una amplia gama del catálogo, lo cual puede ser positivo en términos de diversidad y satisfacción del usuario.
+	\item Un bajo \textbf{Catalog Coverage} (por ejemplo, 0\%-30\%): El sistema utiliza solo una pequeña parte del catálogo, lo que puede llevar a una experiencia limitada y potencialmente menos interesante para los usuarios.
 \end{itemize}
 
 \subsubsection{Limitaciones}
@@ -1800,49 +1800,49 @@ La \textit{Serendipity} o serendipia en sistemas de recomendación se refiere a 
 \subsubsection*{Importancia de la \textit{Serendipity}}
 
 \begin{itemize}
-    \item Experiencia del usuario: Las recomendaciones serendipitosas pueden enriquecer la experiencia del usuario al exponerlo a opciones que no había considerado, aumentando su satisfacción y \textit{engagement} con el sistema.
-    \item Fidelización: Al sorprender a los usuarios con recomendaciones relevantes, se incrementa la probabilidad de que regresen al sistema, mejorando la lealtad del cliente.
-    \item Diversidad: Promover la serendipia ayuda a diversificar las opciones que se muestran, evitando que el sistema se centre únicamente en ítems populares o en las preferencias ya conocidas del usuario.
+	\item Experiencia del usuario: Las recomendaciones serendipitosas pueden enriquecer la experiencia del usuario al exponerlo a opciones que no había considerado, aumentando su satisfacción y \textit{engagement} con el sistema.
+	\item Fidelización: Al sorprender a los usuarios con recomendaciones relevantes, se incrementa la probabilidad de que regresen al sistema, mejorando la lealtad del cliente.
+	\item Diversidad: Promover la serendipia ayuda a diversificar las opciones que se muestran, evitando que el sistema se centre únicamente en ítems populares o en las preferencias ya conocidas del usuario.
 \end{itemize}
 
 \subsubsection*{Cálculo y Medición de \textit{Serendipity}}
 
 \begin{equation}
-    Serendipity = \frac{1}{|U|} \sum_{u=1}^{|U|} \frac{|UNEXP_u \cap REL_u \cap REC_u|}{k}
+	Serendipity = \frac{1}{|U|} \sum_{u=1}^{|U|} \frac{|UNEXP_u \cap REL_u \cap REC_u|}{k}
 \end{equation}
 
 Donde:
 \begin{itemize}
-    \item $|U|$ es el número de usuarios.
-    \item $UNEXP_u$ es el conjunto de ítems inesperados para el usuario $u$.
-    \item $REL_u$ es el conjunto de ítems relevantes para el usuario $u$.
-    \item $REC_u$ es el conjunto de ítems recomendados al usuario $u$.
-    \item $k$ es el número de recomendaciones consideradas.
+	\item $|U|$ es el número de usuarios.
+	\item $UNEXP_u$ es el conjunto de ítems inesperados para el usuario $u$.
+	\item $REL_u$ es el conjunto de ítems relevantes para el usuario $u$.
+	\item $REC_u$ es el conjunto de ítems recomendados al usuario $u$.
+	\item $k$ es el número de recomendaciones consideradas.
 \end{itemize}
 
 
 Entonces, para cada usuario:
 
 \begin{itemize}
-    \item Se identifican los ítems recomendados($REC_u$) en el top-k.
-    \item Se identifican los ítems relevantes($REL_u$).
-    \item Se identifican los ítems inesperados($UNEXP_u$), el complemento de los dos primeros.
-    \item Se cuenta cuántos ítems cumplen las tres condiciones.
-    \item Se divide por $k$.
-    \item Se promedian los valores de todos los usuarios ($|U|$).
+	\item Se identifican los ítems recomendados($REC_u$) en el top-k.
+	\item Se identifican los ítems relevantes($REL_u$).
+	\item Se identifican los ítems inesperados($UNEXP_u$), el complemento de los dos primeros.
+	\item Se cuenta cuántos ítems cumplen las tres condiciones.
+	\item Se divide por $k$.
+	\item Se promedian los valores de todos los usuarios ($|U|$).
 \end{itemize}
 
 El resultado es un valor entre $0$ y $1$ donde:
 \begin{itemize}
-    \item $1$ indica que todas las recomendaciones son relevantes e inesperadas.
-    \item $0$ indica que no hay recomendaciones serendípicas.
+	\item $1$ indica que todas las recomendaciones son relevantes e inesperadas.
+	\item $0$ indica que no hay recomendaciones serendípicas.
 \end{itemize}
 
 
 
 \subsubsection*{Limitaciones}
 
-A pesar de los beneficios, la serendipia debe equilibrarse con la relevancia. Si un sistema ofrece demasiadas recomendaciones inesperadas que no son relevantes, puede frustrar a los usuarios en lugar de sorprenderlos positivamente. 
+A pesar de los beneficios, la serendipia debe equilibrarse con la relevancia. Si un sistema ofrece demasiadas recomendaciones inesperadas que no son relevantes, puede frustrar a los usuarios en lugar de sorprenderlos positivamente.
 
 
 \subsubsection*{Ejemplo de Cálculo}
@@ -1851,50 +1851,50 @@ Supongamos que tenemos un sistema de recomendación con tres usuarios (\( |U| = 
 
 Luego para cada usuario tenemos los siguientes ítems:
 \begin{itemize}
-    \item Usuario 1:
-        \begin{itemize}
-            \item $REC_1 = \{A, B, C, D, E\}$
-            \item $REL_1 = \{A, C, F\}$
-            \item $UNEXP_1 = \{A, C\}$
-        \end{itemize}
-    \item Usuario 2:
-        \begin{itemize}
-            \item $REC_2 = \{G, H, I, J, K\}$
-            \item $REL_2 = \{G, H, M\}$
-            \item $UNEXP_2 = \{I, K\}$
-        \end{itemize}
-    \item Usuario 3:
-        \begin{itemize}
-            \item $REC_3 = \{N, O, P, Q, R\}$
-            \item $REL_3 = \{N, Q, T\}$
-            \item $UNEXP_3 = \{N, P\}$
-        \end{itemize}
+	\item Usuario 1:
+	      \begin{itemize}
+		      \item $REC_1 = \{A, B, C, D, E\}$
+		      \item $REL_1 = \{A, C, F\}$
+		      \item $UNEXP_1 = \{A, C\}$
+	      \end{itemize}
+	\item Usuario 2:
+	      \begin{itemize}
+		      \item $REC_2 = \{G, H, I, J, K\}$
+		      \item $REL_2 = \{G, H, M\}$
+		      \item $UNEXP_2 = \{I, K\}$
+	      \end{itemize}
+	\item Usuario 3:
+	      \begin{itemize}
+		      \item $REC_3 = \{N, O, P, Q, R\}$
+		      \item $REL_3 = \{N, Q, T\}$
+		      \item $UNEXP_3 = \{N, P\}$
+	      \end{itemize}
 \end{itemize}
 
 Usamos la fórmula de serendipia para cada usuario:
 \[
-Serendipity = \frac{1}{|U|} \sum_{u=1}^{|U|} \frac{|UNEXP_u \cap REL_u \cap REC_u|}{k}
+	Serendipity = \frac{1}{|U|} \sum_{u=1}^{|U|} \frac{|UNEXP_u \cap REL_u \cap REC_u|}{k}
 \]
 
 Calculamos para cada usuario:
 \begin{itemize}
-    \item Para el usuario 1: \( UNEXP_1 \cap REL_1 \cap REC_1 = \{C\} \), entonces: 
-    \[
-    \frac{|UNEXP_1 \cap REL_1 \cap REC_1|}{k} = \frac{2}{5} = 0.4
-    \]
-    \item Para el usuario 2: \( UNEXP_2 \cap REL_2 \cap REC_2 = \{H\} \), entonces: 
-    \[
-    \frac{|UNEXP_2 \cap REL_2 \cap REC_2|}{k} = \frac{0}{5} = 0
-    \]
-    \item Para el usuario 3: \( UNEXP_3 \cap REL_3 \cap REC_3 = \{Q\} \), entonces: 
-    \[
-    \frac{|UNEXP_3 \cap REL_3 \cap REC_3|}{k} = \frac{1}{5} = 0.2
-    \]
+	\item Para el usuario 1: \( UNEXP_1 \cap REL_1 \cap REC_1 = \{C\} \), entonces:
+	      \[
+		      \frac{|UNEXP_1 \cap REL_1 \cap REC_1|}{k} = \frac{2}{5} = 0.4
+	      \]
+	\item Para el usuario 2: \( UNEXP_2 \cap REL_2 \cap REC_2 = \{H\} \), entonces:
+	      \[
+		      \frac{|UNEXP_2 \cap REL_2 \cap REC_2|}{k} = \frac{0}{5} = 0
+	      \]
+	\item Para el usuario 3: \( UNEXP_3 \cap REL_3 \cap REC_3 = \{Q\} \), entonces:
+	      \[
+		      \frac{|UNEXP_3 \cap REL_3 \cap REC_3|}{k} = \frac{1}{5} = 0.2
+	      \]
 \end{itemize}
 
 Finalmente, el valor promedio de serendipia para los tres usuarios es:
 \[
-Serendipity = \frac{1}{3} (0.4 + 0 + 0.2) = 0.2
+	Serendipity = \frac{1}{3} (0.4 + 0 + 0.2) = 0.2
 \]
 
 
@@ -1905,9 +1905,9 @@ En los siguientes capítulos se presentaran los resultados de las pruebas de eva
 Para el sistema de recomendación, el usuario puede tomar dos estados posibles, e ir cambiando entre los mismos dentro de su ciclo de vida. Estos estados definen dos estrategias distintas de recomendación de contenido:
 
 \begin{itemize}
-    \item Estado frio (\textit{Cold}): Para los usuarios en este estado, el sistema de recomendación carece de información sobre su comportamiento, ya que este no ha calificado ningún contenido en el ultimo tiempo. En este estado, solo se dispone de información general del perfil del usuario, limitándose a realizar  
- recomendaciones basadas en su perfil y contenido similar a su consulta (estrategia de basada en contenido). En este estado el modelo utiliza un técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} para buscar contenido similar a la consulta del usuario, utilizando la distancia Coseno como primer método de \textit{ranking}. Luego se utiliza un modelo de lenguaje grande para refinar el ordenamiento basándose en los resultado de la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} e información del perfil del usuario.
-    \item Estado caliente (\textit{Warn}): Para los usuarios en este estado, el sistema de recomendación cuenta con un número mínimo de interacciones, utilizadas para realizar recomendaciones basadas en su comportamiento. Se utiliza un modelo de recomendación basado en filtros colaborativos como primer método de búsqueda y ordenamiento(\textit{ranking}) de ítems, seguido por un modelo de lenguaje grande, que refina este ordenamiento en función de las interacciones(calificaciones) del usuario y el perfil del usuario (similar a la estrategia anterior).
+	\item Estado frio (\textit{Cold}): Para los usuarios en este estado, el sistema de recomendación carece de información sobre su comportamiento, ya que este no ha calificado ningún contenido en el ultimo tiempo. En este estado, solo se dispone de información general del perfil del usuario, limitándose a realizar
+	      recomendaciones basadas en su perfil y contenido similar a su consulta (estrategia de basada en contenido). En este estado el modelo utiliza un técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} para buscar contenido similar a la consulta del usuario, utilizando la distancia Coseno como primer método de \textit{ranking}. Luego se utiliza un modelo de lenguaje grande para refinar el ordenamiento basándose en los resultado de la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} e información del perfil del usuario.
+	\item Estado caliente (\textit{Warn}): Para los usuarios en este estado, el sistema de recomendación cuenta con un número mínimo de interacciones, utilizadas para realizar recomendaciones basadas en su comportamiento. Se utiliza un modelo de recomendación basado en filtros colaborativos como primer método de búsqueda y ordenamiento(\textit{ranking}) de ítems, seguido por un modelo de lenguaje grande, que refina este ordenamiento en función de las interacciones(calificaciones) del usuario y el perfil del usuario (similar a la estrategia anterior).
 \end{itemize}
 
 Es importante mencionar que las interacciones del usuario (calificaciones de ítems) tienen una fecha de expiración, lo que implica una ventana de tiempo hacia atrás desde la fecha actual para considerar su comportamiento. Esto garantiza que el sistema de recomendación refleje las preferencias más recientes del usuario. Además, el sistema alternará entre diferentes estrategias de recomendación según la frecuencia de interacciones. Aunque la evaluación del modelo no tiene en cuenta esta ventana temporal, ya que las interacciones ocurren dentro del período de ejecución de la prueba(del orden de días), es importante señalar que el sistema cuenta con esta capacidad.
@@ -1926,7 +1926,7 @@ Algunos usuarios realizan pocas consultas ($<6$), mientras que un pequeño grupo
 	\label{fig:llama2-steps_count_by_session_distribution}
 \end{figure}
 
-En la figura \ref{fig:llama2-sessions_count_by_session_step} se muestra la cantidad de usuarios(o sesiones activas) por paso. Cada paso es una consulta al sistema de recomendación, indicando una secuencia ordinal de consultas. Es decir, en el paso $1$, se registran $134$ usuarios que realizaron la primera consulta, en el paso $2$, $133$ usuarios y así hasta llegar al ultimo paso ($25$), al cual solo llego un único usuario. Cabe aclarar que la sesión que realiza el paso $25$, también realizo todo los pasos anteriores. Se puede apreciar que se mantiene un nivel muy alto de retención hasta el sexto paso, con solo pequeñas disminuciones. 
+En la figura \ref{fig:llama2-sessions_count_by_session_step} se muestra la cantidad de usuarios(o sesiones activas) por paso. Cada paso es una consulta al sistema de recomendación, indicando una secuencia ordinal de consultas. Es decir, en el paso $1$, se registran $134$ usuarios que realizaron la primera consulta, en el paso $2$, $133$ usuarios y así hasta llegar al ultimo paso ($25$), al cual solo llego un único usuario. Cabe aclarar que la sesión que realiza el paso $25$, también realizo todo los pasos anteriores. Se puede apreciar que se mantiene un nivel muy alto de retención hasta el sexto paso, con solo pequeñas disminuciones.
 Se aprecia una caída progresiva después del paso $6$. A partir del séptimo paso, el número de sesiones disminuye de manera constante. En el paso $10$, el número de sesiones ya ha disminuido casi a la mitad ($59$ sesiones). La reducción es más drástica a medida que se avanza, hasta que solo unas pocas sesiones alcanzan o superan los $20$ pasos.
 Pocos usuarios llegan a pasos muy altos: A partir del paso $21$, el número de sesiones activas es muy bajo, con menos de $10$ sesiones. Solo una sesión llega al paso $25$.
 
@@ -1944,7 +1944,7 @@ La figura \ref{fig:llama2-found_items_count_by_session_step_distribution} muestr
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/found_items_count_by_session_step_distribution.png}
 	\caption{En este gráfico se aprecia la cantidad de ítems relevantes encontrado en cada respuesta del sistema de recomendación. Donde la mayoría de las consultas (Moda) contienen $2$ ítems relevantes con una media de $3$.}
-\label{fig:llama2-found_items_count_by_session_step_distribution}
+	\label{fig:llama2-found_items_count_by_session_step_distribution}
 \end{figure}
 
 
@@ -1959,13 +1959,13 @@ En la figura \ref{fig:llama2-mean_average_precision_by_session_distribution} se 
 
 \clearpage
 
-En la figura \ref{fig:llama2-mean_average_precision_by_session_step_series} se muestra una serie que describe la evolución  del \textit{Mean Average Precision}(\textit{MAP}) promedio por paso. 
+En la figura \ref{fig:llama2-mean_average_precision_by_session_step_series} se muestra una serie que describe la evolución  del \textit{Mean Average Precision}(\textit{MAP}) promedio por paso.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_average_precision_by_session_step_series.png}
 	\caption{
-    En este gráfico se aprecia una serie que muestra la evolución del de \textit{Mean Average Precision}(\textit{MAP}) promedio por paso. Es decir se realiza la media de \textit{Mean Average Precision}(\textit{MAP}) de cada sesión de usuario en cada paso(\textit{Session Step}).}
+		En este gráfico se aprecia una serie que muestra la evolución del de \textit{Mean Average Precision}(\textit{MAP}) promedio por paso. Es decir se realiza la media de \textit{Mean Average Precision}(\textit{MAP}) de cada sesión de usuario en cada paso(\textit{Session Step}).}
 	\label{fig:llama2-mean_average_precision_by_session_step_series}
 \end{figure}
 
@@ -1974,7 +1974,7 @@ Esto podría implicar que el sistema llega a un límite en la calidad de las rec
 
 \clearpage
 
-En la figura \ref{fig:llama2-mean_ndcg_by_session_step_distribution} se muestra la media de \textit{Discounted cumulative gain} (\textit{NDCG}) por paso. 
+En la figura \ref{fig:llama2-mean_ndcg_by_session_step_distribution} se muestra la media de \textit{Discounted cumulative gain} (\textit{NDCG}) por paso.
 
 \begin{figure}[htbp]
 	\centering
@@ -2006,9 +2006,9 @@ El \textit{Discounted cumulative gain} (\textit{NDCG}) promedio se mantiene rela
 \textbf{Fluctuaciones principales}
 
 \begin{itemize}
-    \item \textbf{Incremento inicial}: Al principio (hasta el paso $5$), el \textit{NDCG} aumenta ligeramente, lo que sugiere que el sistema está afinando las recomendaciones en función de las primeras interacciones del usuario.
-    \item \textbf{Descenso en el paso $10$}: Hay una caída pronunciada en el \textit{NDCG} promedio alrededor del paso $10$, alcanzando un valor cercano a $0.955$. Este descenso muestra el cambio entre las estrategias de recomendación basada en contenido versus basada en filtros colaborativos. Se aprecia que en promedio el \textit{NDCG} se recupera en $5$ pasos.  
-    \item \textbf{Variabilidad en pasos finales}: A partir del paso $15$, el \textit{NDCG} disminuye nuevamente, pero parece recuperarse ligeramente hacia el paso $20$. La amplitud del intervalo de confianza en estos pasos sugiere una mayor incertidumbre o dispersión en el rendimiento.
+	\item \textbf{Incremento inicial}: Al principio (hasta el paso $5$), el \textit{NDCG} aumenta ligeramente, lo que sugiere que el sistema está afinando las recomendaciones en función de las primeras interacciones del usuario.
+	\item \textbf{Descenso en el paso $10$}: Hay una caída pronunciada en el \textit{NDCG} promedio alrededor del paso $10$, alcanzando un valor cercano a $0.955$. Este descenso muestra el cambio entre las estrategias de recomendación basada en contenido versus basada en filtros colaborativos. Se aprecia que en promedio el \textit{NDCG} se recupera en $5$ pasos.
+	\item \textbf{Variabilidad en pasos finales}: A partir del paso $15$, el \textit{NDCG} disminuye nuevamente, pero parece recuperarse ligeramente hacia el paso $20$. La amplitud del intervalo de confianza en estos pasos sugiere una mayor incertidumbre o dispersión en el rendimiento.
 
 \end{itemize}
 
@@ -2018,17 +2018,17 @@ El \textit{Discounted cumulative gain} (\textit{NDCG}) promedio se mantiene rela
 Los intervalos de confianza son más amplios en los pasos intermedios y finales (especialmente en los pasos $8-12$ y $17-20$), lo que indica mayor variabilidad en el rendimiento. Esto puede deberse a:
 
 \begin{itemize}
-    \item \textbf{Entre los pasos $8-12$}: 
-        \begin{itemize}
-            \item Como ya se menciono, tenemos una baja debido al intercambio entre estrategias de recomendación. 
-            \item Tal vez debería retrasarse el número de pasos en que se cambia la estrategia de recomendación. Este valor es un hiperparámetro a optimizar.
-            \item Se podría realizar un \textit{smooth} de ambas estrategias para minimizar la baja. Por ejemplo, seleccionando ambas estrategias intercaladas entre los pasos $8$ y $12$.
-        \end{itemize}
-    \item \textbf{Entre los pasos $17-20$}:
-        \begin{itemize}
-            \item Usuarios con comportamientos menos predecibles en etapas avanzadas de la sesión.
-            \item Menor cantidad de datos para esos pasos (sesiones largas son menos comunes).
-        \end{itemize}
+	\item \textbf{Entre los pasos $8-12$}:
+	      \begin{itemize}
+		      \item Como ya se menciono, tenemos una baja debido al intercambio entre estrategias de recomendación.
+		      \item Tal vez debería retrasarse el número de pasos en que se cambia la estrategia de recomendación. Este valor es un hiperparámetro a optimizar.
+		      \item Se podría realizar un \textit{smooth} de ambas estrategias para minimizar la baja. Por ejemplo, seleccionando ambas estrategias intercaladas entre los pasos $8$ y $12$.
+	      \end{itemize}
+	\item \textbf{Entre los pasos $17-20$}:
+	      \begin{itemize}
+		      \item Usuarios con comportamientos menos predecibles en etapas avanzadas de la sesión.
+		      \item Menor cantidad de datos para esos pasos (sesiones largas son menos comunes).
+	      \end{itemize}
 \end{itemize}
 
 \clearpage
@@ -2056,15 +2056,15 @@ En la figura \ref{fig:llama2-mean_recall_by_session_step_series} se muestra la e
 \end{figure}
 
 La tendencia muestra un descenso en el \textit{Recall} a medida que avanzan los pasos de sesión. El sistema enfrenta dificultades para mantener el desempeño en pasos superiores a $15$.
-La incertidumbre del intervalo de confianza aumenta hacia los pasos finales debido a la menor cantidad de sesiones en esa etapa, algo esperado en distribuciones de series de tiempo. Esto sugiere que el sistema de recomendación tiene problema para retornar contenido relevante a medida que aumenta el número de pasos por sesión, ya sea por agotamiento de contenido popular o dificultad para realizar búsquedas detalladas. Por otro lado en parte podría deberse a una dificultad para realizar el \textit{ranking} personalizado. 
+La incertidumbre del intervalo de confianza aumenta hacia los pasos finales debido a la menor cantidad de sesiones en esa etapa, algo esperado en distribuciones de series de tiempo. Esto sugiere que el sistema de recomendación tiene problema para retornar contenido relevante a medida que aumenta el número de pasos por sesión, ya sea por agotamiento de contenido popular o dificultad para realizar búsquedas detalladas. Por otro lado en parte podría deberse a una dificultad para realizar el \textit{ranking} personalizado.
 
 En la figura \ref{fig:llama2-mean_reciprocal_rank_by_session_distribution} se muestra la distribución del \textit{Mean Reciprocal Rank (MRR)} por sesión.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_reciprocal_rank_by_session_distribution.png}
-	\caption{En este gráfico se muestra 
-la distribución del \textit{Mean Reciprocal Rank (MRR)} por sesión.}
+	\caption{En este gráfico se muestra
+		la distribución del \textit{Mean Reciprocal Rank (MRR)} por sesión.}
 	\label{fig:llama2-mean_reciprocal_rank_by_session_distribution}
 \end{figure}
 
@@ -2102,8 +2102,8 @@ En la figura \ref{fig:llama2-rated_items_by_session_distribution}  se aprecia  u
 \textbf{Interpretación por segmentos}
 
 \begin{itemize}
-    \item \textbf{Segmento medio ($30-45$ ítems)}: Concentra la mayoría de las sesiones. Representa el comportamiento típico de los usuarios. Sugiere un nivel de participación saludable del usuario.
-    \item \textbf{Segmento alto ($45-80$ ítems)}: Cola larga con frecuencia decreciente. Representa sesiones extensas. Podría indicar usuarios muy comprometidos o experimentados.
+	\item \textbf{Segmento medio ($30-45$ ítems)}: Concentra la mayoría de las sesiones. Representa el comportamiento típico de los usuarios. Sugiere un nivel de participación saludable del usuario.
+	\item \textbf{Segmento alto ($45-80$ ítems)}: Cola larga con frecuencia decreciente. Representa sesiones extensas. Podría indicar usuarios muy comprometidos o experimentados.
 \end{itemize}
 
 La distribución sugiere que el sistema mantiene el interés del usuario durante un período considerable, siendo el rango más común entre $30-45$ ítems. La ausencia de \textit{outliers} indica un comportamiento bastante consistente entre usuarios.
@@ -2135,7 +2135,7 @@ En la figura \ref{fig:llama3-steps_count_by_session_distribution} se muestra la 
 	\label{fig:llama3-steps_count_by_session_distribution}
 \end{figure}
 
-Se puede observar que la mayoría de las sesiones tienen una cantidad de pasos entre $7$ y $13$. Los valores atípicos superiores (\textit{outliers}) se encuentran por encima de $19$ pasos, representando el $3.7\%$ de las observaciones. La media se encuentra en $9.815$ pasos por sesión, mientra que la mediana esta en $10$ pasos, con una moda en $11$ pasos. La distribución es aproximadamente simétrica, con un leve sesgo hacia la izquierda, indicando que algunas sesiones terminan antes de alcanzar el promedio. Al utilizar el componente \textit{Llama2}, las sesiones tienen una cantidad promedio de pasos similar, pero la media y mediana muestran valores ligeramente más bajos, lo que sugiere que el sistema con \textit{Llama2} presenta interacciones más cortas en promedio. Utilizando \textit{Llama3} parece que se generan sesiones con una mayor dispersión en su cantidad de pasos (más amplitud en el \textit{boxplot}) y más sesiones con pasos largos (evidenciado por más \textit{outliers} superiores en este caso). El histograma con \textit{Llama2} tiene una concentración más marcada alrededor de $7-10$ pasos, mientras que en \textit{Llama3} se observa una tendencia a extenderse más hacia los pasos superiores ($10-15$). Con \textit{Llama3} hay un mayor porcentaje de sesiones con pasos fuera de lo esperado ($3.7\%$ por encima de $19$), lo que puede indicar que este modelo tiende a mantener sesiones más largas para ciertos usuarios o escenarios específicos. 
+Se puede observar que la mayoría de las sesiones tienen una cantidad de pasos entre $7$ y $13$. Los valores atípicos superiores (\textit{outliers}) se encuentran por encima de $19$ pasos, representando el $3.7\%$ de las observaciones. La media se encuentra en $9.815$ pasos por sesión, mientra que la mediana esta en $10$ pasos, con una moda en $11$ pasos. La distribución es aproximadamente simétrica, con un leve sesgo hacia la izquierda, indicando que algunas sesiones terminan antes de alcanzar el promedio. Al utilizar el componente \textit{Llama2}, las sesiones tienen una cantidad promedio de pasos similar, pero la media y mediana muestran valores ligeramente más bajos, lo que sugiere que el sistema con \textit{Llama2} presenta interacciones más cortas en promedio. Utilizando \textit{Llama3} parece que se generan sesiones con una mayor dispersión en su cantidad de pasos (más amplitud en el \textit{boxplot}) y más sesiones con pasos largos (evidenciado por más \textit{outliers} superiores en este caso). El histograma con \textit{Llama2} tiene una concentración más marcada alrededor de $7-10$ pasos, mientras que en \textit{Llama3} se observa una tendencia a extenderse más hacia los pasos superiores ($10-15$). Con \textit{Llama3} hay un mayor porcentaje de sesiones con pasos fuera de lo esperado ($3.7\%$ por encima de $19$), lo que puede indicar que este modelo tiende a mantener sesiones más largas para ciertos usuarios o escenarios específicos.
 
 \clearpage
 
@@ -2163,7 +2163,7 @@ En la figura \ref{fig:llama3-found_items_count_by_session_step_distribution} se 
 	\label{fig:llama3-found_items_count_by_session_step_distribution}
 \end{figure}
 
-La mediana de $3$ indicando que en la mayoría de los pasos de sesión se encuentran $3$ ítems relevantes. La moda de $2$, el número más frecuente de ítems relevantes encontrados por paso. Existe un pequeño porcentaje de valores atípicos ($3.32\%$) de pasos en los que se encuentran más de $4.5$ ítems relevantes, lo que representa situaciones excepcionales. El histograma muestra una clara concentración en $2$ y $3$ ítems relevantes encontrados, con una rápida caída de frecuencias para valores superiores. El \textit{boxplot} refuerza esta observación, con un rango inter-cuartílico ajustado entre $2$ y $3.5$ ítems relevantes encontrados. Aunque minoritaria, hay una pequeña proporción de pasos de sesión donde se encuentran más de $4$ ítems relevantes. 
+La mediana de $3$ indicando que en la mayoría de los pasos de sesión se encuentran $3$ ítems relevantes. La moda de $2$, el número más frecuente de ítems relevantes encontrados por paso. Existe un pequeño porcentaje de valores atípicos ($3.32\%$) de pasos en los que se encuentran más de $4.5$ ítems relevantes, lo que representa situaciones excepcionales. El histograma muestra una clara concentración en $2$ y $3$ ítems relevantes encontrados, con una rápida caída de frecuencias para valores superiores. El \textit{boxplot} refuerza esta observación, con un rango inter-cuartílico ajustado entre $2$ y $3.5$ ítems relevantes encontrados. Aunque minoritaria, hay una pequeña proporción de pasos de sesión donde se encuentran más de $4$ ítems relevantes.
 Al utilizar \textit{Llama2}, la media es ligeramente inferior, cercana a $2.5$. Esto sugiere que \textit{Llama3} tiene un mejor rendimiento en términos de la cantidad de items relevantes encontrados por paso. Ambos modelos comparten una moda de $2$ ítems, pero \textit{Llama3} muestra una mediana más alta ($3$ frente a $2.5$ en \textit{Llama2}). Esto indica que el modelo más nuevo tiene un comportamiento más consistente para encontrar más ítems relevantes.
 Con \textit{Llama2}, los pasos donde se encuentran más de $4$ ítems relevantes son aún menos frecuentes, lo que indica que \textit{Llama3} ha mejorado en identificar un mayor número de recomendaciones útiles en casos excepcionales.
 
@@ -2184,7 +2184,7 @@ El rango de valores se extiende desde aproximadamente $0.2$ hasta $0.7$, mostran
 
 \clearpage
 
-En la figura \ref{fig:llama3-mean_average_precision_by_session_step_series} se muestra la evolución de la media de \textit{Mean Average Precision}(\textit{MAP}) por paso. 
+En la figura \ref{fig:llama3-mean_average_precision_by_session_step_series} se muestra la evolución de la media de \textit{Mean Average Precision}(\textit{MAP}) por paso.
 
 \begin{figure}[H]
 	\centering
@@ -2205,13 +2205,13 @@ Resulta particularmente interesante observar cómo ambos modelos tienden a conve
 \clearpage
 
 
-En la figura \ref{fig:llama3-mean_ndcg_by_session_step_distribution} se muestra la distribución de la métrica \textit{Normalized Discounted Cumulative Gain (NDCG)} por paso. 
+En la figura \ref{fig:llama3-mean_ndcg_by_session_step_distribution} se muestra la distribución de la métrica \textit{Normalized Discounted Cumulative Gain (NDCG)} por paso.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=15cm]{./images/llama3/mean_ndcg_by_session_step_distribution.png}
-	\caption{Este gráfico describe la distribución de la métrica \textit{Normalized Discounted Cumulative Gain (NDCG)}  por paso. 
-}
+	\caption{Este gráfico describe la distribución de la métrica \textit{Normalized Discounted Cumulative Gain (NDCG)}  por paso.
+	}
 	\label{fig:llama3-mean_ndcg_by_session_step_distribution}
 \end{figure}
 
@@ -2254,7 +2254,7 @@ En la figura \ref{fig:llama3-mean_recall_by_session_step_distribution} se muestr
 \end{figure}
 
 
-En la figura \ref{fig:llama3-mean_recall_by_session_step_distribution} muestra la distribución del \textit{Recall} promedio que presenta $1325$ observaciones, con una media ligeramente menor a la obtenida al utilizar \textit{Llama2} de $0.546$ y la misma mediana de $0.6$ (ver figura \ref{fig:llama2-mean_recall_by_session_step_distribution}). También se mantiene la moda en $0.4$, pero muestra algunas diferencias notables con \textit{Llama2} en su distribución. Se observa la presencia de \textit{outliers} superiores (por encima de $0.9$) que representan el $3.32\%$ de las observaciones, y el límite inferior se establece en $0.1$, a diferencia del rango más amplio de \textit{LLama2}. \textit{LLama2} cuenta con más observaciones ($1419$ vs $1325$), lo que podría indicar una ligera diferencia en la cantidad de sesiones procesadas. Las medianas son idénticas ($0.6$) con ambos modelos. \textit{Llama2} muestra un rendimiento promedio ligeramente superior ($0.585$ vs $0.546$). Ambos mantienen la moda en $0.4$, indicando una consistencia en el comportamiento base. Ambos modelos presentan una distribución multimodal similar. \textit{LLama3} muestra una distribución más definida de los valores extremos, con \textit{outliers} claramente identificados. La concentración de valores alrededor de los picos principales es más pronunciada en \textit{LLama3}. Las diferencias del \textit{Recall} promedio por paso entre ambos modelos son sutiles. Al utilizar \textit{LLama2} se muestra un rendimiento promedio ligeramente superior, ya que con \textit{LLama3} los valores mas altos de la métricas son atípicos a diferencia 
+En la figura \ref{fig:llama3-mean_recall_by_session_step_distribution} muestra la distribución del \textit{Recall} promedio que presenta $1325$ observaciones, con una media ligeramente menor a la obtenida al utilizar \textit{Llama2} de $0.546$ y la misma mediana de $0.6$ (ver figura \ref{fig:llama2-mean_recall_by_session_step_distribution}). También se mantiene la moda en $0.4$, pero muestra algunas diferencias notables con \textit{Llama2} en su distribución. Se observa la presencia de \textit{outliers} superiores (por encima de $0.9$) que representan el $3.32\%$ de las observaciones, y el límite inferior se establece en $0.1$, a diferencia del rango más amplio de \textit{LLama2}. \textit{LLama2} cuenta con más observaciones ($1419$ vs $1325$), lo que podría indicar una ligera diferencia en la cantidad de sesiones procesadas. Las medianas son idénticas ($0.6$) con ambos modelos. \textit{Llama2} muestra un rendimiento promedio ligeramente superior ($0.585$ vs $0.546$). Ambos mantienen la moda en $0.4$, indicando una consistencia en el comportamiento base. Ambos modelos presentan una distribución multimodal similar. \textit{LLama3} muestra una distribución más definida de los valores extremos, con \textit{outliers} claramente identificados. La concentración de valores alrededor de los picos principales es más pronunciada en \textit{LLama3}. Las diferencias del \textit{Recall} promedio por paso entre ambos modelos son sutiles. Al utilizar \textit{LLama2} se muestra un rendimiento promedio ligeramente superior, ya que con \textit{LLama3} los valores mas altos de la métricas son atípicos a diferencia
 \textit{LLama2} don de esos mismo valores con mas probables.
 
 \clearpage
@@ -2329,13 +2329,13 @@ respuestas del sistemas de recomendación.
 	\centering
 	\includegraphics[width=15cm]{./images/llama3/relevant_items_found_by_step_index_for_all_sessions.png}
 	\caption{En este gráfico se puede apreciar el número de ítems relevantes encontrados en cada paso
-para todas las sesiones de usuario, segmentado por la cantidad de ítems relevantes en
-las respuestas del sistemas de recomendación.} 
+		para todas las sesiones de usuario, segmentado por la cantidad de ítems relevantes en
+		las respuestas del sistemas de recomendación.}
 	\label{fig:llama3-relevant_items_found_by_step_index_for_all_sessions}
 \end{figure}
 
 
-En la figura \ref{fig:llama3-relevant_items_found_by_step_index_for_all_sessions} se observa una disminución en la cantidad de ítems relevantes a medida que avanza la sesión. Esto podría indicar que el sistema es más efectivo en encontrar ítems relevantes al inicio de la sesión, y que a medida que se exploran más opciones, la relevancia de las recomendaciones puede disminuir. Existe una gran variabilidad entre las diferentes sesiones. Algunas sesiones logran encontrar una gran cantidad de ítems relevantes en los primeros pasos, mientras que otras mantienen un nivel más constante a lo largo de toda la sesión. La cantidad de ítems relevantes encontrados parece estar influenciada por el paso de la sesión. En los primeros pasos, se suelen encontrar más ítems relevantes, mientras que en los últimos pasos la cantidad tiende a disminuir. 
+En la figura \ref{fig:llama3-relevant_items_found_by_step_index_for_all_sessions} se observa una disminución en la cantidad de ítems relevantes a medida que avanza la sesión. Esto podría indicar que el sistema es más efectivo en encontrar ítems relevantes al inicio de la sesión, y que a medida que se exploran más opciones, la relevancia de las recomendaciones puede disminuir. Existe una gran variabilidad entre las diferentes sesiones. Algunas sesiones logran encontrar una gran cantidad de ítems relevantes en los primeros pasos, mientras que otras mantienen un nivel más constante a lo largo de toda la sesión. La cantidad de ítems relevantes encontrados parece estar influenciada por el paso de la sesión. En los primeros pasos, se suelen encontrar más ítems relevantes, mientras que en los últimos pasos la cantidad tiende a disminuir.
 Al utilizar \textit{Llama2} se muestra una mayor consistencia en sus recomendaciones, lo que se traduce en una menor variabilidad entre sesiones. Esto sugiere que \textit{Llama2} es más confiable a la hora de proporcionar resultados similares para diferentes usuarios en situaciones similares. Sin embargo, podría ser que \textit{Llama3} sea más innovador y capaz de sugerir ítems más sorpresivos o menos convencionales, aunque con una mayor tasa de aciertos y fallos.
 \textit{Llama3}, por su parte, podría destacar en la capacidad de adaptarse rápidamente a las preferencias del usuario, alcanzando un pico de relevancia más temprano en la sesión. Esto indica que \textit{Llama3} podría ser más eficaz en captar los intereses iniciales del usuario. No obstante, esta rapidez en la adaptación podría venir acompañada de una mayor tasa de falsos positivos en etapas posteriores de la sesión.
 
@@ -2345,22 +2345,22 @@ Al utilizar \textit{Llama2} se muestra una mayor consistencia en sus recomendaci
 Al comparar el modelo de recomendación utilizando los componentes \textit{llama2} y \textit{llama3}, se observan ciertas diferencias:
 
 \begin{itemize}
-    \item \textit{Normalized Discounted Cumulative Gain (NDCG)}: Ambos componentes presentan diferencias mínimas. La mayoría de las sesiones logran un rendimiento óptimo en el posicionamiento de items relevantes. Ambas distribuciones tienen una cola izquierda que se extiende hacia valores bajos, con una notable concentración de observaciones entre el $95\%$ y el $100\%$. El \textit{boxplot} refleja una distribución compacta en el rango inter-cuantil, lo que sugiere alta consistencia en el rendimiento del sistema para la mayoría de las sesiones. Por otro lado, en la evolución del \textit{NDCG}, \textit{LLama3} muestra una mayor estabilidad general, con fluctuaciones menos pronunciadas a diferencia de \textit{LLama2}. Esto sugiere una mejor gestión en la transición entre diferentes estrategias de recomendación. Mientras que al utilizar \textit{LLama2} se muestra una tendencia descendente en los pasos finales, \textit{LLama3} mantiene una tendencia ascendente, indicando una mejor capacidad para mantener la calidad de las recomendaciones en sesiones más largas.
+	\item \textit{Normalized Discounted Cumulative Gain (NDCG)}: Ambos componentes presentan diferencias mínimas. La mayoría de las sesiones logran un rendimiento óptimo en el posicionamiento de items relevantes. Ambas distribuciones tienen una cola izquierda que se extiende hacia valores bajos, con una notable concentración de observaciones entre el $95\%$ y el $100\%$. El \textit{boxplot} refleja una distribución compacta en el rango inter-cuantil, lo que sugiere alta consistencia en el rendimiento del sistema para la mayoría de las sesiones. Por otro lado, en la evolución del \textit{NDCG}, \textit{LLama3} muestra una mayor estabilidad general, con fluctuaciones menos pronunciadas a diferencia de \textit{LLama2}. Esto sugiere una mejor gestión en la transición entre diferentes estrategias de recomendación. Mientras que al utilizar \textit{LLama2} se muestra una tendencia descendente en los pasos finales, \textit{LLama3} mantiene una tendencia ascendente, indicando una mejor capacidad para mantener la calidad de las recomendaciones en sesiones más largas.
 
-    \item \textit{Mean Average Precision} (\textit{MAP}): Al emplear el modelo con el componente \textit{Llama3}, se observa una mayor precisión en el posicionamiento de ítems relevantes en las primeras posiciones. Para esta métrica, los ítems relevantes son aquellos calificados por el usuario entre 4 y 5 puntos.
-    Por otro lado, si observamos la evolución temporal de \textit{Mean Average Precision} (\textit{MAP}) vemos patrones casi opuestos. Mientras que el modelo con \textit{Llama2} exhibe una degradación gradual desde un punto inicial alto, el modelo con \textit{Llama 3} se mantiene siempre por debajo de \textit{Llama 2} pero con un comportamiento mas estable. \textit{Mean Average Precision} (\textit{MAP}) es una métrica más estricta en términos de puntuación en comparación a \textit{Normalized Discounted Cumulative Gain (NDCG)}, donde solo se considera el orden de los ítems sin requerir un mínimo en su puntuación. Se puede decir que \textit{MAP} y \textit{NDGC} son métricas complementarias en esta área de evaluación.
+	\item \textit{Mean Average Precision} (\textit{MAP}): Al emplear el modelo con el componente \textit{Llama3}, se observa una mayor precisión en el posicionamiento de ítems relevantes en las primeras posiciones. Para esta métrica, los ítems relevantes son aquellos calificados por el usuario entre 4 y 5 puntos.
+	      Por otro lado, si observamos la evolución temporal de \textit{Mean Average Precision} (\textit{MAP}) vemos patrones casi opuestos. Mientras que el modelo con \textit{Llama2} exhibe una degradación gradual desde un punto inicial alto, el modelo con \textit{Llama 3} se mantiene siempre por debajo de \textit{Llama 2} pero con un comportamiento mas estable. \textit{Mean Average Precision} (\textit{MAP}) es una métrica más estricta en términos de puntuación en comparación a \textit{Normalized Discounted Cumulative Gain (NDCG)}, donde solo se considera el orden de los ítems sin requerir un mínimo en su puntuación. Se puede decir que \textit{MAP} y \textit{NDGC} son métricas complementarias en esta área de evaluación.
 
-    \item \textit{Mean Reciprocal Rank (MRR)}: Al utilizar \textit{llama3} se tiende a mostrar un desempeño. ligeramente superior en términos de \textit{MRR} promedio, lo que indica que, en general, sus recomendaciones son más precisas. Ademas al utilizar \textit{Llama3}, se puedo visualizar una distribución más concentrada alrededor de la media, lo que sugiere un desempeño más consistente, con \textit{Llama2} se presenta una mayor variabilidad en los resultados, con más casos extremos (\textit{outliers}).
+	\item \textit{Mean Reciprocal Rank (MRR)}: Al utilizar \textit{llama3} se tiende a mostrar un desempeño. ligeramente superior en términos de \textit{MRR} promedio, lo que indica que, en general, sus recomendaciones son más precisas. Ademas al utilizar \textit{Llama3}, se puedo visualizar una distribución más concentrada alrededor de la media, lo que sugiere un desempeño más consistente, con \textit{Llama2} se presenta una mayor variabilidad en los resultados, con más casos extremos (\textit{outliers}).
 
-    \item Recall: Al observar la distribución del Recall promedio por paso, las diferencias entre ambos modelos son sutiles. Al utilizar LLama2 se muestra un rendimiento ligeramente superior, ya que con LLama3 los valores mas altos de la métricas son atípicos a diferencia de LLama2, donde esos mismo valores son mas probables. En cuanto a la evolución por paso, con llama3 se puede apreciar un comportamiento más estable. Al utilizar Llama2 la serie inicia con mejor rendimiento pero decae constantemente, mientras que utilizando Llama3 se mantiene mayor estabilidad en pasos intermedios. La evolución sugiere que utilizar el componente Llama3 logra mayor estabilidad en el rendimiento a lo largo de las sesiones.
+	\item Recall: Al observar la distribución del Recall promedio por paso, las diferencias entre ambos modelos son sutiles. Al utilizar LLama2 se muestra un rendimiento ligeramente superior, ya que con LLama3 los valores mas altos de la métricas son atípicos a diferencia de LLama2, donde esos mismo valores son mas probables. En cuanto a la evolución por paso, con llama3 se puede apreciar un comportamiento más estable. Al utilizar Llama2 la serie inicia con mejor rendimiento pero decae constantemente, mientras que utilizando Llama3 se mantiene mayor estabilidad en pasos intermedios. La evolución sugiere que utilizar el componente Llama3 logra mayor estabilidad en el rendimiento a lo largo de las sesiones.
 
-    \item Cantidad de ítems relevantes por paso: Al utilizar ambos modelos, se observa una gran variabilidad entre las sesiones. Algunas logran identificar más ítems relevantes en los primeros pasos, mientras que otras mantienen un nivel más constante a lo largo de la sesión. A medida que avanzan los pasos, la cantidad de ítems relevantes tiende a disminuir.
-    
-    El modelo Llama2 muestra menos dificultad para encontrar ítems relevantes en comparación con Llama3. A lo largo de las sesiones, Llama2 logra identificar más resultados con 4 y 5 ítems relevantes. No se observan diferencias significativas con 2 y 3 ítems, ya que ambos modelos presentan cantidades similares por paso. Aunque las diferencias son muy sutiles, parece que Llama2 tiene menos dificultades para encontrar ítems relevantes.
-    
+	\item Cantidad de ítems relevantes por paso: Al utilizar ambos modelos, se observa una gran variabilidad entre las sesiones. Algunas logran identificar más ítems relevantes en los primeros pasos, mientras que otras mantienen un nivel más constante a lo largo de la sesión. A medida que avanzan los pasos, la cantidad de ítems relevantes tiende a disminuir.
+
+	      El modelo Llama2 muestra menos dificultad para encontrar ítems relevantes en comparación con Llama3. A lo largo de las sesiones, Llama2 logra identificar más resultados con 4 y 5 ítems relevantes. No se observan diferencias significativas con 2 y 3 ítems, ya que ambos modelos presentan cantidades similares por paso. Aunque las diferencias son muy sutiles, parece que Llama2 tiene menos dificultades para encontrar ítems relevantes.
+
 \end{itemize}
 
-Se observa que una opción viable seria utilizar el componente \textit{llama3}, ya que presenta una tendencia más estable en términos de \textit{NDGC}. Además, muestra mayor precisión en términos del \textit{MAP} y \textit{MRR} promedio. Aunque no hay grandes diferencias en Recall y en la cantidad de ítems relevantes, se puede notar que \textit{llama2} tiene un mayor recall promedio, evidenciado por un mayor número de resultados con 4 y 5 ítems relevantes. La elección entre modelos dependerá de la prioridad al recomendar ítems; un modelo con menor recall también ofrece más oportunidades de descubrir nuevo contenido similar. Desde esta perspectiva, \textit{llama3} podría ser un mejor candidato. Sin embargo, \textit{llama2} no tiene un recall perfecto y enfrenta el mismo desafío. 
+Se observa que una opción viable seria utilizar el componente \textit{llama3}, ya que presenta una tendencia más estable en términos de \textit{NDGC}. Además, muestra mayor precisión en términos del \textit{MAP} y \textit{MRR} promedio. Aunque no hay grandes diferencias en Recall y en la cantidad de ítems relevantes, se puede notar que \textit{llama2} tiene un mayor recall promedio, evidenciado por un mayor número de resultados con 4 y 5 ítems relevantes. La elección entre modelos dependerá de la prioridad al recomendar ítems; un modelo con menor recall también ofrece más oportunidades de descubrir nuevo contenido similar. Desde esta perspectiva, \textit{llama3} podría ser un mejor candidato. Sin embargo, \textit{llama2} no tiene un recall perfecto y enfrenta el mismo desafío.
 
 \chapter{Conclusiones}
 
@@ -2377,35 +2377,35 @@ Como parte del \textit{pipeline} de entrenamiento y actualización de modelos, s
 En futuras investigaciones, se planea explorar modelos híbridos que combinen la eficiencia de los grandes modelos de lenguaje  locales con la capacidad de procesamiento de modelos en la nube, así como optimizar técnicas de \textit{prompt engineering} para mejorar la interpretabilidad de las respuestas generadas por los grandes modelos de lenguaje. Además, podría analizarse la incorporación de estrategias de aprendizaje continuo (\textit{ Continual Learning o Lifelong Learning}) que permitan adaptar las recomendaciones de manera dinámica según la evolución de las preferencias del usuario.
 
 Este trabajo contribuye al estudio de la aplicación de modelos de lenguaje en sistemas de recomendación, destacando tanto sus beneficios como sus limitaciones y estableciendo una base para futuras optimizaciones en este campo.
-    
-    
+
+
 \chapter{Glosario}
 
 \begin{description}
 
-\item[Filtrado Colaborativo]: Método de recomendación que se basa en las preferencias y comportamientos de múltiples usuarios para sugerir ítems. Se divide en dos enfoques: basado en usuarios y basado en ítems.
-\item[Recomendación Basada en Contenido]: Técnica que sugiere ítems similares a aquellos que el usuario ha mostrado interés previamente, utilizando las características del contenido.
-\item[Modelos Híbridos]: Sistemas de recomendación que combinan múltiples técnicas, como filtrado colaborativo y basado en contenido, para mejorar la precisión de las sugerencias.
-\item[Retroalimentación Implícita]: Datos obtenidos indirectamente sobre las preferencias del usuario, como clics, tiempo de visualización o historial de navegación, en contraste con la retroalimentación explícita como calificaciones o reseñas.
-\item[Recomendación Basada en Contexto]: Método que tiene en cuenta el contexto del usuario, como ubicación, hora del día o dispositivo utilizado, para ofrecer sugerencias más relevantes.
-\item[Serendipia (Serendipity)]: Métrica que evalúa la capacidad del sistema para sorprender al usuario con recomendaciones inesperadas pero relevantes.
-\item[Sistemas de Recomendación Basados en Popularidad]: Método que sugiere ítems que son populares entre todos los usuarios, sin personalización individual.
-\item[Filtrado Basado en Conocimiento]: Técnica que utiliza información específica sobre los ítems y las necesidades del usuario para realizar recomendaciones.
-\item[Sistemas de Recomendación Basados en Redes Neuronales]: Modelos que emplean redes neuronales para capturar relaciones complejas entre usuarios e ítems y mejorar las recomendaciones.
-\item[LLM (Large Language Models)]: Modelos de lenguaje de gran escala entrenados con grandes volúmenes de datos para comprender y generar texto de manera sofisticada.
-\item[Retrieval-Augmented Generation (RAG)]: Técnica que combina recuperación de información y generación de texto para mejorar la precisión y relevancia de las respuestas generadas por modelos de lenguaje.
-\item[Cold Start]: Problema en los sistemas de recomendación que ocurre cuando no hay suficiente información sobre un usuario o ítem para generar recomendaciones precisas.
-\item[Embeddings]: Representaciones vectoriales de palabras, frases o elementos de datos que permiten medir similitudes en un espacio continuo.
-\item[DeepFM]: Modelo basado en redes neuronales profundas y factorization machines para mejorar la predicción en sistemas de recomendación.
-\item[Apache Airflow]: Plataforma de orquestación de flujos de trabajo utilizada para programar, gestionar y monitorear procesos de datos.
-\item[Prompt Engineering]: Técnica para diseñar instrucciones o entradas optimizadas que mejoran la calidad de las respuestas de modelos de lenguaje.
-\item[Aprendizaje Continuo]: Estrategia de machine learning en la que un modelo se actualiza dinámicamente con nuevos datos sin necesidad de ser re-entrenado completamente desde cero.
-\item[Factorization Machines (FM)]: Algoritmo utilizado en sistemas de recomendación para modelar interacciones entre variables categóricas y continuas.
-\item[Transfer Learning]: Técnica de aprendizaje automático en la que un modelo pre-entrenado en un dominio se ajusta a un nuevo dominio con menos datos.
-\item[NDCG (Normalized Discounted Cumulative Gain)]: Métrica utilizada para evaluar la calidad de las recomendaciones basadas en la relevancia y el orden de los ítems recomendados.
-\item[MAP (Mean Average Precision)]: Promedio de las precisiones obtenidas en cada consulta en un sistema de recomendación.
-\item[MRR (Mean Reciprocal Rank)]: Promedio del recíproco de la posición del primer resultado relevante en una lista de recomendaciones.
-\item[ChromaDB] Base de datos orientada a almacenamiento de embeddings utilizada para búsqueda de similitud en recomendaciones.
+	\item[Filtrado Colaborativo]: Método de recomendación que se basa en las preferencias y comportamientos de múltiples usuarios para sugerir ítems. Se divide en dos enfoques: basado en usuarios y basado en ítems.
+	\item[Recomendación Basada en Contenido]: Técnica que sugiere ítems similares a aquellos que el usuario ha mostrado interés previamente, utilizando las características del contenido.
+	\item[Modelos Híbridos]: Sistemas de recomendación que combinan múltiples técnicas, como filtrado colaborativo y basado en contenido, para mejorar la precisión de las sugerencias.
+	\item[Retroalimentación Implícita]: Datos obtenidos indirectamente sobre las preferencias del usuario, como clics, tiempo de visualización o historial de navegación, en contraste con la retroalimentación explícita como calificaciones o reseñas.
+	\item[Recomendación Basada en Contexto]: Método que tiene en cuenta el contexto del usuario, como ubicación, hora del día o dispositivo utilizado, para ofrecer sugerencias más relevantes.
+	\item[Serendipia (Serendipity)]: Métrica que evalúa la capacidad del sistema para sorprender al usuario con recomendaciones inesperadas pero relevantes.
+	\item[Sistemas de Recomendación Basados en Popularidad]: Método que sugiere ítems que son populares entre todos los usuarios, sin personalización individual.
+	\item[Filtrado Basado en Conocimiento]: Técnica que utiliza información específica sobre los ítems y las necesidades del usuario para realizar recomendaciones.
+	\item[Sistemas de Recomendación Basados en Redes Neuronales]: Modelos que emplean redes neuronales para capturar relaciones complejas entre usuarios e ítems y mejorar las recomendaciones.
+	\item[LLM (Large Language Models)]: Modelos de lenguaje de gran escala entrenados con grandes volúmenes de datos para comprender y generar texto de manera sofisticada.
+	\item[Retrieval-Augmented Generation (RAG)]: Técnica que combina recuperación de información y generación de texto para mejorar la precisión y relevancia de las respuestas generadas por modelos de lenguaje.
+	\item[Cold Start]: Problema en los sistemas de recomendación que ocurre cuando no hay suficiente información sobre un usuario o ítem para generar recomendaciones precisas.
+	\item[Embeddings]: Representaciones vectoriales de palabras, frases o elementos de datos que permiten medir similitudes en un espacio continuo.
+	\item[DeepFM]: Modelo basado en redes neuronales profundas y factorization machines para mejorar la predicción en sistemas de recomendación.
+	\item[Apache Airflow]: Plataforma de orquestación de flujos de trabajo utilizada para programar, gestionar y monitorear procesos de datos.
+	\item[Prompt Engineering]: Técnica para diseñar instrucciones o entradas optimizadas que mejoran la calidad de las respuestas de modelos de lenguaje.
+	\item[Aprendizaje Continuo]: Estrategia de machine learning en la que un modelo se actualiza dinámicamente con nuevos datos sin necesidad de ser re-entrenado completamente desde cero.
+	\item[Factorization Machines (FM)]: Algoritmo utilizado en sistemas de recomendación para modelar interacciones entre variables categóricas y continuas.
+	\item[Transfer Learning]: Técnica de aprendizaje automático en la que un modelo pre-entrenado en un dominio se ajusta a un nuevo dominio con menos datos.
+	\item[NDCG (Normalized Discounted Cumulative Gain)]: Métrica utilizada para evaluar la calidad de las recomendaciones basadas en la relevancia y el orden de los ítems recomendados.
+	\item[MAP (Mean Average Precision)]: Promedio de las precisiones obtenidas en cada consulta en un sistema de recomendación.
+	\item[MRR (Mean Reciprocal Rank)]: Promedio del recíproco de la posición del primer resultado relevante en una lista de recomendaciones.
+	\item[ChromaDB] Base de datos orientada a almacenamiento de embeddings utilizada para búsqueda de similitud en recomendaciones.
 \end{description}
 
 

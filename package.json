@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@cspell/dict-es-es": "^3.0.3",
+    "cspell": "^8.17.5"
+  }
+}

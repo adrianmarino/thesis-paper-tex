@@ -1,0 +1,5 @@
+defaultSettings:
+    removeTrailingWhitespace: true
+    indentRules:
+        displayMath: 0
+    onlyOneBackUp: true
