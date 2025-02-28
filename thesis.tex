@@ -316,7 +316,7 @@ de cada película seleccionada en ambos conjuntos de datos.
 \subsection{Valores faltantes}
 
 Una vez generadas ambas tablas, se procedió a buscar \textit{missing values} o
-valores faltantes. A continuación, en la tabla~\ref{table:tab} se pueden ver
+valores faltantes. A continuación, en la tabla~\ref{table:missing-values} se pueden ver
 las columnas con valores faltantes:
 
 \begin{table}[h!]
@@ -335,17 +335,17 @@ las columnas con valores faltantes:
 		\hline
 	\end{tabular}
 	\caption{Porcentaje de valores faltantes por columna en la \textit{tabla movies\_v4}.}
-	\label{table:tab}
+	\label{table:missing-values}
 \end{table}
 
-Luego se removieron las filas de la tabla para aquellas columnas del reporte
-anterior que tuvieran hasta \textit{6 \%} de valores faltantes. A continuación
+Luego se removieron las filas de la tabla ~\ref{table:missing-values} para aquellas columnas
+que tuvieran hasta \textit{6 \%} de valores faltantes. A continuación
 se removió la columna \textit{budget} por tener un porcentaje muy alto de
 valores faltantes, lo que la volvió inutilizable. Por otro lado, la tabla
 \textit{ratings\_tags\_v1} no se modifico, ya que no tenia valores faltantes en
 ninguna de sus columnas.
 
-Por otro lado, encontraron valores faltantes en los campos \textit{genres} y \textit{overview}. Aunque no eran nulos, tenían marcadores de ausencia de información, como \textit{"(no genres listed)"} en el campo \textit{genres} y \textit{"No overview found"} en el campo \textit{overview}. Se identificaron \textit{127} ítems sin \textit{overview}, de los cuales se completaron \textit{96}, dejando \textit{31} sin este dato. En el campo \textit{genres}, había \textit{286} ítems con valores faltantes; se llenaron \textit{245}, resultando en \textit{41} sin género asignado. Existían \textit{6581} ítems con un solo género, de los cuales \textit{2531} se actualizaron a dos o más géneros, dejando \textit{4050} con un único género. Para completar los valores faltantes en \textit{overview} y \textit{genres}, se creó un script que extrae datos de un servicio REST proporcionado por la \textit{API} de \textit{TDMB}. Los campos \textit{title}, \textit{overview} y \textit{genres} son fundamentales para el proceso de búsqueda por cercanía(utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} en la base de embeddings de la \textit{API Rec Chatbot}.
+Por otro lado, se encontraron valores faltantes en los campos \textit{genres} y \textit{overview}. Aunque no eran nulos, tenían marcadores de ausencia de información, como \textit{"(no genres listed)"} en el campo \textit{genres} y \textit{"No overview found"} en el campo \textit{overview}. Se identificaron \textit{127} ítems sin \textit{overview}, de los cuales se completaron \textit{96}, dejando \textit{31} sin este dato. En el campo \textit{genres}, había \textit{286} ítems con valores faltantes; se llenaron \textit{245}, resultando en \textit{41} sin género asignado. Existían \textit{6581} ítems con un solo género, de los cuales \textit{2531} se actualizaron a dos o más géneros, dejando \textit{4050} con un único género. Para completar los valores faltantes en \textit{overview} y \textit{genres}, se creó un script que extrae datos de un servicio REST proporcionado por la \textit{API} de \textit{TDMB}. Los campos \textit{title}, \textit{overview} y \textit{genres} son fundamentales para el proceso de búsqueda por cercanía(utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} en la base de embeddings de la \textit{API Rec Chatbot}. Por esta cuestion se invirtion tiempo en completar la maxima cantidad de missing values para los campos
 
 
 \subsection{Base datos de interacciones}
