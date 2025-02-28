@@ -83,27 +83,27 @@ Por otro lado, se definió el alcance de la solución basada en las diferencias 
 	\setlength{\itemsep}{3pt}
 
 	\item Desarrollar un \textit{API} \textit{Rest} para interactuar y configurar el \textit{chatbot} de manera sencilla, permitiendo su integración con sistemas existentes.
-	\item El \textit{chatbot} permite crear un perfil de usuario, el cual contiene información inicial del mismo. Esta información ayuda al \textit{chatbot} a realizar recomendaciones basadas en preferencias como el género de las películas y datos del propio usuario. Esto permite abordanr el problema del arranque en frío en sistemas de recomendación colaborativa, donde el sistema aun no tiene información sobre el comportamiento del usuario, ya que este no aun no ha interactado con el mismo.
+	\item El \textit{chatbot} permite crear un perfil de usuario, el cual contiene información inicial del mismo. Esta información ayuda al \textit{chatbot} a realizar recomendaciones basadas en preferencias como el género de las películas y datos del propio usuario. Esto permite abordar el problema del arranque en frío en sistemas de recomendación colaborativa, donde el sistema aun no tiene información sobre el comportamiento del usuario, ya que este no aun no ha interactuado con el mismo.
 	\item El \textit{chatbot} permite a los usuarios hacer preguntas en lenguaje natural sobre el contenido que desean ver (películas en este caso) y responde con una lista de películas ordenadas según sus preferencias iniciales o su comportamiento en la plataforma.
 	\item Los usuarios pueden calificar las películas que han visto. Estas calificaciones son utilizadas por el \textit{chatbot} para ajustar las recomendaciones futuras a las nuevas preferencias del usuario. Esto significa que la personalización de las recomendaciones depende de la cantidad de calificaciones que el usuario proporcione a la plataforma, afectando tanto el orden de las recomendaciones como el tipo de contenido presentado.
 \end{itemize}
 
 \chapter{Modelo de datos y análisis exploratorio}
 
-Para realizar este trabajo se seleccionó el dominio del cine, ya que existen
+Para realizar este trabajo se ha seleccionado el dominio del cine, ya que existen
 conjuntos de datos bien definidos y actualizados. Estos conjuntos de datos en
-general están diseñados para probar modelos de recomendación. Por otro lado, es
-el dominio clásico en \textit{papers} y literatura de sistemas de recomendación
+general están diseñados específicamente para probar modelos de recomendación. Por otro lado, es
+el dominio clásico seleccionado para realizar \textit{papers}, \textit{benchmarks} y literatura de sistemas de recomendación
 en general.
 
-Dada la propuesta de este trabajo, fue necesario contar con datos de
-interacciones de usuarios con ítems (películas en este caso). Por otro lado, no es necesario tener información de los usuarios, ya que los perfiles de los usuarios son cargados por cada usuario y no es necesario realizar un entrenamiento previo para el uso de los modelos de lenguaje como modelo de recomendación basado en contenido.  Aun así, se reutilizó la base de  usuario, ítem e interacciones seleccionada en el trabajo de especialización \cite{src}.
+Dada la propuesta particular de este trabajo, fue necesario contar con datos referentes a las
+interacciones de los usuarios con ítems (películas en este caso). Por otro lado, no fue necesario tener información previa de los usuarios, ya que los perfiles de los usuarios son ingresados por el propio usuario a la plataforma. De esta forma, se reutilizó la base de usuario, ítem e interacciones seleccionada en el trabajo de especialización \cite{src} para obtener la interacciones e items. Por otro lado, los perfiles de los usuario no son necesarios en la etapa de entrenamiento de los modelos, solo para la inferencia, por eso no forman parte del conjunto de datos inicial de entrenamiento.
 
 \section{El conjunto de datos \textit{MovieLens 25M}}
 
-El conjunto de datos \textit{MovieLens 25M}~\cite{movielens} prácticamente no tiene características
+El conjunto de datos \textit{MovieLens 25M}~\cite{movielens} es una colección ampliamente utilizada en el ámbito de la investigación y el desarrollo de sistemas de recomendación. Fue creado por el \textit{GroupLens Research Lab} de la Universidad de \textit{Minnesota} y contiene datos relacionados con películas, calificaciones de usuarios y etiquetas (\textit{tags}) aplicadas por los usuarios. Este conjunto de datos prácticamente no tiene características
 para los ítems (películas), pero sí tiene las calificaciones realizadas por los
-usuarios. También cuenta con un conjunto de \textit{tags} o palabras clave
+usuarios sobre los mismos. También cuenta con un conjunto de etiquetas(\textit{tags)} o palabras clave
 cargadas por los usuarios para cada ítem (película). Otro punto importante, es
 que todos los usuarios tienen al menos $20$ interacciones, lo cual asegura no
 tener problemas de bajo rendimiento por falta de estas. De esta forma,
@@ -140,7 +140,8 @@ especifican las columnas del conjunto de datos:
 
 \section{El conjunto de datos \textit{TMDB}}
 
-El conjunto de datos \textit{TMDB}~\cite{tmdb} no tiene calificaciones personalizadas para los ítems como sucede con el conjunto de datos anterior (\textit{MovieLens}) , pero si tiene varias características referentes a películas, Este conjunto de datos es utilizado para filtra los items del conjunto de datos \textit{MovieLens} ~\cite{movielens} y así tener una base de ítems mas rica en características. Estas características son utilizados en el proceso de búsqueda de ítems por el \textit{chatbot} utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} que se explicara mas adelante. El conjunto contiene datos de $5.000$ películas y sus columnas se especifican en la tabla~\ref{table:tmdbColumns} a
+El conjunto de datos \textit{TMDB (The Movie Database)}~\cite{tmdb} es una colección de datos relacionados con películas, series de televisión y otros contenidos multimedia, extraídos de la base de datos pública de \textit{The Movie Database (TMDB)}. \textit{TMDB} es una plataforma colaborativa que recopila información detallada sobre películas, actores, directores, géneros y más.
+El conjunto de datos no tiene calificaciones personalizadas para los ítems como sucede con el conjunto de datos anterior (\textit{MovieLens}), pero si tiene varias características referentes a películas, Este conjunto de datos es utilizado para filtrar los items del conjunto de datos \textit{MovieLens} ~\cite{movielens} y así tener una base de ítems mas rica en características. Estas características luego seran utilizadas en el proceso de búsqueda de ítems por el \textit{chatbot} haciendo uso de la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} que se explicara mas adelante. El conjunto contiene datos de $5.000$ películas y sus columnas se especifican en la tabla~\ref{table:tmdbColumns} a
 continuación:
 
 \begin{table}[!htb]
