@@ -809,7 +809,7 @@ En cuando al modelo de datos se cuenta separados en dos base de datos:
 \begin{itemize}
 	\item La primera de estas es una base de datos \textit{MongoDB}. Esta base de datos se encarga de almacenar información relacionada a los perfiles de los clientes que interactúan con la \textit{API Rec Chatbot}. A su vez, también guarda ítems, que en este contexto se refieren a las películas disponibles en el sistema, así como las calificaciones proporcionadas por los usuarios sobre las mismas. Estas calificaciones pueden abarcar tanto datos reales, aquellos introducidos por los propios usuarios, como predicciones generadas por el sistema. De esta forma, se busca ofrecer un servicio personalizado y adaptado a las preferencias de cada usuario.
 
-	\item La segunda es un base de datos \textit{ChromaDB}. Esta base de datos es utilizada para en el almacenamiento y búsque por similitud de \textit{embeddings}, que son representaciones vectoriales tanto de los usuarios como de los ítems, ambas generadas por un modelo de filtros colaborativos. Además se almacenan \textit{embeddings} que reflejan el contenido de cada ítem, en este caso, las películas, lo que a su vez habilita la utilización de la técnica conocida como \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}. Esta técnica permite realizar búsquedas de ítems que son similares a las consultas realizadas por los usuarios.
+	\item La segunda es un base de datos \textit{ChromaDB}. Esta base de datos es utilizada para en el almacenamiento y búsqueda por similitud de \textit{embeddings}, que son representaciones vectoriales tanto de los usuarios como de los ítems, ambas generadas por un modelo de filtros colaborativos. Además se almacenan \textit{embeddings} que reflejan el contenido de cada ítem, en este caso, las películas, lo que a su vez habilita la utilización de la técnica conocida como \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}. Esta técnica permite realizar búsquedas de ítems que son similares a las consultas realizadas por los usuarios.
 \end{itemize}
 
 
@@ -968,14 +968,15 @@ La variable \textit{candidates} definida en el \textit{prompt} ~\ref{code:prompt
 \subsection{Instrucciones y formato de la respuesta}
 
 
-Finalmente se especifica las instrucciones que debe seguir el modelo de lenguaje:
+Finalmente, el \textit{prompt} ~\ref{code:prompt-low-interactions} especifica las instrucciones que debe seguir el modelo de lenguaje para generar su respuesta:
 
 \begin{itemize}
-	\item Debe seleccionar película a recomendar de la lista de items candidatos.
-	\item Para realizar la recomendación, el \textit{LLM} debe basarse en la solicitud del usuario, los datos referentes a su perfil y las películas que ya ha calificado. Con este paso se intenta que el modelo de lenguaje realiza una selecciones los títulos candidatos que mejor correlaciones con esta información.
-	\item Se define explícitamente el formato de la respuesta, que consiste en una lista ordenada por un índice numérico que indica relevancia con el título, año de estreno y una breve sinopsis. Debido a la limitada capacidad de comprensión de las instrucciones, se optó por este formato óptimo. Aunque el formato más adecuado habría sido una lista de identificadores, el modelo a menudo no seguía estas indicaciones y devolvía una lista en el formato establecido, lo que aumentó la probabilidad de que el modelo lo respetara.
-	\item Finalmente, se enfatiza al modelo de lenguaje la importancia de respetar el ítem de la lista de candidatos, ya que estos modelos tienden a incluir títulos que no son candidatos, nuevamente debido a su baja capacidad para seguir instrucciones.
+	\item Debe seleccionar $n$ películas a recomendar de la lista de items candidatos. En este caso, $n$ es un hiper-parámetro del modelo.
+	\item Para realizar la recomendación, el modelo de lenguaje debe basarse en la solicitud del usuario, los datos referentes a su perfil y las películas que ya ha calificado. Con esta información el modelo de lenguaje debe seleccionar los títulos candidatos que mejor correlacionan con esta información proporcionada.
+	\item Se define explícitamente el formato de la respuesta. Este consiste en una lista ordenada los ítems por un índice numérico que indica relevancia. Ademas. por cada item incluye: título, año de estreno y una breve sinopsis. Aunque el formato más adecuado habría sido una lista de identificadores, los modelos de lenguaje locales a menudo no seguían estas indicaciones o alucinaban identificadores falsos, por lo que se optó por un formato más simple y directo.
+	\item Finalmente, se enfatiza al modelo de lenguaje la importancia de respetar las instrucciones, ya que estos modelos tienden a incluir títulos que no se encuentran en la lista de candidatos especificada.
 \end{itemize}
+
 
 \section{Consulta a modelo de lenguaje}
 
@@ -983,11 +984,11 @@ En el paso 6 de la figura \ref{fig:inference-flow}, se lleva a cabo una solicitu
 
 \section{Búsqueda de items similares en base de datos \textit{ChromaDb} y construcción de respuesta final}
 
-En el paso 7 y 8 de la figura \ref{fig:inference-flow}, se toma la respuesta del \textit{LLM} mencionado anteriormente. Esta respuesta es una lista ordenada de ítems, pero no se puede co-relacionar directamente con los ítems en la base de datos \textit{MongoDb} porque no se proporciona un identificador de ítem. Para resolver esto, se buscan títulos por proximidad en la base de datos \textit{ChromaDb}. Cada título se codifica en un \textit{Sentence embedding} y se busca en la base de datos, generando una lista de N ítems para cada título de la respuesta original. Esto también permite recomendaciones por contenido al ofrecer ítems similares, enriqueciendo la respuesta cuando el modelo de lenguaje no es coherente o tiene menos ítems de los especificados. Este es un hiperparámetro que define cuántos ítems seleccionar. En la evaluación del modelo, se tomó solo un ítem similar, el más cercano a cada ítem de la respuesta original. Es importante señalar que el ítem seleccionado podría no ser el original, sino uno parecido. Esto se relaciona con el problema mencionado anteriormente, donde el modelo podría omitir instrucciones y devolver ítems que no estén en la lista de candidatos ni en la base de datos de \textit{API Rec Chatbot}.
+En los pasos $7$ y $8$ de la figura \ref{fig:inference-flow}, se toma la respuesta generada utilizando el \textit{prompt} ~\ref{code:prompt-low-interactions}. Esta respuesta es una lista ordenada de ítems, pero no se puede co-relacionar directamente con los ítems en la base de datos \textit{MongoDb} porque no se proporciona un identificador de ítem. Para resolver esto, se buscan títulos por proximidad en la base de datos \textit{ChromaDb}. Cada título se codifica en un \textit{Sentence embedding} y se busca en la base de datos, generando una lista de N ítems para cada título de la respuesta original. Esto también permite recomendaciones por contenido al ofrecer ítems similares, enriqueciendo la respuesta cuando el modelo de lenguaje no es coherente o tiene menos ítems de los especificados. Este es un hiperparámetro que define cuántos ítems seleccionar. En el procesos de evaluación del modelo de recomendación, se tomó solo un ítem similar, el más cercano a cada ítem de la respuesta original. Es importante señalar que el ítem seleccionado podría no ser el original, sino uno parecido. Esto se relaciona con el problema mencionado anteriormente, donde el modelo podría omitir instrucciones y devolver ítems que no estén en la lista de candidatos ni en la base de datos de \textit{API Rec Chatbot}.
 
-En resumen, este paso transforma la respuesta del \textit{LLM} en una lista de ítems de las bases de datos de la \textit{API Rec Chatbot}. Esta transformación es no determinista, ya que no siempre se obtienen el mismo número de ítems ni los mismos ítems, aunque sucede así la mayoría de las veces. Todo esto sucede dado que los modelos de lenguaje no puede cumplir al pie de la letra con las instrucciones que le son dadas.
+En resumen, este paso transforma la respuesta del modelo de lenguaje en una lista de ítems de las bases de \textit{API Rec Chatbot}. Esta transformación es no deterministica, ya que no siempre se obtienen el mismo número de ítems ni los mismos ítems, aunque sucede así la mayoría de las veces. Todo esto sucede dado que los modelos de lenguaje no puede cumplir al pie de la letra con las instrucciones que le son dadas.
 
-Finalmente, se consulta en la base de datos \textit{MongoDB} los documentos correspondientes a cada ítem de la lista resultante. Se agrega el título, la \textit{URL} de su póster (imagen) y se mantiene la descripción generada por el \textit{LLM}, que es más resumida que la sinopsis original. También se toman los géneros del documento y se genera una lista de \textit{URL\'s} que permite al usuario votar por los ítems recomendados. La lista de ítems se devuelve ordenada al usuario, quien puede votar por cada uno de ellos si lo desea. Estas votaciones representan la interacción del usuario con el sistema. Las votaciones se almacenan en la base de datos \textit{MongoDB} en la colección \textit{interactions}, donde cada documento contiene el identificador del usuario, el identificador del ítem, la votación en sí, y la fecha y hora de la votación. Posteriormente, estas interacciones serán consultadas por un proceso que entrena un modelo de recomendación basado en filtrado colaborativo, el cual se utilizará cuando el usuario alcance un número mínimo de interacciones. Esto se desarrollará mejor en los siguientes apartados, donde se detallará el perfil para usuarios con interacciones.
+Finalmente, se consulta en la base de datos \textit{MongoDB} los documentos correspondientes a cada ítem de la lista resultante. Se agrega el título, la \textit{URL} de su póster (imagen) y se mantiene la descripción generada por el modelo de lenguaje, que es más resumida que la sinopsis original. También se toman los géneros del documento y se genera una lista de \textit{URL\'s} que permite al usuario votar cada ítem recomendado. La lista de ítems se devuelve ordenada al usuario, quien puede votar por cada uno de ellos si lo desea. Estas votaciones representan la interacción del usuario con el sistema. Las votaciones se almacenan en la base de datos \textit{MongoDB} en la colección \textit{interactions}, donde cada documento contiene el identificador del usuario, el identificador del ítem, la votación en sí, y la fecha y hora de la votación. Posteriormente, estas interacciones serán consultadas por un proceso que entrena un modelo de recomendación basado en filtrado colaborativo, el cual se utilizará cuando el usuario alcance un número mínimo de interacciones. Esto se desarrollará mejor en los siguientes apartados.
 \vfill
 
 \section{Usuarios de cumplen con el mínimo de interacciones}
@@ -1018,21 +1019,31 @@ A este punto resta aplicar algún tipo de ordenamiento a la lista de items candi
 
 Para ordenar los candidatos se probaron distintos enfoques.
 
-\textbf{\textit{pred\_user\_rating}}: Se ordena según las calificaciones predichas por el modelo de filtros colaborativos(\textit{DeepFM}~\cite{dfmpaper, didldfm}), que indica la calificación que el modelo estima que el usuario otorgaría al ítem. Esta es la medida mas personalizada pero sola no es muy efectiva.
 
-\textbf{\textit{user\_item\_sim}}: Representa la similitud entre el usuario que solicita la recomendación y el usuario que calificó el ítem seleccionado. Esto puede causar que ítems con el mismo \textit{score} se repitan, especialmente en el caso de \textit{fun users} que suelen calificar muchas películas de un mismo género, lo que puede hacer que sus ítems aparezcan primero. Es importante tener en cuenta que los ítems pueden repetirse entre diferentes usuarios, lo cual es normal. Por ello, se debe elegir una estrategia para aplicar una media o mediana al \textit{score} en casos de repetición. Esto influye en cierta medida en la personalización del orden, por lo que es preferible adoptar las siguientes estrategias.
+\begin{itemize}
+	\item \textbf{\textit{pred\_user\_rating}}: Se ordena según las calificaciones predichas por el modelo de filtros colaborativos(\textit{DeepFM}~\cite{dfmpaper, didldfm}), que indica la calificación que el modelo estima que el usuario otorgaría al ítem. Esta es la medida mas personalizada pero sola no es muy efectiva.
 
-\textbf{\textit{user\_sim\_weighted\_rating\_score}}: Se asigna un \textit{score} a cada ítem según la similitud entre el usuario que solicita la recomendación y el que lo calificó, ponderado por la calificación media de los usuarios más cercanos. Esta estrategia soluciona el problema de tener bloques de ítems por usuario cercano, pero pierde personalización al utilizar la calificación media en lugar de la que otorgaría el usuario que realizó la consulta. Esto se aborda en la siguiente estrategia.
+	\item \textbf{\textit{user\_item\_sim}}: Representa la similitud entre el usuario que solicita la recomendación y el usuario que calificó el ítem seleccionado. Esto puede causar que ítems con el mismo \textit{score} se repitan. Ademas, los \textit{fun users} suelen calificar muchas películas de un mismo género, lo que puede ocasionar que sus ítems aparezcan primero siempre. Es importante tener en cuenta que los ítems pueden repetirse entre diferentes usuarios, lo cual es normal. Por ello, se debe elegir una estrategia para aplicar una media o mediana al \textit{score} en casos de repetición. Esto influye en cierta medida en la personalización del orden, por lo que es preferible adoptar las siguientes estrategias.
 
-\begin{equation}
-	User Sim Weighted By Rating = User Sim * \frac{Item User Preducted Rating}{Max Items User Predicted Rating}
-\end{equation}
+	\item \textbf{\textit{user\_sim\_weighted\_rating\_score}}: Se asigna un \textit{score} a cada ítem según la similitud entre el usuario que solicita la recomendación y el que lo calificó. Luego se pondera por la calificación media de los usuarios más cercanos al usuario que realizo la consulta. Esta estrategia soluciona el problema de tener bloques de ítems por usuario cercano, pero pierde personalización al utilizar la calificación media en lugar de la que otorgaría el usuario que realizó la consulta. Esto se aborda en la siguiente estrategia.
 
-\textbf{\textit{user\_sim\_weighted\_pred\_rating\_score}}: Es similar al \textit{score} anterior, pero más personalizado, ya que se ajusta según la calificación que se estima que el usuario otorgaría al ítem. La métrica anterior utiliza el promedio o mediana del \textit{rating} general del ítem para usuarios cercanos, proporcionando cierto grado de personalización, pero aquí se pondera por la calificación específica predicha para el usuario que solicitó la recomendación, lo que la hace más personalizada.
+	      \begin{equation}
+		      User Item Rating = \frac{Sim User Item Rating}{Max Sim User Item Rating}
+	      \end{equation}
+	      \begin{equation}
+		      User Sim Weighted By Rating Score = User Sim * User Item Rating
+	      \end{equation}
 
-\begin{align}
-	User Sim Weighted By Pred Rating = User Sim * \frac{Item User Pred Rating}{Max Items User Pred Rating}
-\end{align}
+	\item \textbf{\textit{user\_sim\_weighted\_pred\_rating\_score}}: Es similar al \textit{score} anterior, pero más personalizado, ya que la similitud se ajusta según la calificación que se estima que el usuario otorgaría al ítem. La métrica anterior utiliza el promedio o mediana del \textit{rating} general del ítem para usuarios cercanos, proporcionando cierto grado de personalización, pero aquí se pondera por la calificación específica predicha para el usuario que solicitó la recomendación, lo que la hace más personalizada.
+
+	      \begin{equation}
+		      User Item Pred Rating = \frac{User Item Pred Rating}{Max User Item Pred Rating}
+	      \end{equation}
+
+	      \begin{align}
+		      User Sim Weighted By Pred Rating Score = User Sim * User Item Pred Rating
+	      \end{align}
+\end{itemize}
 
 Para continuar con nuestro flujo, solo queda aplicar alguno de los métodos de \textit{scoring} a los ítems candidatos definido mas arriba. A diferencia del flujo para usuarios sin interacciones, donde la similitud de los ítems con la consulta del usuario define el orden de los ítems candidatos, aquí se utiliza un \textit{score} basado en el aprendizaje de un modelo de filtrado colaborativo. Esta es la sutil diferencia. Posteriormente, el modelo de lenguaje ajustará el ordenamiento en un segundo filtro. Así, obtenemos un \textit{score} personalizado que considera las correlaciones en el comportamiento del usuario con otros usuarios, así como la relación de su historia y perfil con los ítems candidatos.
 
