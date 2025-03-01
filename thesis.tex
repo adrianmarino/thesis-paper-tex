@@ -100,21 +100,10 @@ Dada la propuesta particular de este trabajo, fue necesario contar con datos ref
 interacciones de los usuarios con ítems (películas en este caso). Por otro lado, no fue necesario tener información previa de los usuarios, ya que los perfiles de los usuarios son ingresados por el propio usuario a la plataforma. De esta forma, se reutilizó la base de usuario, ítem e interacciones seleccionada en el trabajo de especialización \cite{src} para obtener la interacciones e items. Por otro lado, los perfiles de los usuario no son necesarios en la etapa de entrenamiento de los modelos, solo para la inferencia, por eso no forman parte del conjunto de datos inicial de entrenamiento.
 
 \section{El conjunto de datos \textit{MovieLens 25M}}
+\label{sec:movielens}
 
-El conjunto de datos \textit{MovieLens 25M}~\cite{movielens} es una colección ampliamente utilizada en el ámbito de la investigación y el desarrollo de sistemas de recomendación. Fue creado por el \textit{GroupLens Research Lab} de la Universidad de \textit{Minnesota} y contiene datos relacionados con películas, calificaciones de usuarios y etiquetas (\textit{tags}) aplicadas por los usuarios. Este conjunto de datos prácticamente no tiene características
-para los ítems (películas), pero sí tiene las calificaciones realizadas por los
-usuarios sobre los mismos. También cuenta con un conjunto de etiquetas(\textit{tags)} o palabras clave
-cargadas por los usuarios para cada ítem (película). Otro punto importante, es
-que todos los usuarios tienen al menos $20$ interacciones, lo cual asegura no
-tener problemas de bajo rendimiento por falta de estas. De esta forma,
-este conjunto de datos sera muy útil para entrenar modelos de recomendación
-basados en filtros colaborativos.
-
-Por último, este conjunto de datos contiene $25$ millones calificaciones, $1$
-millón de \textit{tags} y $62.423$ películas. Estos datos fueron registrados
-por $162.541$ usuarios entre el $9$ de enero de $1995$ y el $21$ de noviembre
-de $2019$. A continuación en la tabla~\ref{table:movieLensColumns}, se
-especifican las columnas del conjunto de datos:
+El conjunto de datos \textit{MovieLens 25M}~\cite{movielens} es una colección ampliamente utilizada en el ámbito de la investigación y el desarrollo de sistemas de recomendación. Fue creado por el \textit{GroupLens Research Lab} de la Universidad de \textit{Minnesota} y contiene datos relacionados con películas, calificaciones de usuarios y etiquetas (\textit{tags}) aplicadas por los usuarios para cada item. Este conjunto de datos es ideal para entrenar modelos de recomendación basados en filtros colaborativos, ya que contiene una gran cantidad de interacciones de usuarios con ítems. Otro punto importante, es
+que todos los usuarios tienen al menos $20$ interacciones, lo cual asegura no tener problemas de bajo rendimiento por falta de estas. El conjunto de datos contiene $25$ millones calificaciones, $1$ millón de \textit{tags} y $62.423$ películas. Estos datos fueron registrados por $162.541$ usuarios entre el $9$ de enero de $1995$ y el $21$ de noviembre de $2019$. A continuación en la tabla~\ref{table:movieLensColumns}, se especifican las columnas del conjunto de datos:
 
 \begin{table}[!htb]
 	\centering
@@ -141,8 +130,7 @@ especifican las columnas del conjunto de datos:
 \section{El conjunto de datos \textit{TMDB}}
 
 El conjunto de datos \textit{TMDB (The Movie Database)}~\cite{tmdb} es una colección de datos relacionados con películas, series de televisión y otros contenidos multimedia, extraídos de la base de datos pública de \textit{The Movie Database (TMDB)}. \textit{TMDB} es una plataforma colaborativa que recopila información detallada sobre películas, actores, directores, géneros y más.
-El conjunto de datos no tiene calificaciones personalizadas para los ítems como sucede con el conjunto de datos anterior (\textit{MovieLens}), pero si tiene varias características referentes a películas. Este conjunto de datos es utilizado para filtrar los items del conjunto de datos \textit{MovieLens} ~\cite{movielens} y así tener una base de ítems mas rica en características. Estas características luego serán utilizadas en el proceso de búsqueda de ítems por el \textit{chatbot} haciendo uso de la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} que se explicara mas adelante. El conjunto contiene datos de $5.000$ películas y sus columnas se especifican en la tabla~\ref{table:tmdbColumns} a
-continuación:
+El conjunto de datos no tiene calificaciones personalizadas para los ítems como sucede con el conjunto de datos de la sección ~\ref{sec:movielens} (\textit{MovieLens}), pero si tiene varias características referentes a películas. Este conjunto de datos es utilizado para filtrar los items del conjunto de datos \textit{MovieLens} ~\cite{movielens} y así tener una base de ítems mas rica en características. Estas características luego serán utilizadas en el proceso de búsqueda de ítems por el \textit{chatbot} haciendo uso de la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} que se explicara mas adelante. El conjunto contiene datos de $5.000$ películas y sus columnas se especifican en la tabla~\ref{table:tmdbColumns} a continuación:
 
 \begin{table}[!htb]
 	\centering
@@ -183,11 +171,9 @@ continuación:
 \section{Preprocesamiento de datos}
 \label{sec:pre-pro}
 
+Como parte inicial de la etapa de pre-procesamiento de datos, se utilizó una base de datos \textit{MongoDB} en lugar de \textit{Pandas}, ya que este último requiere cargar todo el conjunto de datos en memoria \textit{RAM}. Si bien este problema se podría mitigar aumentado el tamaño de la memoria \textit{Swap} (Linux) o la memoria
+virtual (\textit{Windows}), esto puede provocar caídas de procesos y lentitudes innecesarias. Por este motivo se optó por una base de datos documental que persiste todos sus datos en almacenamiento secundario y se puede escalar fácilmente a medida que crece el número de usuarios de la aplicación. Ambos conjuntos de datos contienen varios archivos \textit{csv}, los cuales vamos a llamar \textit{tablas}. En la tabla~\ref{table:tableRatings} se especifican las columnas utilizadas:
 
-
-Como parte inicial de la etapa de pre-procesamiento de datos, se utilizo una base de datos \textit{MongoDB}. Se uso \textit{MongoDB} y no \textit{Pandas}, dado que \textit{Pandas} requiere cargar todo el conjunto de datos en memoria \textit{RAM}. Si bien se podría lidiar con este problema, aumentado el tamaño de la memoria \textit{Swap} (Linux) o la memoria
-virtual (\textit{Windows}), podría ocasionar caídas de procesos y lentitudes innecesarias. En este caso, se selecciono una base de datos de tipo documento, la cual no necesita cargar todos los datos en memoria y por otro lado, existe la posibilidad de escalar la base de datos a mas nodos en caso de ser necesario. Ambos conjuntos de datos contienen varios archivos \textit{csv}, los cuales vamos a llamar \textit{tablas}. En la tabla~\ref{table:tableRatings} se
-especifican las columnas utilizadas:
 
 \begin{table}[!htb]
 	\centering
@@ -203,7 +189,7 @@ especifican las columnas utilizadas:
 		\hline
 	\end{tabular}
 	\caption{
-		\textit{files} o tablas utilizadas en este trabajo, para construir un conjunto de datos unificado, el cual sirve como base para entrenamiento y evaluación de modelos.
+		\textit{files} o tablas utilizadas en este trabajo, para construir un conjunto de datos unificado, el cual sirve como base para el entrenamiento y evaluación del modelo de recomendación.
 	}
 	\label{table:tableRatings}
 \end{table}
@@ -252,8 +238,8 @@ no son mas que una lista de palabras representativas de la película en
 cuestión. Por ejemplo, para la película \textit{Toy Story} deberíamos encontrar
 palabras referentes a la misma como: \textit{boss}, \textit{woody}, \textit{animation},
 \textit{3d}, etc.. Finalmente, contamos con la fecha en la cual se realizaron
-esta interacciones. Se entiende que la calificación y los \textit{tags} se
-ingresaron en el mismo momento.
+estas interacciones. Se entiende que la calificación y los \textit{tags} fueron
+ingresados en el mismo momento.
 
 \begin{table}[!htb]
 	\centering
@@ -345,12 +331,13 @@ valores faltantes, lo que la volvió inutilizable. Por otro lado, la tabla
 \textit{ratings\_tags\_v1} no se modifico, ya que no tenia valores faltantes en
 ninguna de sus columnas.
 
-Por otro lado, se encontraron valores faltantes en los campos \textit{genres} y \textit{overview}. Aunque no eran nulos, tenían marcadores de ausencia de información, como \textit{"(no genres listed)"} en el campo \textit{genres} y \textit{"No overview found"} en el campo \textit{overview}. Se identificaron \textit{127} ítems sin \textit{overview}, de los cuales se completaron \textit{96}, dejando \textit{31} sin este dato. En el campo \textit{genres}, había \textit{286} ítems con valores faltantes; se llenaron \textit{245}, resultando en \textit{41} sin género asignado. Existían \textit{6581} ítems con un solo género, de los cuales \textit{2531} se actualizaron a dos o más géneros, dejando \textit{4050} con un único género. Para completar los valores faltantes en \textit{overview} y \textit{genres}, se creó un script que extrae datos de un servicio REST proporcionado por la \textit{API} de \textit{TDMB}. Los campos \textit{title}, \textit{overview} y \textit{genres} son fundamentales para el proceso de búsqueda por cercanía(utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} en la base de embeddings de la \textit{API Rec Chatbot}.
+
+También se encontraron valores faltantes para los campos \textit{genres} y \textit{overview}.Estos campos (junto con el campo \textit{title}) son fundamentales para el proceso de búsqueda por cercanía ~\cite{rag} en la base de embeddings de el \textit{API Rec Chatbot}. A pesar de que los campos no eran nulos, tenían marcadores de ausencia de información como \textit{"(no genres listed)"} en el campo \textit{genres} y \textit{"No overview found"} en el campo \textit{overview}. Se identificaron \textit{127} ítems sin \textit{overview}, de los cuales se completaron \textit{96}, dejando \textit{31} sin este dato. En el campo \textit{genres}, había \textit{286} ítems con valores faltantes; se llenaron \textit{245}, resultando en \textit{41} sin género asignado. Existían \textit{6581} ítems con un solo género, de los cuales \textit{2531} se actualizaron a dos o más géneros, dejando \textit{4050} con un único género. Para completar los valores faltantes en \textit{overview} y \textit{genres}, se creó un script que extrae datos de un servicio REST proporcionado por la \textit{API} de \textit{TDMB}. Los campos \textit{title}, \textit{overview} y \textit{genres} son fundamentales para el proceso de búsqueda por cercanía(utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} en la base de embeddings de la \textit{API Rec Chatbot}.
 
 
 \subsection{Base datos de interacciones}
 
-Hasta este momento, se contaba con las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv}. Con base en estas tablas, se generó una base de datos inicial para \textit{API Rec Chatbot}. Se extrajeron los datos necesarios para poblar dos colecciones en la instancia de base de datos \textit{MongoDB} de \textit{API Rec Chatbot}: \textit{interactions} e \textit{items}. Es importante mencionar que se realizó un \textit{merge join} entre las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv} generando la tabla \textit{rec\_chat\_bot\_data.csv} para asegurar que las interacciones incluyeran items con datos completos, como \textit{title, overview, genres, etc}.
+Hasta este momento, se contaba con las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv}. En base a estas tablas, se generó una base de datos inicial para \textit{API Rec Chatbot}. Se extrajeron los datos necesarios para poblar dos colecciones en la instancia de base de datos \textit{MongoDB} de \textit{API Rec Chatbot}: \textit{interactions} e \textit{items}. Es importante mencionar que se realizó un \textit{merge join} entre las tablas \textit{ratings\_tags\_v1.csv} y \textit{movies\_v4.csv} generando la tabla \textit{rec\_chat\_bot\_data.csv} para asegurar que las interacciones incluyeran items con datos \textbardbl{completos}, como \textit{title, overview, genres, etc}.
 
 La tabla \textit{rec\_chat\_bot\_data.csv} contiene interacciones virtuales que se utilizarán para entrenar
 los modelos del \textit{API Rec Chatbot}, sin estar asociadas a ningún usuario real. Esta base datos es fundamental
