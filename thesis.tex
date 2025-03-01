@@ -783,9 +783,9 @@ Para llevar a cabo este trabajo de investigación, se tomó la decisión de modi
 
 	\item \textbf{Documentación}: Existen herramientas para generar documentación automática de \textit{APIs REST} (como \textit{Swagger}, \textit{Redoc}, \textit{OpenAPI}, etc..).
 \end{itemize}
-
-Luego, en la figura \ref{fig:deployment} se pueden apreciar las piezas que componente la arquitectura general de la \textit{API REST} (desde ahora \textit{API Rec Chatbot}).
 \vfill
+
+En la figura ~\ref{fig:deployment} se pueden apreciar un diagrama de despliegue donde se exponen todas las piezas que componen la arquitectura general de la \textit{API REST} (desde ahora \textit{API Rec Chatbot}).
 
 \begin{figure}[H]
 	\centering
@@ -809,13 +809,15 @@ En cuando al modelo de datos se cuenta separados en dos base de datos:
 \begin{itemize}
 	\item La primera de estas es una base de datos \textit{MongoDB}. Esta base de datos se encarga de almacenar información relacionada a los perfiles de los clientes que interactúan con la \textit{API Rec Chatbot}. A su vez, también guarda ítems, que en este contexto se refieren a las películas disponibles en el sistema, así como las calificaciones proporcionadas por los usuarios sobre las mismas. Estas calificaciones pueden abarcar tanto datos reales, aquellos introducidos por los propios usuarios, como predicciones generadas por el sistema. De esta forma, se busca ofrecer un servicio personalizado y adaptado a las preferencias de cada usuario.
 
-	\item La segunda es un base de datos \textit{ChromaDB}. Esta base de datos tiene una función específica en el almacenamiento de \textit{embeddings}, que son representaciones vectoriales tanto de los usuarios como de los ítems, ambas generadas por un modelo de filtros colaborativos. Además se almacenan \textit{embeddings} que reflejan el contenido de cada ítem, en este caso, las películas, lo que a su vez habilita la utilización de la técnica conocida como \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}. Esta técnica permite realizar búsquedas de ítems que son similares a las consultas realizadas por los usuarios.
+	\item La segunda es un base de datos \textit{ChromaDB}. Esta base de datos es utilizada para en el almacenamiento y búsque por similitud de \textit{embeddings}, que son representaciones vectoriales tanto de los usuarios como de los ítems, ambas generadas por un modelo de filtros colaborativos. Además se almacenan \textit{embeddings} que reflejan el contenido de cada ítem, en este caso, las películas, lo que a su vez habilita la utilización de la técnica conocida como \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag}. Esta técnica permite realizar búsquedas de ítems que son similares a las consultas realizadas por los usuarios.
 \end{itemize}
 
 
-Por último, se utilizo una instancia de \textit{Apache Airflow}. \textit{Apache Airflow} permite la orquestación de flujos de trabajo para programar, ejecutar y monitorear secuencias complejas de tareas. Estos procesos se representan como grafos dirigidos acíclicos, lo que facilita dividir un proceso en tareas más simples y re-utilizables. Esto es fundamental para re-entrenar el ensamblaje de modelos del \textit{API Rec Chatbot} y generar las predicciones y embeddings necesarios para su funcionamiento. Además, debido a la significativa cantidad de usuarios, ítems e interacciones en el conjunto de datos, esta arquitectura es esencial para garantizar el correcto funcionamiento del \textit{API Rec Chatbot} y evitar problemas de escalabilidad. En resumen, se trata de una forma de desarrollar aplicaciones que es comúnmente utilizada por empresas de servicios en Internet.
+Por último, se utilizo una instancia de \textit{Apache Airflow}. \textit{Apache Airflow} permite la orquestación de flujos de trabajo para programar, ejecutar y monitorear secuencias complejas de tareas. Estos procesos se representan como grafos dirigidos acíclicos, lo que facilita dividir un proceso en tareas más simples y re-utilizables. Esto es fundamental para ere-entrenar el ensamble de modelos del \textit{API Rec Chatbot} el cual genera predicciones y \textit{embeddings} necesarios para el funcionamiento del sistema de recomendación.
 
-\chapter{Flujo de inferencia de \textit{Rec Chatbot API}}
+Por otro lado, debido a la significativa cantidad de usuarios, ítems e interacciones en el conjunto de datos, esta arquitectura es esencial para garantizar el correcto funcionamiento del \textit{API Rec Chatbot}, permitiendo fácilmente crecer en número de usuarios dado que es una arquitectura distribuida y escalable. En resumen, se trata seguir el modelo de desarrollar de aplicaciones comúnmente utilizada por empresas de servicios en internet como \textit{Amazon}, \textit{Pedidos Ya}, \textit{Mercado Libre}, etc.
+
+\chapter{Flujo de inferencia}
 
 En la sección anterior se presentó la arquitectura general de la solución, detallando cada componente mediante un diagrama de despliegue, lo que ayuda a entender de forma mas simple la solución. En esta sección, se profundizara en cada uno de estos componentes y explicaremos el funcionamiento de la solución. Para ello, dividiremos la funcionalidad de \textit{API Rec Chatbot} en dos flujos:
 
@@ -840,7 +842,7 @@ Comencemos con el flujo de inferencia. En la siguiente figura \ref{fig:inference
 
 Antes de comenzar, aclaramos que al referirnos al usuario final hablamos de aquel que interactúa con una aplicación, ya sea móvil o de escritorio. En este caso, no contamos con una interfaz gráfica, ya que esto va más allá de los objetivos de este trabajo. Por tanto, el término usuario final se refiere a quienes podrían usar una aplicación móvil o de escritorio que consume o integre la \textit{API Rec Chatbot} como parte de su funcionalidad. También existen usuarios más avanzados que interactúan con la \textit{API} a través de un cliente \textit{HTTP}, como \textit{curl}, \textit{Postman} o \textit{Insomnia}. Estos últimos son usuarios con conocimientos sobre cómo interactuar directamente con una \textit{API REST}. En este trabajo, se decidió interactuar directamente con la \textit{API} para simplificar el desarrollo.
 
-Aclarado esto, e comenzara a explicar el flujo de inferencia.
+Aclarado esto, a continuación se explica cada paso del flujo de inferencia.
 
 
 \section{Solicitud de recomendaciones}
@@ -849,12 +851,12 @@ Al comienzo del proceso (Paso \textit{1} de la figura \ref{fig:inference-flow}),
 
 \section{Consulta de interacciones del usuario}
 
-En el paso \textit{2} de la figura \ref{fig:inference-flow}, se llevan a cabo la consulta de las interacciones del usuario que formuló la pregunta, accediendo a la base de datos \textit{MongoDB}. Para identificar de manera única al usuario en cuestión, se utiliza su\textit{email} como identificador exclusivo, lo que permite obtener información detallada sobre sus interacciones previas.
+En el paso \textit{2} de la figura \ref{fig:inference-flow}, se llevan a cabo la consulta de las interacciones del usuario que formuló la pregunta, accediendo a la base de datos \textit{MongoDB}. Para identificar de manera única al usuario en cuestión, se utiliza su \textit{email} como identificador exclusivo, lo que permite obtener información detallada sobre sus interacciones previas.
 
 
 \section{¿El usuario realizó el mínimo de interacciones?}
 
-En el paso \textit{2} de la figura \ref{fig:inference-flow}, se cuenta el número de interacciones previas del usuario con la aplicación. Si alcanza el mínimo requerido, se pueden iniciar recomendaciones personalizadas; de lo contrario, se utilizará un esquema de recomendación que puede sugerir contenido sin conocimiento profundo del usuario, ya que no conoce su comportamiento al momento de calificar contenido. Es importante aclarar que las interacciones se refieren a las calificaciones que el usuario otorga a los contenidos. Cada vez que el usuario puntúa una película (por ejemplo, con 5 estrellas), el servicio registra esta interacción y la utiliza para entrenar un modelo de recomendación que personaliza el contenido. Para lograr esto, es necesario contar con un mínimo de interacciones del usuario, lo cual mejora la precisión de las recomendaciones. Este mínimo es un hyper-parámetro más del modelo ensamble o servicio desarrollado. Este paso permite manejar el problema de arranque en frió(\textit{Cold Start}) que sufren los sistemas de recomendación basados en filtros colaborativos. Esto refiere a que estos sistemas de recomendación no pueden entrenarse sin un número mínimo de puntuaciones del usuario. Cuando no se cuenta con esta información es necesario utilizar otros sistemas de recomendación que permitan sugerir contenido hasta que el usuario llegue a este numero mínimo de puntuaciones o calificaciones.
+En el paso \textit{3} de la figura \ref{fig:inference-flow}, se cuenta el número de interacciones previas del usuario con la aplicación. Si alcanza el mínimo requerido, se pueden iniciar recomendaciones personalizadas; de lo contrario, se utilizará un esquema de recomendación que puede sugerir contenido sin conocimiento profundo del usuario, ya que no conoce su comportamiento al momento de calificar contenido. Es importante aclarar que las interacciones se refieren a las calificaciones que el usuario otorga a los contenidos. Cada vez que el usuario puntúa una película (por ejemplo, con 5 estrellas), el servicio registra esta interacción y la utiliza para entrenar un modelo de recomendación que personaliza el contenido. Para lograr esto, es necesario contar con un mínimo de interacciones del usuario, lo cual mejora la precisión de las recomendaciones. Este mínimo es un hyper-parámetro más del modelo ensamble o servicio desarrollado. Este paso permite manejar el problema de arranque en frió(\textit{Cold Start}) que sufren los sistemas de recomendación basados en filtros colaborativos. Esto refiere a que estos sistemas de recomendación no pueden entrenarse sin un número mínimo de puntuaciones del usuario. Cuando no se cuenta con esta información es necesario utilizar otros sistemas de recomendación que permitan sugerir contenido hasta que el usuario llegue a este numero mínimo de puntuaciones o calificaciones. Es importante aclarar que se considera un periodo de tiempo retroactivo para analizar las interacciones de cada usuario. Por esta razón, los usuarios podrían cumplir o no con el mínimo de interacciones requerido, dependiendo de la frecuencia con la que consulten el sistema de recomendación (Ej: En marzo cumple pero no diciembre del mismo año, por que se fue de vacaciones y no interactuó con la aplicación).
 
 \section{El usuario no cumple con el número mínimo de interacciones}
 
