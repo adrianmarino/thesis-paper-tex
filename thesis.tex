@@ -860,7 +860,7 @@ En el paso \textit{3} de la figura \ref{fig:inference-flow}, se cuenta el númer
 
 \section{El usuario no cumple con el número mínimo de interacciones}
 
-Cuando el usuario no cumpla con el número mínimo de interacciones (Paso \textit{4.b} de la figura \ref{fig:inference-flow}), se toma su consulta en lenguaje natural y se lleva a cabo la generación de un \textit{Sentence Embedding}, es decir se genera un vector de números que representa al texto de la consulta del usuario. A continuación, con la consulta del usuario ya codificada como un \textit{embedding}, se procede a buscar los \textit{embeddings} más cercanos en la base de datos \textit{ChromaDb}. Este motor de base de datos presenta algunas similitudes con el motor de base de datos \textit{MongoDb}, ya que ambos sistemas organizan los datos en colecciones de documentos. Para proseguir, se realiza la búsqueda dentro de una colección particular llamada \textit{items\_content}, esta colección alberga los \textit{embeddings} que corresponden a todas películas disponibles. Es fundamental aclarar que los \textit{embeddings} se generan a partir de información relativa al título de la película, la sinopsis que la describe y también la lista de géneros cinematográficos a los que pertenece. Estos \textit{embeddings} son producidos mediante modelos de tipo \textit{transformer}; en este caso particular se utiliza el modelo \textit{all-mpnet-base-v2}. Es relevante destacar que estos modelos han sido pre-entrenados específicamente para realizar la tarea de \textit{clustering}, y es importante tener en cuenta que no todos los modelos de lenguaje ofrecen buenos resultados para esta tarea, a menos que hayan sido entrenados específicamente con este propósito.
+Cuando el usuario no cumpla con el número mínimo de interacciones (Paso \textit{4.b} de la figura \ref{fig:inference-flow}), se toma su consulta en lenguaje natural y se lleva a cabo la generación de un \textit{Sentence Embedding}, es decir se genera un vector de números que representa al texto de la consulta del usuario. A continuación, con la consulta del usuario ya codificada como un \textit{embedding}, se procede a buscar los \textit{embeddings} más cercanos en la base de datos \textit{ChromaDb}. Este motor de base de datos presenta algunas similitudes con el motor de base de datos \textit{MongoDb}, ya que ambos sistemas organizan los datos en colecciones de documentos. Para proseguir, se realiza la búsqueda dentro de una colección particular llamada \textit{items\_content}, esta colección alberga los \textit{embeddings} que corresponden a todas películas disponibles. Es fundamental aclarar que los \textit{embeddings} se generan a partir de información relativa al título de la película, la sinopsis que la describe y también la lista de géneros cinematográficos a los que pertenece. Estos \textit{embeddings} son producidos mediante modelos de tipo \textit{transformer}; en este caso particular se utiliza el modelo \textit{all-mpnet-base-v2}. Es relevante destacar que estos modelos han sido pre-entrenados específicamente para realizar la tarea de \textit{clustering}, y es importante tener en cuenta que no todos los modelos de lenguaje ofrecen buenos resultados para esta tarea, a menos que hayan sido entrenados específicamente para este propósito.
 
 \section{Construir \textit{prompt} para consulta al modelo de lenguaje}
 
@@ -899,6 +899,7 @@ Number. Title (release year): Synopsis.
 Response only has specified content and must have all specified items.
 """
 \end{minted}
+\label{code:prompt-low-interactions}
 
 Para comenzar este es un fragmento de código fuente en lenguaje \textit{Python}. Este código fuente define el \textit{template} o plantilla utilizada para construir dinámicamente el \textit{prompt} para usuarios que no tienen una cantidad mínima de interacciones. Cabe aclarar que existe un \textit{prompt} para cada tipo de usuario: Aquellos que no cumplen con el número mínimo de interacciones y aquellos si lo hacen.
 
@@ -906,7 +907,7 @@ Este \textit{prompt} esta compuesto principalmente por 5 secciones, definidas po
 \vfill
 \subsection{Perfil del usuario}
 
-La variable \textit{user\_profile} contiene el perfil de usuario. Antes que nada se debe registrar el perfil del usuario, sin este no es posible comenzar a realizar consultas a la \textit{API Rec Chatbot}. A contención se puede puede apreciar una solicitud de alta de un perfil de usuario a \textit{API Rec Chatbot}:
+La variable \textit{user\_profile} definida en el \textit{prompt} ~\ref{code:prompt-low-interactions} contiene el perfil de usuario. Antes que nada se debe registrar el perfil del usuario, sin este no es posible comenzar a realizar consultas a la \textit{API Rec Chatbot}. A continuación se puede puede apreciar una solicitud de alta de un perfil de usuario a \textit{API Rec Chatbot}:
 
 \begin{minted}
 [
@@ -950,19 +951,19 @@ Con esta información se puede generar el texto que luego se reemplazara en la v
 
 \subsection{Historial de comportamiento del usuario}
 
-La variable \textit{user\_history} presenta una lista detallada de los ítems que han sido calificados por el usuario junto a su calificación. Esto se refiere específicamente a aquellos elementos que el usuario ha llegado a conocer y ha evaluado en función de su experiencia personal. Los ítems están organizados de acuerdo con el \textit{timestamp} de calificación, lo que significa que se presentan en un orden ascendente, comenzando desde el ítem más antiguo que fue calificado hasta llegar al más reciente. Esta disposición permite al lector observar la evolución de las calificaciones a lo largo del tiempo, ofreciendo una perspectiva clara sobre cómo han cambiado las opiniones del usuario sobre cada uno de los ítems evaluados.
+La variable \textit{user\_history} definida en el \textit{prompt} ~\ref{code:prompt-low-interactions} presenta una lista detallada de los ítems que han sido calificados por el usuario junto a su calificación. Esto se refiere específicamente a aquellos elementos que el usuario ha llegado a conocer y ha evaluado en función de su experiencia personal. Los ítems están organizados de acuerdo con el \textit{timestamp} de calificación, lo que significa que se presentan en un orden ascendente, comenzando desde el ítem más antiguo que fue calificado hasta llegar al más reciente. Esta disposición permite al lector observar la evolución de las calificaciones a lo largo del tiempo, ofreciendo una perspectiva clara sobre cómo han cambiado las opiniones del usuario sobre cada uno de los ítems evaluados.
 
 \subsection{Solicitud del usuario}
 
-La variable \textit{request} contiene la solicitud del usuario en lenguaje natural. Ejemplo de esas podrían ser:
+La variable \textit{request} definida en el \textit{prompt} ~\ref{code:prompt-low-interactions} contiene la solicitud del usuario en lenguaje natural. Ejemplo de estas podrían ser:
 
 \begin{itemize}
-	\item Quisiera ver una película de Pixar. Cuales me recomendarías?
-	\item Quiero ver una película de suspenso ambientada en un futuro disto-pico.
+	\item "Quisiera ver una película de Pixar. ¿Cuales me recomendarías?"
+	\item "Quiero ver una película de suspenso ambientada en un futuro disto-pico"
 \end{itemize}
 \subsection{Items candidatos}
 
-La variable \textit{candidates} contiene la lista de items candidatos resuelta en el paso \textit{4.b} ordenadas por su similitud con la variable \textit{request}.
+La variable \textit{candidates} definida en el \textit{prompt} ~\ref{code:prompt-low-interactions} contiene la lista de items candidatos resuelta en el paso \textit{4.b}, ordenadas por su similitud con la variable \textit{request}.
 
 \subsection{Instrucciones y formato de la respuesta}
 
