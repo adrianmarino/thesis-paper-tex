@@ -22,6 +22,9 @@
 \addbibresource{cites.bib} % Carga el archivo .bib
 \bibliography{cites}
 
+
+\newcommand{\quotes}[1]{``#1"}
+
 \begin{document}
 
 %%%% CARATULA
@@ -1102,12 +1105,12 @@ Este flujo se ejecuta manualmente y genera \textit{embeddings} para cada ítem, 
 
 \chapter{Modelo interno basado en filtros colaborativos}
 
-En un trabajo previo de especialización \cite{src} de la maestría, se exploraron diversos enfoques para implementar sistemas de recomendación, incluyendo \textit{KNN}. Sin embargo los modelos basados en \textit{KNN} presentan varias limitaciones significativas, siendo el problema de escala uno de los más importantes. El tamaño de los datos a procesar depende casi linealmente de los recursos de memoria, \textit{CPU} y/o \textit{GPU} disponibles. Por lo tanto, al necesitar procesar grandes volúmenes de datos para hacer predicciones, se suelen elegir modelos que aplican algún tipo de reducción de dimensionalidad para construir su representación interna, la cual se utiliza posteriormente para realizar predicciones. Esta representación interna se denomina a menudo "modelo", ya que lo que define el modelo no es el algoritmo en sí, sino el estado interno alcanzado tras el entrenamiento.
+En el trabajo previo de especialización \cite{src} de la maestría, se exploraron diversos enfoques para implementar sistemas de recomendación, incluyendo \textit{KNN}. Sin embargo los modelos basados en \textit{KNN} presentan varias limitaciones significativas, siendo el problema de escala uno de los más importantes. El tamaño de los datos a procesar depende casi linealmente de los recursos de memoria, \textit{CPU} y/o \textit{GPU} disponibles. Por lo tanto, al necesitar procesar grandes volúmenes de datos para hacer predicciones, se suelen elegir modelos que aplican algún tipo de reducción de dimensionalidad para construir su representación interna, la cual se utiliza posteriormente para realizar predicciones. Esta representación interna se denomina a menudo "modelo", ya que lo que define el modelo no es el algoritmo en sí, sino el estado interno alcanzado tras el entrenamiento.
 
 \section{Codificación \textit{One-Hot} vs \textit{Embeddings}}
 
 Particularmente en el ámbito de recomendaciones, se cuenta con variables
-categóricas de alta dimensionalidad. Para este trabajo, tenemos dos variable
+categóricas de alta dimensionalidad. En este trabajo, tenemos dos variable
 con esta característica: los identificadores secuenciales de usuarios e ítems.
 Cuando trabajamos con modelos de \textit{Machine Learning}, particularmente con
 redes neuronales, es necesario convertir las variable categóricas en una
@@ -1194,7 +1197,7 @@ tomar la variable categórica a codificar.
 
 De esta forma, si deseamos crear una capa o módulo \textit{Embedding} para la
 variable categórica Estado del Tiempo, deberíamos crear una capa de tamaño 3,
-ya que cuenta con 3 posible valores, con un tamaño de vector menos a 3, ya que
+ya que cuenta con 3 posible valores, con un tamaño de vector menor a 3, ya que
 de lo contrario, tendríamos la misma dimensionalidad que tenemos al usa la
 codificación \textit{one-hot}, con la diferencia de que una capa
 \textit{Embedding} capta la similitud entre los valores de la variable
@@ -1222,7 +1225,7 @@ Tiempo podríamos codificar sus valores como sigue:
 \end{itemize}
 
 Entonces, si pasamos el valor Nublado como entrada a la capa, en realidad
-estamos pasando la número o clave \textit{hash} $0$. Luego de esto, la capa
+estamos pasando el número o clave \textit{hash} $0$. Luego de esto, la capa
 resuelve el vector \textit{embedding} asociado a esa clave y lo devuelve a su
 salida.
 
@@ -1253,7 +1256,7 @@ Las máquina de factorización propuestas por \textit{Steffen Rendle} en 2010
 clasificación, regresión y tareas de ranking como sucede en el ámbito de los
 sistemas de recomendación. Rápidamente se convirtieron en un método popular
 para hacer predicciones y recomendaciones. La máquina de factorización es una
-generalización de un modelo lineal y un model de factorización de matrices, mas
+generalización de un modelo lineal y un modelo de factorización de matrices, mas
 aun, recuerdan mucho a un máquina de soporte vectorial \textit{(SVM)} que
 utiliza un kernel polinomial.
 
@@ -1411,7 +1414,7 @@ Se dispone de dos conjuntos de datos: uno para entrenamiento y otro para prueba.
 	\centering
 	\includegraphics[width=15cm]{./images/user_interactions.png}
 	\caption{
-		Este gráfico es un histograma que muestra la distribución de interacciones máximas de usuarios. Cada rango representa un rango de interacciones, excluyendo el primer rango de \textit{0} a \textit{19} interacciones. El eje \textit{X} (horizontal) muestra diferentes rangos de interacciones de usuarios, desde \textit{0-19} hasta \textit{200+}. El eje \textit{Y} (vertical) muestra el conteo de usuarios, llegando aproximadamente hasta \textit{450} como máximo por rango.
+		El histograma describe la distribución del número interacciones por usuario. Cada rango representa un rango de interacciones, excluyendo el primer rango de \textit{0} a \textit{19}. El eje \textit{X} (horizontal) muestra diferentes rangos de interacciones de usuarios, desde \textit{20-29} hasta más de \textit{200}. El eje \textit{Y} (vertical) muestra el conteo de usuarios, llegando aproximadamente hasta \textit{450} como máximo por rango.
 	}
 	\label{fig:user-interactions}
 \end{figure}
@@ -1421,10 +1424,10 @@ Se dispone de dos conjuntos de datos: uno para entrenamiento y otro para prueba.
 	\item El pico más alto está en el rango de \textit{20-29} interacciones, con aproximadamente \textit{450} usuarios.
 	\item Hay una tendencia general descendente desde ese pico hasta el rango \textit{90-99}.
 	\item Existe un segundo pico menor en el rango \textit{100-199}, seguido de una disminución en \textit{200+}.
-	\item El rango \textit{0-19} fue filtrado del conjunto de datos, ya que estas interacciones no son buenas para entrenar al modelo.
+	\item El rango \textit{0-19} fue filtrado del conjunto de datos, ya que estas interacciones no son buenas para entrenar al modelo de filtros colaborativos.
 	\item La mayoría de los usuarios tienen entre \textit{20-29} interacciones.
 	\item Es relativamente poco común tener usuarios con más de \textit{100} interacciones.
-	\item Hay un grupo interesante de usuarios muy activos en el rango \textit{100-199}.
+	\item Hay un grupo interesante de usuarios muy activos en el rango \textit{100-199}, probablemente \textit{fun users}.
 \end{itemize}
 
 Para construir el conjunto de evaluación se seleccionaron \textit{15} usuarios de cada uno de los siguientes grupos
@@ -1432,26 +1435,26 @@ Para construir el conjunto de evaluación se seleccionaron \textit{15} usuarios 
 
 \begin{itemize}
 	\item \textbf{Entrenamiento}: \textit{185.096} interacciones (\textit{95\%} el conjunto de datos).
-	\item \textbf{Evaluación}: \textit{9.177} (\textit{0.04\%} el conjunto de datos). Este número de interacciones resulta suficiente para realizar la prueba de evaluación y permite utilizar el mayor número posible de interacciones para el entrenamiento del modelo. Ademas debe tenerse en cuenta el tiempo de ejecución de cada inferencia del modelo. Este ronda entre los \textit{8} y \textit{20} segundos. Debido a esto último, tampoco seria posible realizar un particionamiento tradicional \textit{70-30} ya que tendríamos un numero muy grande de interacciones a evaluar.
+	\item \textbf{Evaluación}: \textit{9.177} (\textit{0.04\%} el conjunto de datos). Este número de interacciones resulta suficiente para realizar la prueba de evaluación y permite utilizar el mayor número posible de interacciones para el entrenamiento del modelo. Ademas, se debe tenerse en cuenta el tiempo de ejecución de cada inferencia del modelo. Este ronda entre los \textit{8} y \textit{20} segundos. Debido a esto último, tampoco seria posible realizar un particionamiento tradicional \textit{70-30} ya que tendríamos un numero muy grande de interacciones a evaluar.
 \end{itemize}
 
-Por otro lado, se agregaron interacciones de usuarios falsos, conocidos como usuarios \textit{fun}. Estos usuarios son entusiastas de ciertos géneros, sagas de películas, etc. Esto usuarios se crean de manera artificial para mejorar las recomendaciones de los modelos de recomendación de filtrado colaborativo, especialmente en casos donde hay grupos de usuarios aislados que no se relacionan entre sí. Para llevar a cabo este proceso, se buscaron ítems a partir de una frase y luego se creo un nuevo usuario al que se asocia una interacción por cada ítem encontrado. A continuación, se muestra el mapeo de frases y la cantidad de ítems obtenidos en cada búsqueda. Cada frase corresponde a un usuario \textit{fun}.
+Por otro lado, se agregaron interacciones de usuarios falsos, conocidos como \textit{fun users}. Estos usuarios son entusiastas de ciertos géneros, sagas de películas, etc. Esto usuarios se crean de manera artificial para mejorar las recomendaciones de los modelos basados en filtrado colaborativo, especialmente en casos donde hay grupos de usuarios aislados que no se relacionan entre sí. Para llevar a cabo este proceso, se buscaron ítems a partir de una frase y luego se creo un nuevo usuario al que se asocia una interacción por cada ítem encontrado. A continuación, se muestra el mapeo de frases y la cantidad de ítems obtenidos en cada búsqueda. Cada frase corresponde a un \textit{fun user}:
 
 \begin{itemize}
-	\item "pixar animated movie for children" (Máximo de 200 items).
-	\item "science fiction, action" (Máximo de 100 items).
-	\item "war weapons" (Máximo de 70 items).
-	\item "iron man, x-men, spider man, bat man, flash, avengers, ant-man, hulk, guardians of the galaxy, marvel, green lantern, superman, watchmen, thor, deadpool, wonder woman, strange, justice League, captain america, logans, kick ass, John Wick" (Máximo de 150 items).
-	\item "sci-fi, action, future" (Máximo de 130 items).
-	\item "Mission Impossible, spies, bourne identity, 007" (Máximo de 70 items).
-	\item "comedy movies" (Máximo de 200 items).
-	\item "horror" (Máximo de 100 items).
-	\item "thiller, suspense" (Máximo de 150 items).
-	\item "love, romance" (Máximo de 150 items).
-	\item "time travel" (Máximo de 100 items).
-	\item "dead, zombies, post apocalyptic" (Máximo de 100 items).
-	\item "software" (Máximo de 100 items).
-	\item "hackers" (Máximo de 100 items).
+	\item \quotes{Pixar animated movie for children} (Máximo de 200 items).
+	\item \quotes{Science fiction, action} (Máximo de 100 items).
+	\item \quotes{War weapons} (Máximo de 70 items).
+	\item \quotes{Iron man, x-men, spider man, bat man, flash, avengers, ant-man, hulk, guardians of the galaxy, marvel, green lantern, superman, watchmen, thor, deadpool, wonder woman, strange, justice League, captain america, logans, kick ass, John Wick} (Máximo de 150 items).
+	\item \quotes{Sci-fi, action, future} (Máximo de 130 items).
+	\item \quotes{Mission Impossible, spies, bourne identity, 007} (Máximo de 70 items).
+	\item \quotes{Comedy movies} (Máximo de 200 items).
+	\item \quotes{Horror} (Máximo de 100 items).
+	\item \quotes{Thiller, suspense} (Máximo de 150 items).
+	\item \quotes{Love, romance} (Máximo de 150 items).
+	\item \quotes{Time travel} (Máximo de 100 items).
+	\item \quotes{Dead, zombies, post apocalyptic} (Máximo de 100 items).
+	\item \quotes{Software} (Máximo de 100 items).
+	\item \quotes{Hackers} (Máximo de 100 items).
 \end{itemize}
 
 De esta forma, se agregan \textit{14} nuevos usuarios artificiales o usuarios \textit{fun}, junto con sus interacciones, al conjunto de datos de entrenamiento.
@@ -1462,21 +1465,22 @@ Para realizar el proceso de evaluación, en primer lugar se deben crear los perf
 
 \begin{itemize}
 	\item \textit{preferred\_from}: Este filtro establece la fecha mínima de lanzamiento de las películas recomendadas. Basándose en las iteraciones de evaluación de cada usuario, se selecciona la fecha de lanzamiento más temprana entre todas las películas que el usuario calificó.
-	\item \textit{géneros}: Es una colección de los géneros preferidos por el usuario, al menos inicialmente, similar al campo anterior. Se utiliza un conjunto de todos los géneros.ros de las películas calificadas pro el usuario en el conjunto de evaluación.
+	\item \textit{géneros}: Es una colección de los géneros preferidos por el usuario, al menos inicialmente, similar al campo anterior. Se utiliza un conjunto de todos los géneros de las películas calificadas por el usuario en el conjunto de evaluación.
 \end{itemize}
 
 
-una vez creados todo los perfiles se dan de alta en \textit{API Rec Chatbot} mediante el \textit{end-point POST /api/v1/profiles}.
+Una vez creados todo los perfiles, se dan de alta en \textit{API Rec Chatbot} mediante el \textit{end-point} \textbf{POST /api/v1/profiles}.
 
-Cabe aclarar que estos usuarios no están en el conjunto de entrenamiento; son nuevos para la \textit{API Rec Chatbot}. Además, los usuarios e interacciones presentes en la base de datos de \textit{API Rec Chatbot} pertenecen en su totalidad al conjunto de entrenamiento. A este momento tenemos la base de datos con el conjunto completo de entrenamiento y cargados los perfiles de usuarios del conjunto de evaluación.
+Cabe aclarar que estos usuarios no están en el conjunto de entrenamiento; son nuevos para \textit{API Rec Chatbot}. Además, los usuarios e interacciones presentes en la base de datos de \textit{API Rec Chatbot} pertenecen en su totalidad al conjunto de entrenamiento. A este momento, tenemos la base de datos con el conjunto completo de entrenamiento y cargados los perfiles de usuarios del conjunto de evaluación.
 
 \section{Proceso de evaluación}
 
 El proceso de evaluación simula las interacciones de los usuarios con el \textit{API Rec Chatbot}. Se selecciona aleatoriamente y sin reposición cada usuario del conjunto de evaluación, y se itera sobre sus interacciones en orden cronológico, creando consultas a el \textit{API Rec Chatbot} en grupos de \textit{5} interacciones una a la vez. Las consultas o \textit{prompts} tienen el siguiente patrón:
 
-\begin{center}I want to see: title1,..title5\end{center}
 
-Aquí se aprecia que se concatena la cadena de caracteres "I want to see: " con los títulos de las \textit{5} películas correspondientes a las interacciones del usuario a evaluar. Luego, \textit{API Rec Chatbot} buscará y recomendará al menos \textit{5} películas, incluyendo la opción de calificar cada una con una puntuación de \textit{1} a \textit{5}. Las puntuaciones reales del conjunto de evaluación se utilizarán para calificar las recomendaciones. Este proceso se repetirá con las siguientes \textit{5} películas, en el orden cronológico de las interacciones, hasta que se agoten las interacciones del usuario o se alcance un límite de re-intentos en caso de errores con la \textit{API Rec Chatbot}.
+\begin{center}\quotes{I want to see: title1,..title5}\end{center}
+
+Aquí se aprecia que se concatena la cadena de caracteres \quotes{I want to see: } con los títulos de las \textit{5} películas correspondientes a las interacciones del usuario a evaluar. Luego, \textit{API Rec Chatbot} buscará y recomendará al menos \textit{5} películas, incluyendo la opción de calificar cada una con una puntuación de \textit{1} a \textit{5}. Las puntuaciones reales del conjunto de evaluación se utilizarán para calificar las recomendaciones. Este proceso se repetirá con las siguientes \textit{5} películas, en el orden cronológico de las interacciones, hasta que se agoten las interacciones del usuario o se alcance un límite de re-intentos en caso de errores con la \textit{API Rec Chatbot}.
 
 Mientras se realiza la prueba de evaluación durante el entrenamiento de la solución, se identifican nuevas interacciones y se decide si es necesario re-entrenar el modelo. El modelo se re-entrena cuando se detectan al menos \textit{25} nuevas interacciones, garantizando así que no haya un desfase significativo. En aplicaciones reales, re-entrenar el modelo cada vez que un usuario califica no es viable debido a los altos requerimientos computacionales, lo que resulta insostenible en términos de \textit{hardware} y costos. Por ello, se opta por un enfoque de entrenamiento en paralelo. El proceso de evaluación continuará hasta alcanzar un mínimo de \textit{50} interacciones por usuario.
 
