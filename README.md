@@ -11,3 +11,7 @@ The recommendation system is capable of offering personalized content to the use
 of content-based recommendation models, collaborative filters, and language models.
 
 **Keywords:** _LLM_, _Cold Start_, collaborative filtering-based recommendation systems, content-based recommendation systems, _Rest API_, _RAG_, _ChromaDB_, _Apache Airflow_, _Llama_, deep factoring machines (_DeepFM_).
+
+
+[Thesis Document](https://github.com/adrianmarino/thesis-paper-tex/tree/master/thesis.pdf)
+
