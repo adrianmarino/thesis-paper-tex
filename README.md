@@ -14,7 +14,9 @@ of content-based recommendation models, collaborative filters, and language mode
 
 <p align="center">
   <br/>
-  <b><a href="https://github.com/adrianmarino/thesis-paper-tex/tree/master/thesis.pdf">See Thesis Document (Spanish)</a><b/>
+  <b><a href="https://github.com/adrianmarino/thesis-paper-tex/tree/master/thesis.pdf">Thesis Document (Spanish)</a><b/>
+    |
+  <b><a href="https://github.com/adrianmarino/thesis-paper">Github Project</a><b/>
   <br/>
   <br/>
   <br/>
