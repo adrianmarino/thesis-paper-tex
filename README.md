@@ -12,8 +12,14 @@ of content-based recommendation models, collaborative filters, and language mode
 
 **Keywords:** _LLM_, _Cold Start_, collaborative filtering-based recommendation systems, content-based recommendation systems, _Rest API_, _RAG_, _ChromaDB_, _Apache Airflow_, _Llama_, deep factoring machines (_DeepFM_).
 
+<p align="center">
+  <br/>
+  <b><a href="https://github.com/adrianmarino/thesis-paper-tex/tree/master/thesis.pdf">See Thesis Document (Spanish)</a><b/>
+  <br/>
+  <br/>
+  <br/>
+</p>
 
-[See Thesis Document (Spanish)](https://github.com/adrianmarino/thesis-paper-tex/tree/master/thesis.pdf)
 
 <p align="center">
   <img src="https://github.com/adrianmarino/thesis-paper/blob/master/images/logo.png?raw=true"  height="800" />
