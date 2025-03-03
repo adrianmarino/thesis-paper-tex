@@ -1,7 +1,11 @@
-<p align="left">
 
-<b>University of Buenos Aires</br>Faculty of Exact and natural sciences</br>Master in Data Mining and Knowledge Discovery</b>
-</p>
+<div style="overflow: auto;">
+    <img src="https://github.com/adrianmarino/thesis-paper-tex/blob/master/images/logouba.png" alt="Logo"  style="float: left; width: 100px; margin-right: 10px;"/>
+    <p style="margin: 0;">
+      <b>University of Buenos Aires</br>Faculty of Exact and natural sciences</br>Master in Data Mining and Knowledge Discovery</b>
+    </p>
+</div>
+
 
 # Personalized content recommendation chatbot
 
