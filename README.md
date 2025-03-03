@@ -15,3 +15,6 @@ of content-based recommendation models, collaborative filters, and language mode
 
 [See Thesis Document (Spanish)](https://github.com/adrianmarino/thesis-paper-tex/tree/master/thesis.pdf)
 
+<p align="center">
+  <img src="https://github.com/adrianmarino/thesis-paper/blob/master/images/logo.png?raw=true"  height="800" />
+</p>
