@@ -3,7 +3,7 @@
 <b>University of Buenos Aires</br>Faculty of Exact and natural sciences</br>Master in Data Mining and Knowledge Discovery</b>
 </p>
 
-# Chatbot for personalized content recommendation
+# Chatbot for personalized content recommendation Latex Doc
 
 This thesis work explores the use of large language models (LLMs) as a user communication interface in a recommendation system. 
 These models are used to search for personalized content in response to natural language queries. 
