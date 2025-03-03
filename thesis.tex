@@ -1403,6 +1403,7 @@ adecuado usar una activación \textit{ReLU} frente a una lineal.
 
 
 \chapter{Pruebas de evaluación}
+\label{chap:evaluacion-modelo}
 
 En este apartado se describirá detalladamente el tipo de pruebas realizadas y cómo se llevaron a cabo. Para la evaluación, se propone un escenario con una instalación real de la \textit{API Rec Chatbot}, la cual ya se explico en detalle en el apartado \ref{sec:arq-general}. De esta forma, contamos con dicha instalación y su respectivo proceso de entrenamiento (\textit{DAG}), el cual se ejecuta cada \textit{5 min} si se encuentran mas de \textit{50} nuevas iteraciones(calificaciones de los usuarios). El objetivo de la prueba es simular un ambiente real de uso de la \textit{API Rec Chatbot} y evaluar la evolución de las recomendaciones para cada usuario de prueba.
 
@@ -1480,7 +1481,7 @@ El proceso de evaluación simula las interacciones de los usuarios con el \texti
 
 \begin{center}\quotes{I want to see: title1,..title5}\end{center}
 
-Aquí se aprecia que se concatena la cadena de caracteres \quotes{I want to see: } con los títulos de las \textit{5} películas correspondientes a las interacciones del usuario a evaluar. Luego, \textit{API Rec Chatbot} buscará y recomendará al menos \textit{5} películas, incluyendo la opción de calificar cada una con una puntuación de \textit{1} a \textit{5}. Las puntuaciones reales del conjunto de evaluación se utilizarán para calificar las recomendaciones. El proceso de evaluación registra la calificación predicha por el modelo ademas de las calificaciones reales tomadas del conjunto de evaluación, estos datos seran utilizados para calcular métricas de evaluación, como: \textit{f-beta-score}, \textit{precision}, \textit{recall}, \textit{MAP@k}, etc. Este proceso se repetirá con las siguientes \textit{5} películas, en el orden cronológico de las interacciones, hasta que se agoten las interacciones del usuario o se alcance un límite de re-intentos en caso de errores de conexión o timeouts contra la \textit{API Rec Chatbot}.
+Aquí se aprecia que se concatena la cadena de caracteres \quotes{I want to see: } con los títulos de las \textit{5} películas correspondientes a las interacciones del usuario a evaluar. Luego, \textit{API Rec Chatbot} buscará y recomendará al menos \textit{5} películas, incluyendo la opción de calificar cada una con una puntuación de \textit{1} a \textit{5}. Las puntuaciones reales del conjunto de evaluación se utilizarán para calificar las recomendaciones. El proceso de evaluación registra la calificación predicha por el modelo ademas de las calificaciones reales tomadas del conjunto de evaluación, estos datos serán utilizados para calcular métricas de evaluación, como: \textit{f-beta-score}, \textit{precision}, \textit{recall}, \textit{MAP@k}, etc. Este proceso se repetirá con las siguientes \textit{5} películas, en el orden cronológico de las interacciones, hasta que se agoten las interacciones del usuario o se alcance un límite de re-intentos en caso de errores de conexión o timeouts contra la \textit{API Rec Chatbot}.
 
 Mientras se realiza la prueba de evaluación y durante el entrenamiento del los modelos, se identifican nuevas interacciones y se decide si es necesario re-entrenar el modelo. El modelo se re-entrena cuando se detectan al menos \textit{25} nuevas interacciones, garantizando así que no haya un desfase significativo. En aplicaciones reales, re-entrenar el modelo cada vez que un usuario califica no es viable debido a los altos requerimientos computacionales, lo que resulta insostenible en términos de uso de recursos de \textit{hardware} y sus  costos asociados. Por ello, se opta por un enfoque de entrenamiento en paralelo. El proceso de evaluación continuará hasta alcanzar un mínimo de \textit{50} interacciones por usuario.
 
@@ -1489,12 +1490,12 @@ El \textit{API Rec Chatbot} consiste en un ensamble de modelos que utiliza model
 
 \section{Métricas}
 
-El proceso de evaluación descrito anteriormente registrará los resultados de cada interacción de los usuarios del conjunto de evaluación con  \textit{API Rec Chatbot}, generando un archivo que contendrá los datos necesarios para calcular métricas que permitan evaluar el rendimiento del sistema de recomendación. A continuación se definen todas las métricas utilizadas para facilitar una comprensión inicial. Esto permitirá entender mejor los resultados y las conclusiones de este trabajo de tesis.
+El proceso de evaluación descrito en el apartado anterior ~\ref{chap:evaluacion-modelo} registrará los resultados de cada interacción de los usuarios del conjunto de evaluación con  \textit{API Rec Chatbot}, generando un archivo que contendrá los datos necesarios para calcular métricas que permitan evaluar el rendimiento del sistema de recomendación. A continuación se definen todas las métricas utilizadas para facilitar una comprensión inicial. Esto permitirá entender mejor los resultados y las conclusiones de este trabajo de tesis.
 
 \subsection{NDCG (Normalized Discounted Cumulative Gain)}
 
 
-El \textit{Normalized Discounted Cumulative Gain (NDCG)} es una métrica de evaluación común en el aprendizaje automático, especialmente en tareas de \textit{ranking} o sistemas de recomendación. Esta métrica mide la calidad de una lista ordenada de resultados, teniendo en cuenta no solo si los elementos relevantes están presentes en la lista, sino también su posición. Se basa en dos principios fundamentales:
+\textit{Normalized Discounted Cumulative Gain (NDCG)} o ganancia acumulada descontada normalizada es una métrica de evaluación común en aprendizaje automático, especialmente en tareas de \textit{ranking} o sistemas de recomendación. Esta compuesta por la ganancia acumulada descontada \textit{Discounted Cumulative Gain (DCG)} la cual es normalizada para que su resultado sea comparable entre consultas, lo que genera un \textit{DCG} normalizado. Esta métrica mide la calidad de una lista ordenada de resultados, teniendo en cuenta no solo si los elementos relevantes están presentes en la lista, sino también su posición. Se basa en dos principios fundamentales:
 
 \begin{itemize}
 	\item Los ítems altamente relevantes son más útiles cuando aparecen primeros en la lista de recomendaciones.
@@ -1515,24 +1516,26 @@ A continuación definimos \textit{NDCG} como:
 
 Donde:
 \begin{itemize}
+	\item \textit{DCG} es la ganancia acumulada descontada.
+	\item \textit{IDCG} es la ganancia acumulada descontada Ideal. Es decir, la mejor ganancia acumulada descontada posible. Se utiliza para normalizar \textit{DCG}. Se calcula ordenando los ítems por calificación de mayor a menor.
+	\item \textit{NDCG} es la ganancia acumulada descontada normalizada. Es el resultado de dividir \textit{DCG} por \textit{IDCG}. Es una medida de la calidad de la lista de recomendaciones.
 	\item $n$ es la cantidad de ítems en la lista de recomendaciones.
 	\item $rating_i$ es la calificación del ítem en la posición $i$ de dicha lista.
 	\item $rating_i^{ideal}$ también representa una calificación, pero se basa en una lista ordenada de mayor a menor calificación, lo que significa que el ítem en la posición $i$ podría ser diferente al ítem de la lista original.
 \end{itemize}
 
-Primero, se calcula el \textit{DCG (Discounted Cumulative Gain)}:
+Primero, se calcula el \textit{DCG}:
 
 \begin{itemize}
-	\item Para cada ítem \textit{i} de la lista de recomendada, se divide su \textit{rating} o calificación por el logaritmo de su posición en la lista de recomendaciones ($\log_2(i + 1)$). El logaritmo en base \textit{2} de la posición actúa se utiliza como un factor de descuento.
+	\item Para cada ítem \textit{i} de la lista recomendada, se divide su \textit{rating} o calificación por el logaritmo de su posición en la lista de recomendaciones ($\log_2(i + 1)$). El logaritmo en base \textit{2} de la posición actúa se utiliza como un factor de descuento.
 	\item Los ítems en las primeras posiciones de la lista están menos penalizadas por el factor de descuento. Cuanto mayor es el valor de esta división, mas relevante es el ítem para la métrica.
-	\item Finalmente se suman todos los valores calculados para cada ítem en la lista, siento este valor final una medida del \textit{Discounted Cumulative Gain}.
+	\item Finalmente se suman todos los valores calculados para cada ítem en la lista, siento este valor final una medida de \textit{DCG}.
 \end{itemize}
 
-Luego, es necesario calcular el \textit{IDCG (\textit{Discounted Cumulative Gain} ideal)}:
-
+Luego, es necesario calcular el \textit{IDCG}:
 \begin{itemize}
 	\item Se ordenan los ítems de la lista por \textit{rating} o calificación de mayor a menor.
-	\item Se calcula el \textit{DCG (Discounted Cumulative Gain)} con este orden ideal.
+	\item Se calcula el \textit{DCG} con este orden ideal.
 \end{itemize}
 
 Como paso final, se normaliza el \textit{DCG} dividiendo por el \textit{IDCG}. Esto escala \textit{DCG} a un valor entre \textit{0} y \textit{1}, donde:
@@ -1566,15 +1569,20 @@ Aunque ambos sistemas recomiendan las mismas películas, el Sistema $A$ tendrá 
 
 \subsection{Exhaustividad \textit{(Recall)}}
 
-Mide la capacidad del sistema para encontrar todos los ítems relevantes para el usuario. Se enfoca en evaluar cuántos de los ítems que realmente le interesan al usuario fueron recomendados. No considera el orden de las recomendaciones ni la precisión con ítems no relevantes.
+La métrica Exhaustividad o \textit{Recall} mide la capacidad del sistema para encontrar todos los ítems relevantes para el usuario. Se enfoca en evaluar cuántos de los ítems que realmente le interesan al usuario fueron recomendados. No considera el orden de las recomendaciones ni la precisión con ítems no relevantes.
 
 \subsubsection{Funcionamiento}
 
-A continuación definimos \textit{(Recall)} como:
+A continuación definimos \textit{Recall} como:
 
 \begin{equation}
 	\text{True Positive} = \text{Ítems Recomendados} \cap \text{Ítems Relevantes}
 	\label{eq:tp}
+\end{equation}
+
+\begin{equation}
+	\text{False Negative} = \text{Ítems No Recomendados} \cap \text{Ítems Relevantes}
+	\label{eq:fn}
 \end{equation}
 
 \begin{equation}
@@ -1583,9 +1591,23 @@ A continuación definimos \textit{(Recall)} como:
 \end{equation}
 
 \begin{equation}
-	\text{Recall} = \frac{\text{True Positive}}{\text{True Positive} + \text{False Negative}}
+	\text{Recall} = \frac{\text{True Positive}}{\text{True Positive} + \text{False Negative}} = \frac{\text{True Positive}}{\text{Ítems Relevantes}}
 	\label{eq:recall}
 \end{equation}
+
+Donde:
+\begin{itemize}
+	\item \textit{True Positive} es la cantidad de ítems recomendados que son relevantes para el usuario. Es la intersección entre los ítems recomendados y los ítems relevantes. Se calcula con la ecuación \ref{eq:tp}.
+	\item \textit{False Negative} es la cantidad de ítems relevantes que no fueron recomendados. Es la intersección entre los ítems relevantes y los ítems no recomendados. Se calcula con la ecuación \ref{eq:fn}.
+	\item \textit{Ítems Relevantes} es el conjunto de ítems que son relevantes para el usuario. Se calcula con la ecuación \ref{eq:tp_fn}.
+	\item \textit{Recall} es la métrica que se desea calcular. Se calcula con la ecuación \ref{eq:recall}.
+	\item El resultado es un valor entre $0$ y $1$, donde:
+	      \begin{itemize}
+		      \item El valor $1$ indica que todos los ítems recomendados eran relevantes para el usuario, lo que significa que todos los ítems coincidían con los utilizados para generar el \textit{prompt} de la consulta.
+		      \item El valor $0$ significa que no se recomendó ningún ítem relevante. Lo que significa que ningún de los ítems recomendados se encontraban en el \textit{prompt} de la consulta.
+	      \end{itemize}
+\end{itemize}
+
 
 Entonces, los pasos para calcular el \textit{(Recall)} son los siguientes:
 
@@ -2376,7 +2398,7 @@ Uno de los principales hallazgos fue la limitación en la memoria de los grandes
 
 En términos de eficiencia computacional, se constató que el tiempo de inferencia de los grande modelos de lenguaje locales es significativamente mayor en comparación con soluciones en la nube como \textit{Claude AI} o \textit{ChatGPT-4o } de \textit{Open AI}. Esto plantea un desafío en la escalabilidad del sistema, ya que el costo de los recursos computacionales podría volverse prohibitivo a gran escala.
 
-El problema de \textit{Cold Start} o arranque en frio, característico de los sistemas de recomendación, se abordó mediante la utilización de \textit{embeddings} utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} , permitiendo mejorar la calidad de las recomendaciones iniciales sin requerir interacciones previas del usuario. No obstante, se observó que, con el tiempo, la relevancia del contenido recomendado disminuye a medida que se agotan los elementos más relevantes dentro del catálogo disponible.
+El problema de \textit{Cold Start} o arranque en frio, característico de los sistemas de recomendación, se abordó mediante la utilización de \textit{embeddings} utilizando la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} , permitiendo mejorar la calidad de las recomendaciones iniciales sin requerQQir interacciones previas del usuario. No obstante, se observó que, con el tiempo, la relevancia del contenido recomendado disminuye a medida que se agotan los elementos más relevantes dentro del catálogo disponible.
 
 Como parte del \textit{pipeline} de entrenamiento y actualización de modelos, se utilizó \textit{Apache Airflow} ~\cite{apache-airflow} para orquestar los flujos de datos y garantizar la actualización continua de \textit{embeddings} y modelos de recomendación. Este enfoque demostró ser eficiente para manejar grandes volúmenes de datos y asegurar la disponibilidad de modelos actualizados.
 
