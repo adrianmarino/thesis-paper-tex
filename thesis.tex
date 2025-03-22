@@ -1928,29 +1928,17 @@ Finalmente, el valor promedio de serendipia para los tres usuarios es:
 
 \chapter{Resultados}
 
-En los siguientes capítulos se presentaran los resultados de las pruebas de evaluación para dos configuraciones distintas del sistema de recomendación. Para esto se reemplaza un componente del sistema de recomendación, encargado de aplicar el \textit{ranking} a los ítems que forman parte del resultado de una consulta. Éste componente es un modelo de lenguaje grande  encargado de refinar el ordenamiento de los resultados, el cual se utiliza a lo largo del ciclo de vida del usuario.
+En los siguientes capítulos se presentarán los resultados de las pruebas de evaluación para dos configuraciones distintas del sistema de recomendación. Para estas pruebas, se reemplazó un componente del sistema que aplica el \textit{ranking} a los ítems resultado de una consulta. Si el usuario no alcanza el mínimo de interacciones, este es el único \textit{ranker} disponible, utilizando el contenido del perfil del usuario y el historial de ítems calificados. Cuando el usuario alcanza el mínimo de interacciones, se emplea primero un modelo de recomendación basado en filtros colaborativos para buscar y ordenar los ítems, seguido por un modelo de lenguaje grande que ajusta este orden según las interacciones (calificaciones) y el perfil del usuario, similar a la estrategia anterior.
 
-Para el sistema de recomendación, el usuario puede tomar dos estados posibles, e ir cambiando entre los mismos dentro de su ciclo de vida. Estos estados definen dos estrategias distintas de recomendación de contenido:
+\section{Resultados utilizando el componente \textit{LLM} \textit{Llama2}}
 
-\begin{itemize}
-	\item Estado frio (\textit{Cold}): Para los usuarios en este estado, el sistema de recomendación carece de información sobre su comportamiento, ya que este no ha calificado ningún contenido en el ultimo tiempo. En este estado, solo se dispone de información general del perfil del usuario, limitándose a realizar
-	      recomendaciones basadas en su perfil y contenido similar a su consulta (estrategia de basada en contenido). En este estado el modelo utiliza un técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} para buscar contenido similar a la consulta del usuario, utilizando la distancia Coseno como primer método de \textit{ranking}. Luego se utiliza un modelo de lenguaje grande para refinar el ordenamiento basándose en los resultado de la técnica \textit{RAG}(\textit{Retrieval Augmented Generation} o Generación Aumentada por Recuperación) ~\cite{rag} e información del perfil del usuario.
-	\item Estado caliente (\textit{Warn}): Para los usuarios en este estado, el sistema de recomendación cuenta con un número mínimo de interacciones, utilizadas para realizar recomendaciones basadas en su comportamiento. Se utiliza un modelo de recomendación basado en filtros colaborativos como primer método de búsqueda y ordenamiento(\textit{ranking}) de ítems, seguido por un modelo de lenguaje grande, que refina este ordenamiento en función de las interacciones(calificaciones) del usuario y el perfil del usuario (similar a la estrategia anterior).
-\end{itemize}
-
-Es importante mencionar que las interacciones del usuario (calificaciones de ítems) tienen una fecha de expiración, lo que implica una ventana de tiempo hacia atrás desde la fecha actual para considerar su comportamiento. Esto garantiza que el sistema de recomendación refleje las preferencias más recientes del usuario. Además, el sistema alternará entre diferentes estrategias de recomendación según la frecuencia de interacciones. Aunque la evaluación del modelo no tiene en cuenta esta ventana temporal, ya que las interacciones ocurren dentro del período de ejecución de la prueba(del orden de días), es importante señalar que el sistema cuenta con esta capacidad.
-
-\chapter{Resultados utilizando el componente \textit{LLM} \textit{Llama2}}
-
-En esta sección se presentan los resultados de la evaluación del sistema de recomendación, donde se utilizó el componente \textit{Llama2} para refinar el \textit{ranking} de los ítems recomendados a partir de una consulta realizada por un usuario perteneciente al conjunto de evaluación.
-
-Para comenzar, en la figura \ref{fig:llama2-steps_count_by_session_distribution} se muestra la distribución de la cantidad de pasos por sesión de usuario. Un paso representa una recomendación solicitada por un usuario dentro de su sesión y una sesión puede tener $n$ pasos. Se puede apreciar que la mayoría de los usuarios realizan entre $6$ y $13$ consultas por sesión (rango inter-cuartíl), siendo $6$ consultas el valor más común (moda).
+En esta sección se exponen los resultados de la evaluación del sistema de recomendación, utilizando el componente \textit{Llama2} para rankear los ítems recomendados según la consulta de un usuario del conjunto de evaluación. Para comenzar, en la figura \ref{fig:llama2-steps_count_by_session_distribution} se muestra la distribución de la cantidad de pasos por sesión de usuario. Un paso representa una recomendación solicitada por un usuario dentro de su sesión y una sesión puede tener $n$ pasos. Se puede apreciar que la mayoría de los usuarios realizan entre $6$ y $13$ consultas por sesión (rango inter-cuartíl), siendo $6$ consultas el valor más común (moda).
 Algunos usuarios realizan pocas consultas ($<6$), mientras que un pequeño grupo llega a realizar muchas ($>22$), considerados \textit{outliers} ($4.48\%$ del total). La asimetría positiva indica que la mayoría de los usuarios tienen un comportamiento entre el promedio y la moda, pero existen algunos usuarios con gran cantidad de interacciones (sesiones largas con muchas consultas). La media ($10.59$), mayor que la mediana ($9$), indicando que la distribución esta sesgada hacia la derecha, sugiere que estos usuarios extremos están influyendo en el valor del promedio. Las sesiones con más de $22$ consultas podrían indicar: Usuarios avanzados/expertos que exploran profundamente el sistema.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/steps_count_by_session_distribution.png}
-	\caption{Este gráfico representa la cantidad de pasos por sesión de usuario. Un paso representa una consulta de recomendación realizada por un usuario.}
+	\caption{Cantidad de pasos por sesión de usuario. Un paso representa una consulta de recomendación realizada por un usuario.}
 	\label{fig:llama2-steps_count_by_session_distribution}
 \end{figure}
 
@@ -1961,7 +1949,7 @@ Pocos usuarios llegan a pasos muy altos: A partir del paso $21$, el número de s
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/sessions_count_by_session_step.png}
-	\caption{Este gráfico muestra el número de sesiones de usuarios por  cada paso de sesión, donde cada paso corresponde a una consulta al sistema de recomendación. Se observa que un usuario llego a realizar $25$ consultas y $134$ usuarios completaron el primer paso.}
+	\caption{Número de sesiones de usuarios por  cada paso de sesión, donde cada paso corresponde a una consulta al sistema de recomendación. Se observa que un usuario llego a realizar $25$ consultas y $134$ usuarios completaron el primer paso.}
 	\label{fig:llama2-sessions_count_by_session_step}
 \end{figure}
 
@@ -1971,7 +1959,7 @@ La figura \ref{fig:llama2-found_items_count_by_session_step_distribution} muestr
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/found_items_count_by_session_step_distribution.png}
-	\caption{En este gráfico se aprecia la cantidad de ítems relevantes encontrado en cada respuesta del sistema de recomendación. Donde la mayoría de las consultas (Moda) contienen $2$ ítems relevantes con una media de $3$.}
+	\caption{Cantidad de ítems relevantes encontrado en cada respuesta del sistema de recomendación. Donde la mayoría de las consultas (Moda) contienen $2$ ítems relevantes con una media de $3$.}
 	\label{fig:llama2-found_items_count_by_session_step_distribution}
 \end{figure}
 
@@ -1981,7 +1969,7 @@ En la figura \ref{fig:llama2-mean_average_precision_by_session_distribution} se 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_average_precision_by_session_distribution.png}
-	\caption{En este gráfico se aprecia la distribución de la métrica \textit{Mean Average Precision}(\textit{MAP}) por sesión de usuario.}
+	\caption{Distribución de la métrica \textit{Mean Average Precision}(\textit{MAP}) por sesión de usuario.}
 	\label{fig:llama2-mean_average_precision_by_session_distribution}
 \end{figure}
 
@@ -1993,7 +1981,7 @@ En la figura \ref{fig:llama2-mean_average_precision_by_session_step_series} se m
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_average_precision_by_session_step_series.png}
 	\caption{
-		En este gráfico se aprecia una serie que muestra la evolución del de \textit{Mean Average Precision}(\textit{MAP}) promedio por paso. Es decir se realiza la media de \textit{Mean Average Precision}(\textit{MAP}) de cada sesión de usuario en cada paso(\textit{Session Step}).}
+		Se aprecia una serie que muestra la evolución del de \textit{Mean Average Precision}(\textit{MAP}) promedio por paso.}
 	\label{fig:llama2-mean_average_precision_by_session_step_series}
 \end{figure}
 
@@ -2002,35 +1990,36 @@ Esto podría implicar que el sistema llega a un límite en la calidad de las rec
 
 \clearpage
 
-En la figura \ref{fig:llama2-mean_ndcg_by_session_step_distribution} se muestra la media de \textit{Discounted cumulative gain} (\textit{NDCG}) por paso.
+En la figura \ref{fig:llama2-mean_ndcg_by_session_step_distribution} se muestra la media de \textit{Normalized discounted cumulative gain} (\textit{NDCG}) por paso.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_ndcg_by_session_step_distribution.png}
-	\caption{En este gráfico se aprecia la media de \textit{Discounted cumulative gain} (\textit{NDCG}) por paso.}
+	\caption{Media de \textit{NDCG} por paso.}
 	\label{fig:llama2-mean_ndcg_by_session_step_distribution}
 \end{figure}
 
-Para comenzar, se aprecia una distribución altamente sesgada. La mayoría de los valores de \textit{Discounted cumulative gain} (\textit{NDCG}) están concentrados cerca de $1.0$ (la moda y mediana son ambas $1.0$). Esto sugiere que, en general, el sistema de recomendación logra posicionar ítems relevantes en los primeros lugares de las listas, lo que es un indicador de buen desempeño. Hay una cantidad considerable de \textit{outliers} por debajo de $0.875$, representando aproximadamente el $6.48\%$ de los datos.
+Para comenzar, se aprecia una distribución altamente sesgada a izquierda. La mayoría de los valores de \textit{NDCG} están concentrados cerca de $1.0$ (la moda y mediana son ambas $1.0$). Esto sugiere que, en general, el sistema de recomendación logra posicionar ítems relevantes en los primeros lugares de las listas, lo que es un indicador de buen desempeño. Hay una cantidad considerable de \textit{outliers} por debajo de $0.875$, representando aproximadamente el $6.48\%$ de los datos.
 Estas sesiones podrían indicar casos en los que el sistema falla al generar recomendaciones relevantes.
-La media de $0.969$ refleja un rendimiento global muy bueno. La mediana y moda, ambas iguales a $1.0$, refuerzan la idea de que una gran parte de las sesiones tienen un rendimiento ideal. El rango inter-cuartil (\textit{IQR}) es pequeño, lo que indica poca dispersión entre el $25\%$ y el $75\%$ de los datos, nuevamente señalando consistencia en el sistema.
-En el histograma, se observa un pico pronunciado en $1.0$, mientras que los valores fuera de este rango son escasos. Esto confirma que la mayoría de las sesiones tienen un \textit{NDCG} óptimo o cercano a óptimo. Los valores más bajos aparecen de manera dispersa, pero su frecuencia es relativamente baja. A grandes rasgos, el sistema parece funcionar muy bien en términos de \textit{NDCG}, posicionando los ítems relevantes en los primeros lugares en la mayoría de las sesiones.
+La media de $0.969$ refleja un rendimiento global muy bueno, es decir, el $96\%$ de las veces los items estan ordenados deacuerdo a las preferencia del usuario. La mediana y moda, ambas iguales a $1.0$, refuerzan la idea de que una gran parte de las sesiones tienen un rendimiento ideal. El rango inter-cuartil (\textit{IQR}) es pequeño, lo que indica poca dispersión entre el $25\%$ y el $75\%$ de los datos, nuevamente señalando consistencia en el sistema.
+En el histograma, se observa un pico pronunciado en $1.0$, mientras que los valores fuera de este rango son escasos. Esto confirma que la mayoría de las sesiones tienen un \textit{NDCG} óptimo o cercano al óptimo. Los valores más bajos aparecen de manera dispersa, pero su frecuencia es relativamente baja. A grandes rasgos, el sistema parece funcionar muy bien en términos de \textit{NDCG}, posicionando los ítems relevantes en los primeros lugares en la mayoría de las sesiones.
 \clearpage
 
 
-En la figura \ref{fig:llama2-mean_ndgc_by_session_step} se muestra la evolución de \textit{Discounted cumulative gain} (\textit{NDCG}) promedio por paso (\textit{Session Step}).
+En la figura \ref{fig:llama2-mean_ndgc_by_session_step} se muestra la evolución de \textit{Normalized discounted cumulative gain} (\textit{NDCG}) promedio por paso (\textit{Session Step}).
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_ndgc_by_session_step.png}
-	\caption{En este gráfico se aprecia la evolución de \textit{Discounted cumulative gain} (\textit{NDCG}) promedio por paso(\textit{Session Step}).}
+	\caption{Evolución de \textit{Normalized discounted cumulative gain} (\textit{NDCG}) promedio por paso(\textit{Session Step}).}
 	\label{fig:llama2-mean_ndgc_by_session_step}
 \end{figure}
 
-El \textit{Discounted cumulative gain} (\textit{NDCG}) promedio se mantiene relativamente alto en todos los pasos de la sesión, con valores superiores a $0.95$, lo que demuestra un rendimiento consistente del sistema en términos de relevancia de las recomendaciones. Sin embargo, se observan fluctuaciones notables en ciertos pasos.
+El \textit{NDCG} promedio se mantiene relativamente alto en todos los pasos de la sesión, con valores superiores a $0.95$, lo que demuestra un rendimiento consistente del sistema en términos de relevancia de las recomendaciones. Sin embargo, se observan fluctuaciones notables en ciertos pasos.
 \newline
 \newline
 \newline
+
 \textbf{Fluctuaciones principales}
 
 \begin{itemize}
@@ -2040,19 +2029,17 @@ El \textit{Discounted cumulative gain} (\textit{NDCG}) promedio se mantiene rela
 
 \end{itemize}
 
-
 \textbf{Intervalos de confianza}
-
-Los intervalos de confianza son más amplios en los pasos intermedios y finales (especialmente en los pasos $8-12$ y $17-20$), lo que indica mayor variabilidad en el rendimiento. Esto puede deberse a:
+Los intervalos de confianza son más amplios en los pasos intermedios y finales (especialmente en los pasos ($8-12$ y $17-20$), lo que indica mayor variabilidad en el rendimiento. Esto puede deberse a:
 
 \begin{itemize}
-	\item \textbf{Entre los pasos $8-12$}:
+	\item \textbf{Entre los pasos} $8$ \textbf{y} $12$:
 	      \begin{itemize}
 		      \item Como ya se menciono, tenemos una baja debido al intercambio entre estrategias de recomendación.
 		      \item Tal vez debería retrasarse el número de pasos en que se cambia la estrategia de recomendación. Este valor es un hiperparámetro a optimizar.
 		      \item Se podría realizar un \textit{smooth} de ambas estrategias para minimizar la baja. Por ejemplo, seleccionando ambas estrategias intercaladas entre los pasos $8$ y $12$.
 	      \end{itemize}
-	\item \textbf{Entre los pasos $17-20$}:
+	\item \textbf{Entre los pasos} $17$ \textbf{y} $20$:
 	      \begin{itemize}
 		      \item Usuarios con comportamientos menos predecibles en etapas avanzadas de la sesión.
 		      \item Menor cantidad de datos para esos pasos (sesiones largas son menos comunes).
@@ -2061,25 +2048,25 @@ Los intervalos de confianza son más amplios en los pasos intermedios y finales 
 
 \clearpage
 
-En la figura \ref{fig:llama2-mean_recall_by_session_step_distribution} se muestra el \textit{Recall} promedio por paso(\textit{Session Step}).
+En la figura \ref{fig:llama2-mean_recall_by_session_step_distribution} se muestra el \textit{Recall} promedio por paso.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_recall_by_session_step_distribution.png}
-	\caption{En este gráfico se muestra el \textit{Recall} promedio por paso(\textit{Session Step})}
+	\caption{\textit{Recall} promedio por paso(\textit{Session Step})}
 	\label{fig:llama2-mean_recall_by_session_step_distribution}
 \end{figure}
 
 
-La media y la mediana permanecen constantes, con un \textit{Recall} medio de $0.585$ y una mediana de $0.6$. La moda de $0.4$ refuerza que hay un grupo considerable de sesiones con desempeño más bajo. No se visualizan valores extremos significativos, con un rango ajustado entre $-0.2$ y $1.4$. La distribución refuerza la predominancia de valores alrededor de la mediana y un pequeño grupo de sesiones con \textit{Recall} más bajo.
+Se observa un \textit{Recall} promedio de $0.585$ y una mediana de $0.6$. La moda de $0.4$ refuerza que hay un grupo considerable de sesiones con desempeño más bajo. No se visualizan valores extremos significativos, con un rango ajustado entre $-0.2$ y $1.4$. La distribución refuerza la predominancia de valores alrededor de la mediana y un pequeño grupo de sesiones con \textit{Recall} más bajo.
 
-En la figura \ref{fig:llama2-mean_recall_by_session_step_series} se muestra la evolución del \textit{Recall} promedio por paso(\textit{Session Step}).
+En la figura \ref{fig:llama2-mean_recall_by_session_step_series} se muestra la evolución del \textit{Recall} promedio por paso.
 
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_recall_by_session_step_series.png}
-	\caption{En este gráfico se muestra la evolución del \textit{Recall} promedio por paso(\textit{Session Step}).}
+	\caption{Evolución del \textit{Recall} promedio por paso(\textit{Session Step}).}
 	\label{fig:llama2-mean_recall_by_session_step_series}
 \end{figure}
 
@@ -2091,8 +2078,7 @@ En la figura \ref{fig:llama2-mean_reciprocal_rank_by_session_distribution} se mu
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_reciprocal_rank_by_session_distribution.png}
-	\caption{En este gráfico se muestra
-		la distribución del \textit{Mean Reciprocal Rank (MRR)} por sesión.}
+	\caption{Distribución del \textit{Mean Reciprocal Rank (MRR)} por sesión.}
 	\label{fig:llama2-mean_reciprocal_rank_by_session_distribution}
 \end{figure}
 
@@ -2105,7 +2091,7 @@ En la figura \ref{fig:llama2-mean_reciprocal_rank_by_session_step_series} muestr
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/mean_reciprocal_rank_by_session_step_series.png}
-	\caption{Este gráfico muestra una serie con la evolución del \textit{Mean Reciprocal Rank (MRR)} por pasos de sesión.}
+	\caption{Serie de la evolución del \textit{Mean Reciprocal Rank (MRR)} por pasos de sesión.}
 	\label{fig:llama2-mean_reciprocal_rank_by_session_step_series}
 \end{figure}
 
@@ -2121,7 +2107,7 @@ En la figura \ref{fig:llama2-rated_items_by_session_distribution} se puede visua
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/rated_items_by_session_distribution.png}
-	\caption{En este gráfico se puede visualizar la distribución de la cantidad de ítems relevantes calificados por sesión de usuario.}
+	\caption{Distribución de la cantidad de ítems relevantes calificados por sesión de usuario.}
 	\label{fig:llama2-rated_items_by_session_distribution}
 \end{figure}
 
@@ -2143,14 +2129,14 @@ En la figura \ref{fig:llama2-relevant_items_found_by_step_index_for_all_sessions
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=15cm]{./images/llama2/relevant_items_found_by_step_index_for_all_sessions.png}
-	\caption{En este gráfico se puede apreciar el número de ítems relevantes encontrados en cada paso para todas las sesiones de usuario, segmentado por la cantidad de ítems relevantes en las respuestas del sistemas de recomendación.}
+	\caption{Número de ítems relevantes encontrados en cada paso para todas las sesiones de usuario, segmentado por la cantidad de ítems relevantes en las respuestas del sistemas de recomendación.}
 	\label{fig:llama2-relevant_items_found_by_step_index_for_all_sessions}
 \end{figure}
 
 El número total de ítems encontrados disminuye gradualmente a medida que aumenta el numero de pasos de las sesiones. Los pasos iniciales tienen la mayor concentración de relevancia, lo que refleja un modelo más efectivo al inicio de las interacciones. Los segmentos para resultados con $2$ y $3$ ítems relevantes son dominantes a lo largo de todos los pasos.
 Los segmentos para resultados con $4$ y $5$ ítems relevantes aparecen con mayor frecuencia en los pasos iniciales y desaparecen casi por completo hacia los pasos finales. A partir del paso $15$, la cantidad total de ítems relevantes es baja, con una tendencia a encontrar menos de $2$ ítems relevantes. Esto esta relacionado con la perdida de \textit{Recall} vista en la figura \ref{fig:llama2-mean_recall_by_session_step_series}, donde se aprecia que la perdida del \textit{Recall} a medida que aumenta el número de pasos por sesión. Claramente en sistema de recomendación tiene dificultades para encontrar contenido por nombre a medida que aumenta el número de pasos por sesión.
 
-\chapter{Resultados utilizando el componente \textit{LLM} \textit{Llama3}}
+\section{Resultados utilizando el componente \textit{LLM} \textit{Llama3}}
 
 En esta sección se presentan los resultados de la evaluación del sistema de recomendación utilizando el componente \textit{Llama3} para realizar el \textit{ranking} de ítems recomendados a un usuario.
 
@@ -2233,7 +2219,7 @@ Resulta particularmente interesante observar cómo ambos modelos tienden a conve
 \clearpage
 
 
-En la figura \ref{fig:llama3-mean_ndcg_by_session_step_distribution} se muestra la distribución de la métrica \textit{Normalized Discounted Cumulative Gain (NDCG)} por paso.
+En la figura \ref{fig:llama3-mean_ndcg_by_session_step_distribution} se muestra la distribución de la métrica \textit{ Discounted Cumulative Gain (NDCG)} por paso.
 
 \begin{figure}[H]
 	\centering
@@ -2368,7 +2354,7 @@ Al utilizar \textit{Llama2} se muestra una mayor consistencia en sus recomendaci
 \textit{Llama3}, por su parte, podría destacar en la capacidad de adaptarse rápidamente a las preferencias del usuario, alcanzando un pico de relevancia más temprano en la sesión. Esto indica que \textit{Llama3} podría ser más eficaz en captar los intereses iniciales del usuario. No obstante, esta rapidez en la adaptación podría venir acompañada de una mayor tasa de falsos positivos en etapas posteriores de la sesión.
 
 
-\chapter{Comparación de resultados}
+\section{Comparación de resultados}
 
 Al comparar el modelo de recomendación utilizando los componentes \textit{llama2} y \textit{llama3}, se observan ciertas diferencias:
 
